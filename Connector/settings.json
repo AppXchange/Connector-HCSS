@@ -1,0 +1,104 @@
+{
+  "name": "HCSS",
+  "urlPart": "hcss",
+  "key": "hcss",
+  "description": "",
+  "modules": [
+    {
+      "id": "attachments-1",
+      "name": "Attachments",
+      "urlPart": "attachments",
+      "key": "attachments",
+      "description": "",
+      "version": 1
+    },
+    {
+      "id": "contacts-1",
+      "name": "Contacts",
+      "urlPart": "contacts",
+      "key": "contacts",
+      "description": "",
+      "version": 1
+    },
+    {
+      "id": "equipment360-1",
+      "name": "Equipment360",
+      "urlPart": "equipment360",
+      "key": "equipment360",
+      "description": "",
+      "version": 1
+    },
+    {
+      "id": "heavybidestimate-1",
+      "name": "Heavy Bid Estimate",
+      "urlPart": "heavybidestimate",
+      "key": "heavybidestimate",
+      "description": "",
+      "version": 1
+    },
+    {
+      "id": "heavybidpreconstruction-1",
+      "name": "Heavy Bid Pre Construction",
+      "urlPart": "heavybidpreconstruction",
+      "key": "heavybidpreconstruction",
+      "description": "",
+      "version": 1
+    },
+    {
+      "id": "heavyjob-1",
+      "name": "Heavy Job",
+      "urlPart": "heavyjob",
+      "key": "heavyjob",
+      "description": "",
+      "version": 1
+    },
+    {
+      "id": "safety-1",
+      "name": "Safety",
+      "urlPart": "safety",
+      "key": "safety",
+      "description": "",
+      "version": 1
+    },
+    {
+      "id": "setups-1",
+      "name": "Setups",
+      "urlPart": "setups",
+      "key": "setups",
+      "description": "",
+      "version": 1
+    },
+    {
+      "id": "skills-1",
+      "name": "Skills",
+      "urlPart": "skills",
+      "key": "skills",
+      "description": "",
+      "version": 1
+    },
+    {
+      "id": "telematics-1",
+      "name": "Telematics",
+      "urlPart": "telematics",
+      "key": "telematics",
+      "description": "",
+      "version": 1
+    },
+    {
+      "id": "users-1",
+      "name": "Users",
+      "urlPart": "users",
+      "key": "users",
+      "description": "",
+      "version": 1
+    },
+    {
+      "id": "webhooks-1",
+      "name": "Webhooks",
+      "urlPart": "webhooks",
+      "key": "webhooks",
+      "description": "",
+      "version": 1
+    }
+  ]
+}

@@ -1,0 +1,1192 @@
+# Build
+cd desktop/connectors
+mkdir connector-hcss
+cd connector-hcss
+xchange connector new --name HCSS
+cd connector
+
+
+
+______
+
+
+
+# Auth
+https://developer.hcssapps.com/products/identity/overview/
+xchange client new --type Http --auth-type OAuth2ClientCredentials
+
+
+
+
+______
+
+
+
+
+# Attachments
+https://developer.hcssapps.com/products/attachments/overview/
+xchange module new --id attachments-1 --name Attachments --key attachments --version 1
+
+## Files 
+https://developer.hcssapps.com/products/attachments/spec/tag/Files/#tag/Files/operation/Get
+xchange data-object new --module-id attachments-1 --name File
+https://developer.hcssapps.com/products/attachments/spec/tag/Files/#tag/Files/operation/Post
+xchange action new --module-id attachments-1 --object-name File --name Create
+
+
+
+
+______
+
+
+
+
+#Contacts
+https://developer.hcssapps.com/products/contacts/overview/
+xchange module new --id contacts-1 --name Contacts --key contacts --version 1
+
+## ContactProducts
+https://developer.hcssapps.com/products/contacts/spec/tag/ContactProducts/#tag/ContactProducts/operation/GetContactProducts
+xchange data-object new --module-id contacts-1 --name ContactProducts
+https://developer.hcssapps.com/products/contacts/spec/tag/ContactProducts/#tag/ContactProducts/operation/CreateContactProducts
+xchange action new --module-id contacts-1 --object-name ContactProducts --name Create
+https://developer.hcssapps.com/products/contacts/spec/tag/ContactProducts/#tag/ContactProducts/operation/DeleteContactProduct
+xchange action new --module-id contacts-1 --object-name ContactProducts --name Delete
+
+## Contacts
+https://developer.hcssapps.com/products/contacts/spec/tag/Contacts/#tag/Contacts/operation/GetContactById
+xchange data-object new --module-id contacts-1 --name Contact
+https://developer.hcssapps.com/products/contacts/spec/tag/Contacts/#tag/Contacts/operation/DeleteContact
+xchange action new --module-id contacts-1 --object-name Contact --name Delete
+https://developer.hcssapps.com/products/contacts/spec/tag/Contacts/#tag/Contacts/operation/UpdateContact
+xchange action new --module-id contacts-1 --object-name Contact --name Update
+https://developer.hcssapps.com/products/contacts/spec/tag/Contacts/#tag/Contacts/operation/CreateContact
+xchange action new --module-id contacts-1 --object-name Contact --name Create
+https://developer.hcssapps.com/products/contacts/spec/tag/Contacts/#tag/Contacts/operation/GetAllContacts
+xchange data-object new --module-id contacts-1 --name Contacts
+
+## Offices
+https://developer.hcssapps.com/products/contacts/spec/tag/Offices/#tag/Offices/operation/GetOfficeById
+xchange data-object new --module-id contacts-1 --name Office
+https://developer.hcssapps.com/products/contacts/spec/tag/Offices/#tag/Offices/operation/DeleteOffice
+xchange action new --module-id contacts-1 --object-name Office --name Delete
+https://developer.hcssapps.com/products/contacts/spec/tag/Offices/#tag/Offices/operation/UpdateOffice
+xchange action new --module-id contacts-1 --object-name Office --name Update
+https://developer.hcssapps.com/products/contacts/spec/tag/Offices/#tag/Offices/operation/CreateOffice
+xchange action new --module-id contacts-1 --object-name Office --name Create
+https://developer.hcssapps.com/products/contacts/spec/tag/Offices/#tag/Offices/operation/GetAllOffices
+xchange data-object new --module-id contacts-1 --name Offices
+
+## Product Types
+https://developer.hcssapps.com/products/contacts/spec/tag/ProductTypes/#tag/ProductTypes/operation/GetProductTypeById
+xchange data-object new --module-id contacts-1 --name ProductType
+https://developer.hcssapps.com/products/contacts/spec/tag/ProductTypes/#tag/ProductTypes/operation/DeleteProductType
+xchange action new --module-id contacts-1 --object-name ProductType --name Delete
+https://developer.hcssapps.com/products/contacts/spec/tag/ProductTypes/#tag/ProductTypes/operation/UpdateProductType
+xchange action new --module-id contacts-1 --object-name ProductType --name Update
+https://developer.hcssapps.com/products/contacts/spec/tag/ProductTypes/#tag/ProductTypes/operation/CreateProductType
+xchange action new --module-id contacts-1 --object-name ProductType --name Create
+
+## Vendors
+https://developer.hcssapps.com/products/contacts/spec/tag/Vendors/#tag/Vendors/operation/GetVendorById
+xchange data-object new --module-id contacts-1 --name Vendor
+https://developer.hcssapps.com/products/contacts/spec/tag/Vendors/#tag/Vendors/operation/DeleteVendor
+xchange action new --module-id contacts-1 --object-name Vendor --name Delete
+https://developer.hcssapps.com/products/contacts/spec/tag/Vendors/#tag/Vendors/operation/UpdateVendor
+xchange action new --module-id contacts-1 --object-name Vendor --name Update
+https://developer.hcssapps.com/products/contacts/spec/tag/Vendors/#tag/Vendors/operation/CreateVendor
+xchange action new --module-id contacts-1 --object-name Vendor --name Create
+https://developer.hcssapps.com/products/contacts/spec/tag/Vendors/#tag/Vendors/operation/GetAllVendors
+xchange data-object new --module-id contacts-1 --name Vendors
+https://developer.hcssapps.com/products/contacts/spec/tag/Vendors/#tag/Vendors/operation/GetVendorProducts
+xchange data-object new --module-id contacts-1 --name VendorProducts
+https://developer.hcssapps.com/products/contacts/spec/tag/Vendors/#tag/Vendors/operation/CreateVendorProduct
+xchange action new --module-id contacts-1 --object-name VendorProducts --name Create
+
+## Products
+https://developer.hcssapps.com/products/contacts/spec/tag/Products/#tag/Products/operation/GetProducts
+xchange data-object new --module-id contacts-1 --name Products
+https://developer.hcssapps.com/products/contacts/spec/tag/Products/#tag/Products/operation/GetProductContacts
+xchange data-object new --module-id contacts-1 --name ProductContacts
+https://developer.hcssapps.com/products/contacts/spec/tag/Products/#tag/Products/operation/GetProductVendors
+xchange data-object new --module-id contacts-1 --name ProductVendors
+
+
+
+
+
+______
+
+
+
+
+
+# Equipment360
+https://developer.hcssapps.com/products/equipment-360/overview/
+xchange module new --id equipment360-1 --name Equipment360 --key equipment360 --version 1
+
+## BusinesUnit
+https://developer.hcssapps.com/products/equipment-360/spec/tag/BusinessUnit/#tag/BusinessUnit/paths/~1api~1v1~1businessUnits/get
+xchange data-object new --module-id equipment360-1 --name BusinessUnit
+
+## Cost
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Cost/#tag/Cost/paths/~1api~1v1~1costs~1fuel/get
+xchange data-object new --module-id equipment360-1 --name FuelCosts
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Cost/#tag/Cost/paths/~1api~1v1~1costs~1workOrders/get
+xchange data-object new --module-id equipment360-1 --name WorkOrderCosts
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Cost/#tag/Cost/paths/~1api~1v1~1costs~1workOrdersExtended/get
+xchange data-object new --module-id equipment360-1 --name WorkOrderCostsDetails
+
+## Custom Field
+https://developer.hcssapps.com/products/equipment-360/spec/tag/CustomField/#tag/CustomField/paths/~1api~1v1~1customField/get
+xchange data-object new --module-id equipment360-1 --name CustomField
+https://developer.hcssapps.com/products/equipment-360/spec/tag/CustomField/#tag/CustomField/paths/~1api~1v1~1customField/post
+xchange action new --module-id equipment360-1 --object-name CustomField --name Create
+
+## CustomFieldCategories
+https://developer.hcssapps.com/products/equipment-360/spec/tag/CustomFieldCategories/#tag/CustomFieldCategories/paths/~1api~1v1~1customFieldCategories/get
+xchange data-object new --module-id equipment360-1 --name CustomFieldCategories
+
+
+##CustomFieldList
+https://developer.hcssapps.com/products/equipment-360/spec/tag/CustomFieldList/#tag/CustomFieldList/paths/~1api~1v1~1customFieldList/get
+xchange data-object new --module-id equipment360-1 --name CustomFieldList
+
+## Employee
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Employee/#tag/Employee/paths/~1api~1v1~1employees~1{id}/get
+xchange data-object new --module-id equipment360-1 --name Employee
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Employee/#tag/Employee/paths/~1api~1v1~1employees/post
+xchange action new --module-id equipment360-1 --object-name Employee --name Create
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Employee/#tag/Employee/paths/~1api~1v1~1employees~1{id}/put
+xchange action new --module-id equipment360-1 --object-name Employee --name Update
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Employee/#tag/Employee/paths/~1api~1v1~1employees/get
+xchange data-object new --module-id equipment360-1 --name Employees
+
+## Equipment
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Equipment/#tag/Equipment/paths/~1api~1v1~1equipment~1{id}/get
+xchange data-object new --module-id equipment360-1 --name Equipment
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Equipment/#tag/Equipment/paths/~1api~1v1~1equipment/post
+xchange action new --module-id equipment360-1 --object-name Equipment --name Create
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Equipment/#tag/Equipment/paths/~1api~1v1~1equipment~1{id}/put
+xchange action new --module-id equipment360-1 --object-name Equipment --name Update
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Equipment/#tag/Equipment/paths/~1api~1v1~1equipment/get
+xchange data-object new --module-id equipment360-1 --name AllEquipment
+
+## EquipmentTransfer
+https://developer.hcssapps.com/products/equipment-360/spec/tag/EquipmentTransfer/#tag/EquipmentTransfer/paths/~1api~1v1~1equipmentTransfer/post
+xchange data-object new --module-id equipment360-1 --name EquipmentTransfer
+xchange action new --module-id equipment360-1 --object-name EquipmentTransfer --name Update
+
+## EquipmentType
+https://developer.hcssapps.com/products/equipment-360/spec/tag/EquipmentType/#tag/EquipmentType/paths/~1api~1v1~1equipmentType/get
+xchange data-object new --module-id equipment360-1 --name EquipmentType
+https://developer.hcssapps.com/products/equipment-360/spec/tag/EquipmentType/#tag/EquipmentType/paths/~1api~1v1~1equipmentType/post
+xchange action new --module-id equipment360-1 --object-name EquipmentType --name Create
+
+## Invoice
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Invoice/#tag/Invoice/paths/~1api~1v1~1invoice/get
+xchange data-object new --module-id equipment360-1 --name Invoice
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Invoice/#tag/Invoice/paths/~1api~1v1~1invoice/post
+xchange action new --module-id equipment360-1 --object-name Invoice --name Create
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Invoice/#tag/Invoice/paths/~1api~1v1~1invoice/put
+xchange action new --module-id equipment360-1 --object-name Invoice --name Update
+
+## Job
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Job/#tag/Job/paths/~1api~1v1~1jobs/get
+xchange data-object new --module-id equipment360-1 --name Jobs
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Job/#tag/Job/paths/~1api~1v1~1jobs/post
+xchange action new --module-id equipment360-1 --object-name Jobs --name Create
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Job/#tag/Job/paths/~1api~1v1~1jobs~1{id}/put
+xchange action new --module-id equipment360-1 --object-name Jobs --name Update
+
+## Location
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Location/#tag/Location/paths/~1api~1v1~1locations/get
+xchange data-object new --module-id equipment360-1 --name Locations
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Location/#tag/Location/paths/~1api~1v1~1locations/post
+xchange action new --module-id equipment360-1 --object-name Locations --name Create
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Location/#tag/Location/paths/~1api~1v1~1locations~1{id}/put
+xchange action new --module-id equipment360-1 --object-name Locations --name Update
+
+## MaintenanceRequest
+https://developer.hcssapps.com/products/equipment-360/spec/tag/MaintenanceRequest/#tag/MaintenanceRequest/paths/~1api~1v1~1maintenanceRequest/get
+xchange data-object new --module-id equipment360-1 --name MaintenanceRequest
+https://developer.hcssapps.com/products/equipment-360/spec/tag/MaintenanceRequest/#tag/MaintenanceRequest/paths/~1api~1v1~1maintenanceRequest/post
+xchange action new --module-id equipment360-1 --object-name MaintenanceRequest --name Create
+
+
+## MeterReading
+https://developer.hcssapps.com/products/equipment-360/spec/tag/MeterReading/#tag/MeterReading/paths/~1api~1v1~1meterReading/get
+xchange data-object new --module-id equipment360-1 --name MeterReading
+https://developer.hcssapps.com/products/equipment-360/spec/tag/MeterReading/#tag/MeterReading/paths/~1api~1v1~1meterReading/post
+xchange action new --module-id equipment360-1 --object-name MeterReading --name Create
+
+
+## Part
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Part/#tag/Part/paths/~1api~1v1~1parts/get
+xchange data-object new --module-id equipment360-1 --name Parts
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Part/#tag/Part/paths/~1api~1v1~1parts~1{id}/put
+xchange action new --module-id equipment360-1 --object-name Parts --name Update
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Part/#tag/Part/paths/~1api~1v1~1partLocations/get
+xchange data-object new --module-id equipment360-1 --name PartLocations
+
+## PartCostEntry
+xchange data-object new --module-id equipment360-1 --name PartCostEntry
+https://developer.hcssapps.com/products/equipment-360/spec/tag/PartCostEntry/#tag/PartCostEntry/paths/~1api~1v1~1partCostEntry/post
+xchange action new --module-id equipment360-1 --object-name PartCostEntry --name Create
+xchange data-object new --module-id equipment360-1 --name PartCostEntries
+https://developer.hcssapps.com/products/equipment-360/spec/tag/PartCostEntry/#tag/PartCostEntry/paths/~1api~1v1~1partCostEntries~1{partCostEntryId}~1details/post
+xchange action new --module-id equipment360-1 --object-name PartCostEntries --name Create
+
+## PartInventory
+https://developer.hcssapps.com/products/equipment-360/spec/tag/PartInventory/#tag/PartInventory/paths/~1api~1v1~1partInventory/get
+xchange data-object new --module-id equipment360-1 --name PartInventory
+https://developer.hcssapps.com/products/equipment-360/spec/tag/PartInventory/#tag/PartInventory/paths/~1api~1v1~1partInventory/post
+xchange action new --module-id equipment360-1 --object-name PartInventory --name Create
+
+## PurchaseOrder
+https://developer.hcssapps.com/products/equipment-360/spec/tag/PurchaseOrder/#tag/PurchaseOrder/paths/~1api~1v1~1purchaseOrders/get
+xchange data-object new --module-id equipment360-1 --name PurchaseOrders
+https://developer.hcssapps.com/products/equipment-360/spec/tag/PurchaseOrder/#tag/PurchaseOrder/paths/~1api~1v1~1purchaseOrders~1{purchaseOrderId}~1details/get
+xchange data-object new --module-id equipment360-1 --name PurchaseOrder
+https://developer.hcssapps.com/products/equipment-360/spec/tag/PurchaseOrder/#tag/PurchaseOrder/paths/~1api~1v1~1purchaseOrder/post
+xchange action new --module-id equipment360-1 --object-name PurchaseOrder --name Create
+xchange data-object new --module-id equipment360-1 --name PurchaseOrderDetails
+https://developer.hcssapps.com/products/equipment-360/spec/tag/PurchaseOrder/#tag/PurchaseOrder/paths/~1api~1v1~1purchaseOrders~1{purchaseOrderId}~1details/post
+xchange action new --module-id equipment360-1 --object-name PurchaseOrderDetails --name Create
+xchange data-object new --module-id equipment360-1 --name PurchaseOrderNotes
+https://developer.hcssapps.com/products/equipment-360/spec/tag/PurchaseOrder/#tag/PurchaseOrder/paths/~1api~1v1~1purchaseOrders~1{purchaseOrderId}~1notes/post
+xchange action new --module-id equipment360-1 --object-name PurchaseOrderNotes --name Create
+
+
+## SubletVendorCostEntry
+xchange data-object new --module-id equipment360-1 --name SubletVendorCostEntry
+https://developer.hcssapps.com/products/equipment-360/spec/tag/SubletVendorCostEntry/#tag/SubletVendorCostEntry/paths/~1api~1v1~1subletVendorCostEntry/post
+xchange action new --module-id equipment360-1 --object-name SubletVendorCostEntry --name Create
+xchange data-object new --module-id equipment360-1 --name SubletVendorCostEntries
+https://developer.hcssapps.com/products/equipment-360/spec/tag/SubletVendorCostEntry/#tag/SubletVendorCostEntry/paths/~1api~1v1~1subletVendorCostEntries~1{subletVendorCostEntryId}~1details/post
+xchange action new --module-id equipment360-1 --object-name SubletVendorCostEntries --name Create
+
+## Tag
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Tag/#tag/Tag/paths/~1api~1v1~1tags/get
+xchange data-object new --module-id equipment360-1 --name Tags
+
+
+## TimeCard
+https://developer.hcssapps.com/products/equipment-360/spec/tag/TimeCard/#tag/TimeCard/paths/~1api~1v1~1timeCards/get
+xchange data-object new --module-id equipment360-1 --name TimeCard
+
+##UnitOfMeasure
+https://developer.hcssapps.com/products/equipment-360/spec/tag/UnitOfMeasure/#tag/UnitOfMeasure/paths/~1api~1v1~1unitOfMeasure/get
+xchange data-object new --module-id equipment360-1 --name UnitOfMeasure
+
+## Vendor
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Vendor/#tag/Vendor/paths/~1api~1v1~1vendors/get
+xchange data-object new --module-id equipment360-1 --name Vendors
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Vendor/#tag/Vendor/paths/~1api~1v1~1vendors/post
+xchange action new --module-id equipment360-1 --object-name Vendors --name Create
+https://developer.hcssapps.com/products/equipment-360/spec/tag/Vendor/#tag/Vendor/paths/~1api~1v1~1vendors~1{id}/put
+xchange action new --module-id equipment360-1 --object-name Vendors --name Update
+
+## WorkOrder
+https://developer.hcssapps.com/products/equipment-360/spec/tag/WorkOrder/#tag/WorkOrder/paths/~1api~1v1~1workOrders~1{id}/get
+xchange data-object new --module-id equipment360-1 --name WorkOrder
+https://developer.hcssapps.com/products/equipment-360/spec/tag/WorkOrder/#tag/WorkOrder/paths/~1api~1v1~1workOrders/post
+xchange action new --module-id equipment360-1 --object-name WorkOrder --name Create
+https://developer.hcssapps.com/products/equipment-360/spec/tag/WorkOrder/#tag/WorkOrder/paths/~1api~1v1~1workOrder~1{id}/put
+xchange action new --module-id equipment360-1 --object-name WorkOrder --name Update
+xchange data-object new --module-id equipment360-1 --name WorkOrderNotes
+https://developer.hcssapps.com/products/equipment-360/spec/tag/WorkOrder/#tag/WorkOrder/paths/~1api~1v1~1workOrders~1{workOrderId}~1notes/post
+xchange action new --module-id equipment360-1 --object-name WorkOrderNotes --name Create
+https://developer.hcssapps.com/products/equipment-360/spec/tag/WorkOrder/#tag/WorkOrder/paths/~1api~1v1~1workOrders/get
+xchange data-object new --module-id equipment360-1 --name WorkOrders
+
+## WorkOrderPurchase
+https://developer.hcssapps.com/products/equipment-360/spec/tag/WorkOrderPurchase/#tag/WorkOrderPurchase/paths/~1api~1v1~1workOrderPurchases/get
+xchange data-object new --module-id equipment360-1 --name WorkOrderPurchase
+
+## WorkOrderSchedule
+https://developer.hcssapps.com/products/equipment-360/spec/tag/WorkOrderSchedule/#tag/WorkOrderSchedule/paths/~1api~1v1~1workOrderSchedules/get
+xchange data-object new --module-id equipment360-1 --name WorkOrderSchedule
+
+
+
+______
+
+
+
+# HeavyBidEstimate
+https://developer.hcssapps.com/products/heavybid-estimate-insights/overview/
+xchange module new --id heavybidestimate-1 --name HeavyBidEstimate --key heavybidestimate --version 1
+
+## Activities
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Activities/#tag/Activities/operation/IntegrationsV2Controller_GetAllActivityAsync
+xchange data-object new --module-id heavybidestimate-1 --name Activities
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Activities/#tag/Activities/operation/IntegrationsV2Controller_GetActivity
+xchange data-object new --module-id heavybidestimate-1 --name Activity
+
+## ActivityCodebook
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Activity-Codebook/#tag/Activity-Codebook/operation/IntegrationsV2Controller_GetAllActivityCodebookAsync
+xchange data-object new --module-id heavybidestimate-1 --name ActivityCodeBooks
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Activity-Codebook/#tag/Activity-Codebook/operation/IntegrationsV2Controller_GetActivityCodebookById
+xchange data-object new --module-id heavybidestimate-1 --name ActivityCodeBook
+
+
+## ActivityCodebookResources
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Activity-Codebook-Resources/#tag/Activity-Codebook-Resources/operation/IntegrationsV2Controller_GetAllActivityCodebookResourcesAsync
+xchange data-object new --module-id heavybidestimate-1 --name ActivityCodebookResources
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Activity-Codebook-Resources/#tag/Activity-Codebook-Resources/operation/IntegrationsV2Controller_GetActivityCodebookResourceById
+xchange data-object new --module-id heavybidestimate-1 --name ActivityCodebookResource
+
+## Attachments
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Attachments/#tag/Attachments/operation/IntegrationsV2Controller_GetEstimateAttachments
+xchange data-object new --module-id heavybidestimate-1 --name EstimateAttachments
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Attachments/#tag/Attachments/operation/IntegrationsV2Controller_DownloadEstimateAttachment
+xchange data-object new --module-id heavybidestimate-1 --name DownloadEstimateAttachment
+
+## BiditemCodebook
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Biditem-Codebook/#tag/Biditem-Codebook/operation/IntegrationsV2Controller_GetAllBiditemCodebookAsync
+xchange data-object new --module-id heavybidestimate-1 --name AllBiditemCodebook
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Biditem-Codebook/#tag/Biditem-Codebook/operation/IntegrationsV2Controller_GetBiditemCodebookById
+xchange data-object new --module-id heavybidestimate-1 --name BiditemCodebook
+
+## Biditems
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Biditems/#tag/Biditems/operation/IntegrationsV2Controller_GetAllBidItemsAsync
+xchange data-object new --module-id heavybidestimate-1 --name Biditems
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Biditems/#tag/Biditems/operation/IntegrationsV2Controller_GetBidItem
+xchange data-object new --module-id heavybidestimate-1 --name Biditem
+
+## BusinessUnits
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Business-Units/#tag/Business-Units/operation/IntegrationsV2Controller_GetAllBusinessUnitsAsync
+xchange data-object new --module-id heavybidestimate-1 --name BusinessUnits
+
+## Estimates
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Estimates/#tag/Estimates/operation/IntegrationsV2Controller_GetAllEstimatesAsync
+xchange data-object new --module-id heavybidestimate-1 --name Estimates
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Estimates/#tag/Estimates/operation/IntegrationsV2Controller_GetEstimate
+xchange data-object new --module-id heavybidestimate-1 --name Estimate
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Estimates/#tag/Estimates/operation/IntegrationsV2Controller_GetAllCalulatedKPIs
+xchange data-object new --module-id heavybidestimate-1 --name AllCalulatedKPIs
+
+## MaterialCodebook
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Material-Codebook/#tag/Material-Codebook/operation/IntegrationsV2Controller_GetAllMaterialCodebookResourcesAsync
+xchange data-object new --module-id heavybidestimate-1 --name AllMaterialCodebook
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Material-Codebook/#tag/Material-Codebook/operation/IntegrationsV2Controller_GetMaterialCodebookResourceById
+xchange data-object new --module-id heavybidestimate-1 --name MaterialCodebook
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Material-Codebook/#tag/Material-Codebook/operation/IntegrationsV2Controller_UpdateMaterialCodebookResourceById
+xchange action new --module-id heavybidestimate-1 --object-name MaterialCodebook --name Update
+
+## Materials
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Materials/#tag/Materials/operation/IntegrationsV2Controller_GetEstimateMaterialsAsync
+xchange data-object new --module-id heavybidestimate-1 --name Materials
+
+## Partitions
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Partitions/#tag/Partitions/operation/IntegrationsV2Controller_GetAllDatabasePartitionsAsync
+xchange data-object new --module-id heavybidestimate-1 --name Partitions
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Partitions/#tag/Partitions/operation/IntegrationsV2Controller_GetDatabasePartitionById
+xchange data-object new --module-id heavybidestimate-1 --name Partition
+
+## QuoteFolders
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Quote-Folders/#tag/Quote-Folders/operation/IntegrationsV2Controller_GetQuoteFoldersWithDetails
+xchange data-object new --module-id heavybidestimate-1 --name QuoteFolders
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Quote-Folders/#tag/Quote-Folders/operation/IntegrationsV2Controller_GetQuoteFolderWithDetailsById
+xchange data-object new --module-id heavybidestimate-1 --name QuoteFolder
+
+## Resources
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Resources/#tag/Resources/operation/IntegrationsV2Controller_GetAllResourcesAsync
+xchange data-object new --module-id heavybidestimate-1 --name Resources
+https://developer.hcssapps.com/products/heavybid-estimate-insights/spec/tag/Resources/#tag/Resources/operation/IntegrationsV2Controller_GetResourceById
+xchange data-object new --module-id heavybidestimate-1 --name Resource
+
+
+
+______
+
+
+
+
+# HeavyBidPre-Construction
+https://developer.hcssapps.com/products/heavybid-pre-construction/overview/
+xchange module new --id heavybidpreconstruction-1 --name HeavyBidPreConstruction --key heavybidpreconstruction --version 1
+
+## BusinessUnit
+https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/BusinessUnit/#tag/BusinessUnit/operation/BusinessUnit_Get
+xchange data-object new --module-id heavybidpreconstruction-1 --name BusinessUnit
+
+## Projects
+https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Projects/#tag/Projects/operation/Projects_Get
+xchange data-object new --module-id heavybidpreconstruction-1 --name Projects
+https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Projects/#tag/Projects/operation/Projects_GetById
+xchange data-object new --module-id heavybidpreconstruction-1 --name Project
+https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Projects/#tag/Projects/operation/Projects_Post
+xchange action new --module-id heavybidpreconstruction-1 --object-name Project --name Create
+https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Projects/#tag/Projects/operation/Projects_Put
+xchange action new --module-id heavybidpreconstruction-1 --object-name Project --name Update
+https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Projects/#tag/Projects/operation/Projects_Patch
+xchange action new --module-id heavybidpreconstruction-1 --object-name Project --name PartialChange
+https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Projects/#tag/Projects/operation/Projects_Delete
+xchange action new --module-id heavybidpreconstruction-1 --object-name Project --name Delete
+https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Projects/#tag/Projects/operation/Projects_PostArray
+xchange action new --module-id heavybidpreconstruction-1 --object-name Projects --name Create
+https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Projects/#tag/Projects/operation/Projects_DeleteMultiple
+xchange action new --module-id heavybidpreconstruction-1 --object-name Projects --name Delete
+
+## Reports
+xchange data-object new --module-id heavybidpreconstruction-1 --name Reports
+https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Reports/#tag/Reports/operation/Reports_GetProjectDetailsReport
+xchange action new --module-id heavybidpreconstruction-1 --object-name Reports --name Create
+
+## Schemas
+https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Schemas/#tag/Schemas/operation/Schemas_Get
+xchange data-object new --module-id heavybidpreconstruction-1 --name Schemas
+https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Schemas/#tag/Schemas/operation/Schemas_GetById
+xchange data-object new --module-id heavybidpreconstruction-1 --name Schema
+https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Schemas/#tag/Schemas/operation/Schemas_UpdateFieldAlias
+xchange action new --module-id heavybidpreconstruction-1 --object-name Schema --name Update
+
+
+
+
+______
+
+
+
+
+# HeavyJob
+https://developer.hcssapps.com/products/heavyjob/overview/
+xchange module new --id heavyjob-1 --name HeavyJob --key heavyjob --version 1
+
+## AccessGroup
+https://developer.hcssapps.com/products/heavyjob/spec/tag/AccessGroup/#tag/AccessGroup/operation/AccessGroupController_GetAllRolesAsync
+xchange data-object new --module-id heavyjob-1 --name AccessGroup
+
+## Accounting
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Accounting/#tag/Accounting/operation/AccountingController_GetAccountingValuesAsync
+xchange data-object new --module-id heavyjob-1 --name Accounting
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Accounting/#tag/Accounting/operation/AccountingController_GetRateSetGroupAccountingValuesAsync
+xchange data-object new --module-id heavyjob-1 --name RateSetGroupAccounting
+
+## AdvancedBudget
+xchange data-object new --module-id heavyjob-1 --name AdvancedBudgetMaterial
+https://developer.hcssapps.com/products/heavyjob/spec/tag/AdvancedBudget/#tag/AdvancedBudget/operation/AdvancedBudgetController_GetMaterialsAdvancedBudget
+xchange data-object new --module-id heavyjob-1 --name AdvancedBudgetMaterials
+https://developer.hcssapps.com/products/heavyjob/spec/tag/AdvancedBudget/#tag/AdvancedBudget/operation/AdvancedBudgetController_CreateMaterialAdvancedBudget
+xchange action new --module-id heavyjob-1 --object-name AdvancedBudgetMaterial --name Create
+xchange data-object new --module-id heavyjob-1 --name AdvancedBudgetSubcontract
+https://developer.hcssapps.com/products/heavyjob/spec/tag/AdvancedBudget/#tag/AdvancedBudget/operation/AdvancedBudgetController_GetSubcontractsAdvancedBudget
+xchange data-object new --module-id heavyjob-1 --name AdvancedBudgetSubcontracts
+https://developer.hcssapps.com/products/heavyjob/spec/tag/AdvancedBudget/#tag/AdvancedBudget/operation/AdvancedBudgetController_CreateSubcontractAdvancedBudget
+xchange action new --module-id heavyjob-1 --object-name AdvancedBudgetSubcontract --name Create
+xchange data-object new --module-id heavyjob-1 --name AdvancedBudgetCustomCostTypeItem
+https://developer.hcssapps.com/products/heavyjob/spec/tag/AdvancedBudget/#tag/AdvancedBudget/operation/AdvancedBudgetController_GetCustomCostTypesAdvancedBudget
+xchange data-object new --module-id heavyjob-1 --name AdvancedBudgetCustomCostTypes
+https://developer.hcssapps.com/products/heavyjob/spec/tag/AdvancedBudget/#tag/AdvancedBudget/operation/AdvancedBudgetController_CreateCustomCostTypeItemAdvancedBudget
+xchange action new --module-id heavyjob-1 --object-name AdvancedBudgetCustomCostTypeItem --name Create
+
+## Attachment
+xchange data-object new --module-id heavyjob-1 --name Attachment
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Attachment/#tag/Attachment/operation/AttachmentController_SaveAttachmentAsync
+xchange action new --module-id heavyjob-1 --object-name Attachment --name Create
+
+## BulkCreateJobsRequest
+xchange data-object new --module-id heavyjob-1 --name BulkCreateJobsRequests
+https://developer.hcssapps.com/products/heavyjob/spec/tag/BulkCreateJobsRequest/#tag/BulkCreateJobsRequest/operation/BulkCreateJobsRequestController_GetBulkCreateJobsRequestsAsync
+xchange action new --module-id heavyjob-1 --object-name BulkCreateJobsRequests --name Create
+xchange data-object new --module-id heavyjob-1 --name BulkCreateJobsRequest
+https://developer.hcssapps.com/products/heavyjob/spec/tag/BulkCreateJobsRequest/#tag/BulkCreateJobsRequest/operation/BulkCreateJobsRequestController_GetSingleCreateJobsRequestAsync
+xchange action new --module-id heavyjob-1 --object-name BulkCreateJobsRequest --name Create
+
+## BusinessUnit
+https://developer.hcssapps.com/products/heavyjob/spec/tag/BusinessUnit/#tag/BusinessUnit/operation/BusinessUnitController_GetBusinessUnitsAsync
+xchange data-object new --module-id heavyjob-1 --name BusinessUnit
+
+## BusinessUnitPreference
+https://developer.hcssapps.com/products/heavyjob/spec/tag/BusinessUnitPreference/#tag/BusinessUnitPreference/operation/BusinessUnitPreferenceController_GetBusinessUnitPreferencesAsync
+xchange data-object new --module-id heavyjob-1 --name BusinessUnitPreference
+https://developer.hcssapps.com/products/heavyjob/spec/tag/BusinessUnitPreference/#tag/BusinessUnitPreference/operation/BusinessUnitPreferenceController_UpdateBusinessUnitPreferencesAsync
+xchange action new --module-id heavyjob-1 --object-name BusinessUnitPreference --name Update
+
+## ChangeOrder
+https://developer.hcssapps.com/products/heavyjob/spec/tag/ChangeOrder/#tag/ChangeOrder/operation/ChangeOrderController_GetChangeOrderAsync
+xchange data-object new --module-id heavyjob-1 --name ChangeOrder
+https://developer.hcssapps.com/products/heavyjob/spec/tag/ChangeOrder/#tag/ChangeOrder/operation/ChangeOrderController_DeleteChangeOrderAsync
+xchange action new --module-id heavyjob-1 --object-name ChangeOrder --name Delete
+https://developer.hcssapps.com/products/heavyjob/spec/tag/ChangeOrder/#tag/ChangeOrder/operation/ChangeOrderController_CreateChangeOrderAsync
+xchange action new --module-id heavyjob-1 --object-name ChangeOrder --name Create
+https://developer.hcssapps.com/products/heavyjob/spec/tag/ChangeOrder/#tag/ChangeOrder/operation/ChangeOrderController_UpdateChangeOrderAsync
+xchange action new --module-id heavyjob-1 --object-name ChangeOrder --name Update
+https://developer.hcssapps.com/products/heavyjob/spec/tag/ChangeOrder/#tag/ChangeOrder/operation/ChangeOrderController_GetChangeOrdersByJobAsync
+xchange data-object new --module-id heavyjob-1 --name ChangeOrdersByJob
+https://developer.hcssapps.com/products/heavyjob/spec/tag/ChangeOrder/#tag/ChangeOrder/operation/ChangeOrderController_GetChangeOrdersByBUAsync
+xchange data-object new --module-id heavyjob-1 --name ChangeOrdersByBusinessUnit
+https://developer.hcssapps.com/products/heavyjob/spec/tag/ChangeOrder/#tag/ChangeOrder/operation/ChangeOrderController_GetMobileChangeOrdersByBUAsync
+xchange data-object new --module-id heavyjob-1 --name MobileChangeOrdersByBusinessUnit
+https://developer.hcssapps.com/products/heavyjob/spec/tag/ChangeOrder/#tag/ChangeOrder/operation/ChangeOrderController_GetChangeOrdersIncrementorAsync
+xchange data-object new --module-id heavyjob-1 --name ChangeOrderIncrementor
+
+## Cost
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Cost/#tag/Cost/operation/CostController_GetJobCostsAsync
+xchange data-object new --module-id heavyjob-1 --name JobCosts
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Cost/#tag/Cost/operation/CostController_GetJobCostByCostCodeAsync
+xchange data-object new --module-id heavyjob-1 --name JobCostByCostCode
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Cost/#tag/Cost/operation/CostController_QueryJobCostsV2Async
+xchange action new --module-id heavyjob-1 --object-name JobCosts --name Create
+xchange data-object new --module-id heavyjob-1 --name JobCostsToDate
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Cost/#tag/Cost/operation/CostController_QueryJobCostsToDateAsync
+xchange action new --module-id heavyjob-1 --object-name JobCostsToDate --name Create
+xchange data-object new --module-id heavyjob-1 --name JobCostCustomCost
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Cost/#tag/Cost/operation/CostController_QueryJobCostCustomCostsAsync
+xchange action new --module-id heavyjob-1 --object-name JobCostCustomCost --name Create
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Cost/#tag/Cost/operation/CostController_GetCostCodeCostsAsync
+xchange data-object new --module-id heavyjob-1 --name CostCodeCosts
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Cost/#tag/Cost/operation/CostController_UpdateCostCodeCostsAsync
+xchange action new --module-id heavyjob-1 --object-name CostCodeCosts --name Update
+
+## CostAdjustment
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostAdjustment/#tag/CostAdjustment/operation/CostAdjustmentController_GetCostAdjustmentsAsync
+xchange data-object new --module-id heavyjob-1 --name CostAdjustments
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostAdjustment/#tag/CostAdjustment/operation/CostAdjustmentController_CreateCostAdjustmentAsync
+xchange action new --module-id heavyjob-1 --object-name CostAdjustments --name Create
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostAdjustment/#tag/CostAdjustment/operation/CostAdjustmentController_UpdateCostAdjustmentAsync
+xchange action new --module-id heavyjob-1 --object-name CostAdjustments --name Update
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostAdjustment/#tag/CostAdjustment/operation/CostAdjustmentController_DeleteCostAdjustmentAsync
+xchange action new --module-id heavyjob-1 --object-name CostAdjustments --name Delete
+
+## CostCode
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostCode/#tag/CostCode/operation/CostCodeController_GetCostCodesV2Async
+xchange data-object new --module-id heavyjob-1 --name CostCodes
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostCode/#tag/CostCode/operation/CostCodeController_GetCostCodesAdvancedRequestV2Async
+xchange action new --module-id heavyjob-1 --object-name CostCodes --name Create
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostCode/#tag/CostCode/operation/CostCodeController_CreateOrUpdateCustomCostTypeBudgetsAsync
+xchange action new --module-id heavyjob-1 --object-name CostCodes --name Update
+
+## CostCodeProgress
+xchange data-object new --module-id heavyjob-1 --name CostCodeProgress
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostCodeProgress/#tag/CostCodeProgress/operation/CostCodeProgressController_GetCostCodeProgressAsync
+xchange action new --module-id heavyjob-1 --object-name CostCodeProgress --name Create
+
+## CostCodeTag
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostCodeTag/#tag/CostCodeTag/operation/CostCodeTagController_GetCostCodeSetupFiltersAsync
+xchange data-object new --module-id heavyjob-1 --name SetupFilters
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostCodeTag/#tag/CostCodeTag/operation/CostCodeTagController_GetCostCodeTagsAsync
+xchange data-object new --module-id heavyjob-1 --name CostCodeTags
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostCodeTag/#tag/CostCodeTag/operation/CostCodeTagController_DeleteCostCodeTagsAsync
+xchange action new --module-id heavyjob-1 --object-name CostCodeTags --name Delete
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostCodeTag/#tag/CostCodeTag/operation/CostCodeTagController_UpsertCostCodeTagsAsync
+xchange action new --module-id heavyjob-1 --object-name CostCodeTags --name Update
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostCodeTag/#tag/CostCodeTag/operation/CostCodeTagController_QueryCostCodeTagsAsync
+xchange action new --module-id heavyjob-1 --object-name CostCodeTags --name Create
+
+## CostCodeTransaction
+xchange data-object new --module-id heavyjob-1 --name CostCodeTransaction
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostCodeTransaction/#tag/CostCodeTransaction/operation/CostCodeTransactionController_GetCostCodeTimeCardTransactionsAsync
+xchange action new --module-id heavyjob-1 --object-name CostCodeTransaction --name Create
+
+## CostCodeTransactionAdjustment
+xchange data-object new --module-id heavyjob-1 --name CostCodeTransactionAdjustment
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostCodeTransactionAdjustment/#tag/CostCodeTransactionAdjustment/operation/CostCodeTransactionAdjustmentController_GetCostCodeTransactionAdjustmentAsync
+xchange action new --module-id heavyjob-1 --object-name CostCodeTransactionAdjustment --name Create
+
+## CostTypeQuantity
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostTypeQuantity/#tag/CostTypeQuantity/operation/CostTypeQuantityController_GetMaterialInstalledQuantitiesAsync
+xchange data-object new --module-id heavyjob-1 --name MaterialsInstalledQuantities
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostTypeQuantity/#tag/CostTypeQuantity/operation/CostTypeQuantityController_GetSubcontractWorkQuantitiesAsync
+xchange data-object new --module-id heavyjob-1 --name SubcontractWorkQuantities
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostTypeQuantity/#tag/CostTypeQuantity/operation/CostTypeQuantityController_GetQuantityAdjustmentsAsync
+xchange data-object new --module-id heavyjob-1 --name QuantityAdjustments
+xchange data-object new --module-id heavyjob-1 --name CustomCostTypeItemReceived
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CostTypeQuantity/#tag/CostTypeQuantity/operation/CostTypeQuantityController_UpdateCustomCostTypeItemReceivedAsync
+xchange action new --module-id heavyjob-1 --object-name CustomCostTypeItemReceived --name Update
+
+## CustomCostType
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CustomCostType/#tag/CustomCostType/operation/CustomCostTypeController_GetCostCategoriesAsync
+xchange data-object new --module-id heavyjob-1 --name CostCategories
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CustomCostType/#tag/CustomCostType/operation/CustomCostTypeController_CreateCostCategoryAsync
+xchange action new --module-id heavyjob-1 --object-name CostCategories --name Create
+
+## CustomCostTypeItem
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CustomCostTypeItem/#tag/CustomCostTypeItem/operation/CustomCostTypeItemController_GetCustomCostTypeItemsAsync
+xchange data-object new --module-id heavyjob-1 --name CustomCostTypeItems
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CustomCostTypeItem/#tag/CustomCostTypeItem/operation/CustomCostTypeItemController_CreateCustomCostTypeItemAsync
+xchange action new --module-id heavyjob-1 --object-name CustomCostTypeItems --name Create
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CustomCostTypeItem/#tag/CustomCostTypeItem/operation/CustomCostTypeItemController_UpdateCustomCostTypeItemAsync
+xchange action new --module-id heavyjob-1 --object-name CustomCostTypeItems --name Update
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CustomCostTypeItem/#tag/CustomCostTypeItem/operation/CustomCostTypeItemController_DeleteCustomCostTypeItemAsync
+xchange action new --module-id heavyjob-1 --object-name CustomCostTypeItems --name Delete
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CustomCostTypeItem/#tag/CustomCostTypeItem/operation/CustomCostTypeItemController_GetJobCustomCostTypeItemsAsync
+xchange data-object new --module-id heavyjob-1 --name JobCustomCostTypeItems
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CustomCostTypeItem/#tag/CustomCostTypeItem/operation/CustomCostTypeItemController_GetJobCustomCostTypeItemAsync
+xchange data-object new --module-id heavyjob-1 --name JobCustomCostTypeItem
+http://developer.hcssapps.com/products/heavyjob/spec/tag/CustomCostTypeItem/#tag/CustomCostTypeItem/operation/CustomCostTypeItemController_CreateJobCustomCostTypeItemAsync
+xchange action new --module-id heavyjob-1 --object-name JobCustomCostTypeItem --name Create
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CustomCostTypeItem/#tag/CustomCostTypeItem/operation/CustomCostTypeItemController_UpdateJobCustomCostTypeItemAsync
+xchange action new --module-id heavyjob-1 --object-name JobCustomCostTypeItem --name Update
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CustomCostTypeItem/#tag/CustomCostTypeItem/operation/CustomCostTypeItemController_DeleteJobCustomCostTypeItemAsync
+xchange action new --module-id heavyjob-1 --object-name JobCustomCostTypeItem --name Delete
+xchange data-object new --module-id heavyjob-1 --name CustomCostTypeInstalled
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CustomCostTypeItem/#tag/CustomCostTypeItem/operation/CustomCostTypeItemController_GetCustomCostTypeInstalledPaginatedAdvancedAsync
+xchange action new --module-id heavyjob-1 --object-name CustomCostTypeInstalled --name Create
+xchange data-object new --module-id heavyjob-1 --name CustomCostTypeReceived
+https://developer.hcssapps.com/products/heavyjob/spec/tag/CustomCostTypeItem/#tag/CustomCostTypeItem/operation/CustomCostTypeItemController_GetCustomCostTypeReceivedPaginatedAdvancedAsync
+xchange action new --module-id heavyjob-1 --object-name CustomCostTypeReceived --name Create
+
+## Diary
+xchange data-object new --module-id heavyjob-1 --name Diary
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Diary/#tag/Diary/operation/DiaryController_UpsertDiaryAsync
+xchange action new --module-id heavyjob-1 --object-name Diary --name Create
+xchange data-object new --module-id heavyjob-1 --name Diaries
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Diary/#tag/Diary/operation/DiaryController_QueryDiariesAsync
+xchange action new --module-id heavyjob-1 --object-name Diaries --name Create
+
+## Employee
+xchange data-object new --module-id heavyjob-1 --name Employee
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Employee/#tag/Employee/operation/EmployeeController_GetEmployeesAsync
+xchange data-object new --module-id heavyjob-1 --name Employees
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Employee/#tag/Employee/operation/EmployeeController_GetEmployeesAdvancedAsync
+xchange action new --module-id heavyjob-1 --object-name Employees --name Create
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Employee/#tag/Employee/operation/EmployeeController_GetEmployeesWithDetailsAsync
+xchange data-object new --module-id heavyjob-1 --name EmployeesWithDetails
+http://developer.hcssapps.com/products/heavyjob/spec/tag/Employee/#tag/Employee/operation/EmployeeController_DeleteEmployeeAsync
+xchange action new --module-id heavyjob-1 --object-name Employee --name Delete
+
+## Equipment
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Equipment/#tag/Equipment/operation/EquipmentController_GetEquipmentAsync
+xchange data-object new --module-id heavyjob-1 --name Equipment
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Equipment/#tag/Equipment/operation/EquipmentController_GetEquipmentAdvancedAsync
+xchange action new --module-id heavyjob-1 --object-name Equipment --name Create
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Equipment/#tag/Equipment/operation/EquipmentController_UpdateEquipmentAsync
+xchange action new --module-id heavyjob-1 --object-name Equipment --name Update
+
+## EquipmentType
+https://developer.hcssapps.com/products/heavyjob/spec/tag/EquipmentType/#tag/EquipmentType/operation/EquipmentTypeController_GetEquipmentTypesV2Async
+xchange data-object new --module-id heavyjob-1 --name EquipmentType
+https://developer.hcssapps.com/products/heavyjob/spec/tag/EquipmentType/#tag/EquipmentType/operation/EquipmentTypeController_CreateEquipmentTypeAsync
+xchange action new --module-id heavyjob-1 --object-name EquipmentType --name Create
+
+## Forecast
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Forecast/#tag/Forecast/operation/ForecastController_GetForecastInfoAsync
+xchange data-object new --module-id heavyjob-1 --name ForecastInfo
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Forecast/#tag/Forecast/operation/ForecastController_GetForecastAsync
+xchange data-object new --module-id heavyjob-1 --name Forecast
+
+## Hours
+xchange data-object new --module-id heavyjob-1 --name EmployeeHours
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Hours/#tag/Hours/operation/HoursController_GetEmployeeHoursAsync
+xchange action new --module-id heavyjob-1 --object-name EmployeeHours --name Create
+xchange data-object new --module-id heavyjob-1 --name EquipmentHours
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Hours/#tag/Hours/operation/HoursController_GetEquipmentHoursAsync
+xchange action new --module-id heavyjob-1 --object-name EquipmentHours --name Create
+
+## HourTag
+https://developer.hcssapps.com/products/heavyjob/spec/tag/HourTag/#tag/HourTag/operation/HourTagController_GetAttendanceHourTagsAsync
+xchange data-object new --module-id heavyjob-1 --name AttendanceHourTags
+https://developer.hcssapps.com/products/heavyjob/spec/tag/HourTag/#tag/HourTag/operation/HourTagController_GetNonuseHourTagsAsync
+xchange data-object new --module-id heavyjob-1 --name NonuseHourTags
+
+## Job
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Job/#tag/Job/operation/JobController_GetJobsV1Async
+xchange data-object new --module-id heavyjob-1 --name Jobs
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Job/#tag/Job/operation/JobController_BulkProcessJobsAsync
+xchange action new --module-id heavyjob-1 --object-name Jobs --name Update
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Job/#tag/Job/operation/JobController_GetJobsAdvancedAsync
+xchange action new --module-id heavyjob-1 --object-name Jobs --name Create
+
+## JobEmployee
+https://developer.hcssapps.com/products/heavyjob/spec/tag/JobEmployee/#tag/JobEmployee/operation/JobEmployeeController_GetJobEmployeesAsync
+xchange data-object new --module-id heavyjob-1 --name JobEmployees
+https://developer.hcssapps.com/products/heavyjob/spec/tag/JobEmployee/#tag/JobEmployee/operation/JobEmployeeController_DeleteJobEmployees
+xchange action new --module-id heavyjob-1 --object-name JobEmployees --name Delete
+https://developer.hcssapps.com/products/heavyjob/spec/tag/JobEmployee/#tag/JobEmployee/operation/JobEmployeeController_UpsertJobEmployeesAsync
+xchange action new --module-id heavyjob-1 --object-name JobEmployees --name Update
+
+## JobEquipment
+https://developer.hcssapps.com/products/heavyjob/spec/tag/JobEquipment/#tag/JobEquipment/operation/JobEquipmentController_GetJobEquipmentAsync
+xchange data-object new --module-id heavyjob-1 --name JobEquipment
+https://developer.hcssapps.com/products/heavyjob/spec/tag/JobEquipment/#tag/JobEquipment/operation/JobEquipmentController_UpsertJobEquipmentAsync
+xchange action new --module-id heavyjob-1 --object-name JobEquipment --name Update
+https://developer.hcssapps.com/products/heavyjob/spec/tag/JobEquipment/#tag/JobEquipment/operation/JobEquipmentController_DeleteJobEquipmentAsync
+xchange action new --module-id heavyjob-1 --object-name JobEquipment --name Delete
+
+## Material
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_GetMaterialsAsync
+xchange data-object new --module-id heavyjob-1 --name Materials
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_CreateMaterialAsync
+xchange action new --module-id heavyjob-1 --object-name Materials --name Create
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_UpdateMaterialAsync
+xchange action new --module-id heavyjob-1 --object-name Materials --name Update
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_DeleteMaterialAsync
+xchange action new --module-id heavyjob-1 --object-name Materials --name Delete
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_GetJobMaterialAsync
+xchange data-object new --module-id heavyjob-1 --name JobMaterial
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_GetJobMaterialsAsync
+xchange data-object new --module-id heavyjob-1 --name JobMaterials
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_CreateJobMaterialAsync
+xchange action new --module-id heavyjob-1 --object-name JobMaterial --name Create
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_UpdateJobMaterialAsync
+xchange action new --module-id heavyjob-1 --object-name JobMaterial --name Update
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_DeleteJobMaterialAsync
+xchange action new --module-id heavyjob-1 --object-name JobMaterial --name Delete
+xchange data-object new --module-id heavyjob-1 --name MaterialsInstalled
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_GetMaterialsInstalledPaginatedAdvancedAsync
+xchange action new --module-id heavyjob-1 --object-name MaterialsInstalled --name Create
+xchange data-object new --module-id heavyjob-1 --name MaterialsReceived
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_GetMaterialsReceivedPaginatedAdvancedAsync
+xchange action new --module-id heavyjob-1 --object-name MaterialsReceived --name Create
+
+## MaterialSubsAndCustomCosts
+xchange data-object new --module-id heavyjob-1 --name MaterialSubsAndCustomCosts
+https://developer.hcssapps.com/products/heavyjob/spec/tag/MaterialSubsAndCustomCosts/#tag/MaterialSubsAndCustomCosts/operation/MaterialSubsAndCustomCostsController_UpsertLibraryMaterialsSubsAndCustomCostTypeItemsAsync
+xchange action new --module-id heavyjob-1 --object-name MaterialSubsAndCustomCosts --name Update
+
+## PayClass
+https://developer.hcssapps.com/products/heavyjob/spec/tag/PayClass/#tag/PayClass/operation/PayClassController_GetPayClassListAsync
+xchange data-object new --module-id heavyjob-1 --name PayClass
+https://developer.hcssapps.com/products/heavyjob/spec/tag/PayClass/#tag/PayClass/operation/PayClassController_UpdatePayClassAsync
+xchange action new --module-id heavyjob-1 --object-name PayClass --name Update
+
+## PayItem
+https://developer.hcssapps.com/products/heavyjob/spec/tag/PayItem/#tag/PayItem/operation/PayItemController_GetPayItemsAsync
+xchange data-object new --module-id heavyjob-1 --name PayItems
+https://developer.hcssapps.com/products/heavyjob/spec/tag/PayItem/#tag/PayItem/operation/PayItemController_CreatePayItemAsync
+xchange action new --module-id heavyjob-1 --object-name PayItems --name Create
+https://developer.hcssapps.com/products/heavyjob/spec/tag/PayItem/#tag/PayItem/operation/PayItemController_BulkUpsertPayItemsAsync
+xchange action new --module-id heavyjob-1 --object-name PayItems --name Update
+
+## PurchaseOrder
+https://developer.hcssapps.com/products/heavyjob/spec/tag/PurchaseOrder/#tag/PurchaseOrder/operation/PurchaseOrderController_GetPurchaseOrdersAsync
+xchange data-object new --module-id heavyjob-1 --name PurchaseOrders
+https://developer.hcssapps.com/products/heavyjob/spec/tag/PurchaseOrder/#tag/PurchaseOrder/operation/PurchaseOrderController_GetPurchaseOrderItemsV1Async
+xchange data-object new --module-id heavyjob-1 --name PurchaseOrderItems
+https://developer.hcssapps.com/products/heavyjob/spec/tag/PurchaseOrder/#tag/PurchaseOrder/operation/PurchaseOrderController_CreatePurchaseOrderAsync
+xchange action new --module-id heavyjob-1 --object-name PurchaseOrders --name Create
+https://developer.hcssapps.com/products/heavyjob/spec/tag/PurchaseOrder/#tag/PurchaseOrder/operation/PurchaseOrderController_UpdatePurchaseOrderAsync
+xchange action new --module-id heavyjob-1 --object-name PurchaseOrders --name Update
+https://developer.hcssapps.com/products/heavyjob/spec/tag/PurchaseOrder/#tag/PurchaseOrder/operation/PurchaseOrderController_GetMaterialPurchaseOrderDetailsAsync
+xchange data-object new --module-id heavyjob-1 --name MaterialPurchaseOrderDetails
+https://developer.hcssapps.com/products/heavyjob/spec/tag/PurchaseOrder/#tag/PurchaseOrder/operation/PurchaseOrderController_CreateMaterialPurchaseOrderDetailAsync
+xchange action new --module-id heavyjob-1 --object-name MaterialPurchaseOrderDetails --name Create
+https://developer.hcssapps.com/products/heavyjob/spec/tag/PurchaseOrder/#tag/PurchaseOrder/operation/PurchaseOrderController_UpdateMaterialPurchaseOrderDetailAsync
+xchange action new --module-id heavyjob-1 --object-name MaterialPurchaseOrderDetails --name Update
+
+## QuantityAdjustment
+xchange data-object new --module-id heavyjob-1 --name QuantityAdjustment
+https://developer.hcssapps.com/products/heavyjob/spec/tag/QuantityAdjustment/#tag/QuantityAdjustment/operation/QuantityAdjustmentController_CreateQuantityAdjustmentAsync
+xchange action new --module-id heavyjob-1 --object-name QuantityAdjustment --name Create
+
+## ReleaseOrderApprovalRule
+xchange data-object new --module-id heavyjob-1 --name ReleaseOrderApprovalRule
+https://developer.hcssapps.com/products/heavyjob/spec/tag/ReleaseOrderApprovalRule/#tag/ReleaseOrderApprovalRule/operation/ReleaseOrderApprovalRuleController_DeleteReleaseOrderApprovalRuleApproversAsync
+xchange action new --module-id heavyjob-1 --object-name ReleaseOrderApprovalRule --name Delete
+
+## Subcontract
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Subcontract/#tag/Subcontract/operation/SubcontractController_GetSubcontractsAsync
+xchange data-object new --module-id heavyjob-1 --name Subcontracts
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Subcontract/#tag/Subcontract/operation/SubcontractController_CreateSubcontractAsync
+xchange action new --module-id heavyjob-1 --object-name Subcontracts --name Create
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Subcontract/#tag/Subcontract/operation/SubcontractController_UpdateSubcontractAsync
+xchange action new --module-id heavyjob-1 --object-name Subcontracts --name Update
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Subcontract/#tag/Subcontract/operation/SubcontractController_DeleteSubcontractAsync
+xchange action new --module-id heavyjob-1 --object-name Subcontracts --name Delete
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Subcontract/#tag/Subcontract/operation/SubcontractController_GetJobSubcontractAsync
+xchange data-object new --module-id heavyjob-1 --name JobSubcontract
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Subcontract/#tag/Subcontract/operation/SubcontractController_GetJobSubcontractsAsync
+xchange data-object new --module-id heavyjob-1 --name JobSubcontracts
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Subcontract/#tag/Subcontract/operation/SubcontractController_CreateJobSubcontractAsync
+xchange action new --module-id heavyjob-1 --object-name JobSubcontract --name Create
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Subcontract/#tag/Subcontract/operation/SubcontractController_UpdateJobSubcontractAsync
+xchange action new --module-id heavyjob-1 --object-name JobSubcontract --name Update
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Subcontract/#tag/Subcontract/operation/SubcontractController_DeleteJobSubcontractAsync
+xchange action new --module-id heavyjob-1 --object-name JobSubcontract --name Delete
+xchange data-object new --module-id heavyjob-1 --name SubcontractTransactions
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Subcontract/#tag/Subcontract/operation/SubcontractController_GetSubcontractWorkPaginatedAdvancedAsync
+xchange action new --module-id heavyjob-1 --object-name SubcontractTransactions --name Create
+
+## TimeCard
+https://developer.hcssapps.com/products/heavyjob/spec/tag/TimeCard/#tag/TimeCard/operation/TimeCardController_GetTimeCardApprovalInfoAsync
+xchange data-object new --module-id heavyjob-1 --name TimeCardApproval
+https://developer.hcssapps.com/products/heavyjob/spec/tag/TimeCard/#tag/TimeCard/operation/TimeCardController_GetTimeCardInfoAsync
+xchange data-object new --module-id heavyjob-1 --name TimeCardInfo
+https://developer.hcssapps.com/products/heavyjob/spec/tag/TimeCard/#tag/TimeCard/operation/TimeCardController_GetTimeCardV1Async
+xchange data-object new --module-id heavyjob-1 --name TimeCard
+https://developer.hcssapps.com/products/heavyjob/spec/tag/TimeCard/#tag/TimeCard/operation/TimeCardController_UpdateTimeCardAsync
+xchange action new --module-id heavyjob-1 --object-name TimeCard --name Update
+https://developer.hcssapps.com/products/heavyjob/spec/tag/TimeCard/#tag/TimeCard/operation/TimeCardController_GetMissingTimeCardForemenAsync
+xchange data-object new --module-id heavyjob-1 --name MissingTimeCardForemen
+https://developer.hcssapps.com/products/heavyjob/spec/tag/TimeCard/#tag/TimeCard/operation/TimeCardController_FindTimeCardsForEquipmentAsync
+xchange data-object new --module-id heavyjob-1 --name TimeCardsForEquipment
+
+## User
+https://developer.hcssapps.com/products/heavyjob/spec/tag/User/#tag/User/operation/UserController_GetUserAsync
+xchange data-object new --module-id heavyjob-1 --name User
+
+## UserAccessGroup
+xchange data-object new --module-id heavyjob-1 --name UserAccessGroup
+https://developer.hcssapps.com/products/heavyjob/spec/tag/UserAccessGroup/#tag/UserAccessGroup/operation/UserAccessGroupController_GetAllAsync
+xchange action new --module-id heavyjob-1 --object-name UserAccessGroup --name Create
+https://developer.hcssapps.com/products/heavyjob/spec/tag/UserAccessGroup/#tag/UserAccessGroup/operation/UserAccessGroupController_UpdateAsync
+xchange action new --module-id heavyjob-1 --object-name UserAccessGroup --name Update
+
+## Vendor
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Vendor/#tag/Vendor/operation/VendorController_GetAllVendorsV2Async
+xchange data-object new --module-id heavyjob-1 --name Vendors
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Vendor/#tag/Vendor/operation/VendorController_CreateVendorAsync
+xchange action new --module-id heavyjob-1 --object-name Vendors --name Create
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Vendor/#tag/Vendor/operation/VendorController_UpdateVendorAsync
+xchange action new --module-id heavyjob-1 --object-name Vendors --name Update
+https://developer.hcssapps.com/products/heavyjob/spec/tag/Vendor/#tag/Vendor/operation/VendorController_DeleteVendorAsync
+xchange action new --module-id heavyjob-1 --object-name Vendors --name Delete
+
+## VendorContract
+https://developer.hcssapps.com/products/heavyjob/spec/tag/VendorContract/#tag/VendorContract/operation/VendorContractController_GetVendorContractsPaginatedAsync
+xchange data-object new --module-id heavyjob-1 --name VendorContracts
+https://developer.hcssapps.com/products/heavyjob/spec/tag/VendorContract/#tag/VendorContract/operation/VendorContractController_CreateVendorContractAsync
+xchange action new --module-id heavyjob-1 --object-name VendorContracts --name Create
+https://developer.hcssapps.com/products/heavyjob/spec/tag/VendorContract/#tag/VendorContract/operation/VendorContractController_UpdateVendorContractAsync
+xchange action new --module-id heavyjob-1 --object-name VendorContracts --name Update
+https://developer.hcssapps.com/products/heavyjob/spec/tag/VendorContract/#tag/VendorContract/operation/VendorContractController_GetVendorContractDetailsAsync
+xchange data-object new --module-id heavyjob-1 --name VendorContractDetails
+https://developer.hcssapps.com/products/heavyjob/spec/tag/VendorContract/#tag/VendorContract/operation/VendorContractController_CreateVendorContractDetailsAsync
+xchange action new --module-id heavyjob-1 --object-name VendorContractDetails --name Create
+http://developer.hcssapps.com/products/heavyjob/spec/tag/VendorContract/#tag/VendorContract/operation/VendorContractController_UpdateVendorContractDetailAsync
+xchange action new --module-id heavyjob-1 --object-name VendorContractDetails --name Update
+https://developer.hcssapps.com/products/heavyjob/spec/tag/VendorContract/#tag/VendorContract/operation/VendorContractController_GetVendorContractItemsPaginatedAsync
+xchange data-object new --module-id heavyjob-1 --name VendorContractItems
+
+
+
+
+
+
+______
+
+
+
+
+
+
+# Safety
+https://developer.hcssapps.com/products/safety/overview/
+xchange module new --id safety-1 --name Safety --key safety --version 1
+
+## AccessGroups
+https://developer.hcssapps.com/products/safety/spec/tag/AccessGroups/#tag/AccessGroups/operation/AccessGroups_GetAccessGroups
+xchange data-object new --module-id safety-1 --name AccessGroups
+
+## Alerts
+https://developer.hcssapps.com/products/safety/spec/tag/Alerts/#tag/Alerts/operation/Alerts_GetAllAlerts
+xchange data-object new --module-id safety-1 --name Alerts
+https://developer.hcssapps.com/products/safety/spec/tag/Alerts/#tag/Alerts/operation/Alerts_UpdateAlert
+xchange action new --module-id safety-1 --object-name Alerts --name Update
+https://developer.hcssapps.com/products/safety/spec/tag/Alerts/#tag/Alerts/operation/Alerts_CreateAlert
+xchange action new --module-id safety-1 --object-name Alerts --name Create
+https://developer.hcssapps.com/products/safety/spec/tag/Alerts/#tag/Alerts/operation/Alerts_DeleteAlert
+xchange action new --module-id safety-1 --object-name Alerts --name Delete
+
+## IncidentFormTypes
+https://developer.hcssapps.com/products/safety/spec/tag/IncidentFormTypes/#tag/IncidentFormTypes/operation/IncidentFormTypes_GetIncidentFormTypes
+xchange data-object new --module-id safety-1 --name IncidentFormTypes
+
+## Incidents
+https://developer.hcssapps.com/products/safety/spec/tag/Incidents/#tag/Incidents/operation/Incidents_Get
+xchange data-object new --module-id safety-1 --name Incident
+https://developer.hcssapps.com/products/safety/spec/tag/Incidents/#tag/Incidents/operation/Incidents_Put
+xchange action new --module-id safety-1 --object-name Incident --name Update
+https://developer.hcssapps.com/products/safety/spec/tag/Incidents/#tag/Incidents/operation/Incidents_GetList
+xchange data-object new --module-id safety-1 --name Incidents
+
+## IncidentsV2
+https://developer.hcssapps.com/products/safety/spec/tag/IncidentsV2/#tag/IncidentsV2/operation/IncidentsV_Get
+xchange data-object new --module-id safety-1 --name IncidentV2
+
+## InspectionTypes
+https://developer.hcssapps.com/products/safety/spec/tag/InspectionTypes/#tag/InspectionTypes/operation/InspectionTypes_GetInspectionTypes
+xchange data-object new --module-id safety-1 --name InspectionTypes
+
+## Jobs
+https://developer.hcssapps.com/products/safety/spec/tag/Jobs/#tag/Jobs/operation/Jobs_GetJobs
+xchange data-object new --module-id safety-1 --name Jobs
+
+## Meetings
+https://developer.hcssapps.com/products/safety/spec/tag/Meetings/#tag/Meetings/operation/Meetings_GetMeetings
+xchange data-object new --module-id safety-1 --name Meetings
+
+## Providers
+https://developer.hcssapps.com/products/safety/spec/tag/Providers/#tag/Providers/operation/Providers_GetAllProviders
+xchange data-object new --module-id safety-1 --name Providers
+
+## UserAccessGroups
+xchange data-object new --module-id safety-1 --name UserAccessGroups
+https://developer.hcssapps.com/products/safety/spec/tag/UserAccessGroups/#tag/UserAccessGroups/operation/UserAccessGroups_SearchUserAccessGroups
+xchange action new --module-id safety-1 --object-name UserAccessGroups --name Create
+https://developer.hcssapps.com/products/safety/spec/tag/UserAccessGroups/#tag/UserAccessGroups/operation/UserAccessGroups_UpdateUserAccessGroups
+xchange action new --module-id safety-1 --object-name UserAccessGroups --name Update
+
+## Users
+https://developer.hcssapps.com/products/safety/spec/tag/Users/#tag/Users/operation/Users_Get
+xchange data-object new --module-id safety-1 --name Users
+
+
+
+
+
+
+______
+
+
+
+
+
+
+# Setups
+https://developer.hcssapps.com/products/setups/overview/
+xchange module new --id setups-1 --name Setups --key setups --version 1
+
+## AccountingTemplate
+https://developer.hcssapps.com/products/setups/spec/tag/AccountingTemplate/#tag/AccountingTemplate/paths/~1api~1v1~1AccountingTemplate/get
+xchange data-object new --module-id setups-1 --name AccountingTemplate
+
+## BulkCostCode
+xchange data-object new --module-id setups-1 --name BulkCostCode
+https://developer.hcssapps.com/products/setups/spec/tag/BulkCostCode/#tag/BulkCostCode/paths/~1api~1v1~1CostCode~1bulk/post
+xchange action new --module-id setups-1 --object-name BulkCostCode --name Create
+
+## BusinessUnit
+https://developer.hcssapps.com/products/setups/spec/tag/BusinessUnit/#tag/BusinessUnit/paths/~1api~1v1~1BusinessUnit/get
+xchange data-object new --module-id setups-1 --name BusinessUnit
+https://developer.hcssapps.com/products/setups/spec/tag/BusinessUnit/#tag/BusinessUnit/paths/~1api~1v1~1BusinessUnit~1default/get
+xchange data-object new --module-id setups-1 --name BusinessUnitDefault
+https://developer.hcssapps.com/products/setups/spec/tag/BusinessUnit/#tag/BusinessUnit/paths/~1api~1v1~1BusinessUnit/post
+xchange action new --module-id setups-1 --object-name BusinessUnit --name Create
+
+## CostCode
+https://developer.hcssapps.com/products/setups/spec/tag/CostCode/#tag/CostCode/paths/~1api~1v1~1CostCode/get
+xchange data-object new --module-id setups-1 --name CostCode
+https://developer.hcssapps.com/products/setups/spec/tag/CostCode/#tag/CostCode/paths/~1api~1v1~1CostCode/post
+xchange action new --module-id setups-1 --object-name CostCode --name Create
+https://developer.hcssapps.com/products/setups/spec/tag/CostCode/#tag/CostCode/paths/~1api~1v1~1CostCode/patch
+https://developer.hcssapps.com/products/setups/spec/tag/CostCode/#tag/CostCode/paths/~1api~1v1~1CostCode~1{id}/put
+xchange action new --module-id setups-1 --object-name CostCode --name Update
+
+## Employee
+https://developer.hcssapps.com/products/setups/spec/tag/Employee/#tag/Employee/paths/~1api~1v1~1Employee/get
+xchange data-object new --module-id setups-1 --name Employee
+http://developer.hcssapps.com/products/setups/spec/tag/Employee/#tag/Employee/paths/~1api~1v1~1Employee/post
+xchange action new --module-id setups-1 --object-name Employee --name Create
+https://developer.hcssapps.com/products/setups/spec/tag/Employee/#tag/Employee/paths/~1api~1v1~1Employee~1{id}/put
+xchange action new --module-id setups-1 --object-name Employee --name Update
+
+## Equipment
+https://developer.hcssapps.com/products/setups/spec/tag/Equipment/#tag/Equipment/paths/~1api~1v1~1Equipment/get
+xchange data-object new --module-id setups-1 --name Equipment
+https://developer.hcssapps.com/products/setups/spec/tag/Equipment/#tag/Equipment/paths/~1api~1v1~1Equipment/post
+xchange action new --module-id setups-1 --object-name Equipment --name Create
+https://developer.hcssapps.com/products/setups/spec/tag/Equipment/#tag/Equipment/paths/~1api~1v1~1Equipment~1{id}/put
+xchange action new --module-id setups-1 --object-name Equipment --name Update
+
+## Job
+https://developer.hcssapps.com/products/setups/spec/tag/Job/#tag/Job/paths/~1api~1v1~1Job/get
+xchange data-object new --module-id setups-1 --name Job
+https://developer.hcssapps.com/products/setups/spec/tag/Job/#tag/Job/paths/~1api~1v1~1Job/post
+xchange action new --module-id setups-1 --object-name Job --name Create
+https://developer.hcssapps.com/products/setups/spec/tag/Job/#tag/Job/paths/~1api~1v1~1Job~1{id}/put
+xchange action new --module-id setups-1 --object-name Job --name Update
+
+## PayClass
+https://developer.hcssapps.com/products/setups/spec/tag/PayClass/#tag/PayClass/paths/~1api~1v1~1PayClass/get
+xchange data-object new --module-id setups-1 --name PayClass
+https://developer.hcssapps.com/products/setups/spec/tag/PayClass/#tag/PayClass/paths/~1api~1v1~1PayClass/post
+xchange action new --module-id setups-1 --object-name PayClass --name Create
+https://developer.hcssapps.com/products/setups/spec/tag/PayClass/#tag/PayClass/paths/~1api~1v1~1PayClass~1{id}/put
+xchange action new --module-id setups-1 --object-name PayClass --name Update
+
+## RateSet
+https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1Employee/get
+xchange data-object new --module-id setups-1 --name RateSet
+https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1Employee/post
+xchange action new --module-id setups-1 --object-name RateSet --name Create
+https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1Employee~1{id}/put
+xchange action new --module-id setups-1 --object-name RateSet --name Update
+https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1PayClass/get
+xchange data-object new --module-id setups-1 --name RateSetPayClass
+https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1PayClass/post
+xchange action new --module-id setups-1 --object-name RateSetPayClass --name Create
+https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1PayClass~1{id}/put
+xchange action new --module-id setups-1 --object-name RateSetPayClass --name Update
+https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1Equipment/get
+xchange data-object new --module-id setups-1 --name RateSetEquipment
+https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1Equipment/post
+xchange action new --module-id setups-1 --object-name RateSetEquipment --name Create
+https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1Equipment~1{id}/put
+xchange action new --module-id setups-1 --object-name RateSetEquipment --name Update
+https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1CostAdjustment/get
+xchange data-object new --module-id setups-1 --name RateSetCostAdjustment
+https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1CostAdjustment/post
+xchange action new --module-id setups-1 --object-name RateSetCostAdjustment --name Create
+https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1CostAdjustment~1{id}/put
+xchange action new --module-id setups-1 --object-name RateSetCostAdjustment --name Update
+
+## RateSetGroup
+https://developer.hcssapps.com/products/setups/spec/tag/RateSetGroup/#tag/RateSetGroup/paths/~1api~1v1~1RateSetGroup/get
+xchange data-object new --module-id setups-1 --name RateSetGroup
+https://developer.hcssapps.com/products/setups/spec/tag/RateSetGroup/#tag/RateSetGroup/paths/~1api~1v1~1RateSetGroup/post
+xchange action new --module-id setups-1 --object-name RateSetGroup --name Create
+https://developer.hcssapps.com/products/setups/spec/tag/RateSetGroup/#tag/RateSetGroup/paths/~1api~1v1~1RateSetGroup~1{id}/put
+xchange action new --module-id setups-1 --object-name RateSetGroup --name Update
+
+
+
+
+
+______
+
+
+
+
+
+# Skills
+https://developer.hcssapps.com/products/skills/overview/
+xchange module new --id skills-1 --name Skills --key skills --version 1
+
+## EmployeeSkills
+https://developer.hcssapps.com/products/skills/spec/tag/EmployeeSkills/#tag/EmployeeSkills/operation/EmployeeSkills_GetByEmployee
+xchange data-object new --module-id skills-1 --name EmployeeSkillsByEmployee
+https://developer.hcssapps.com/products/skills/spec/tag/EmployeeSkills/#tag/EmployeeSkills/operation/EmployeeSkills_GetBySkill
+xchange data-object new --module-id skills-1 --name EmployeeSkillsBySkill
+https://developer.hcssapps.com/products/skills/spec/tag/EmployeeSkills/#tag/EmployeeSkills/operation/EmployeeSkills_Get
+xchange data-object new --module-id skills-1 --name EmployeeSkills
+https://developer.hcssapps.com/products/skills/spec/tag/EmployeeSkills/#tag/EmployeeSkills/operation/EmployeeSkills_Post
+xchange action new --module-id skills-1 --object-name EmployeeSkills --name Create
+xchange data-object new --module-id skills-1 --name EmployeeSkillImport
+https://developer.hcssapps.com/products/skills/spec/tag/EmployeeSkills/#tag/EmployeeSkills/operation/EmployeeSkills_Import
+xchange action new --module-id skills-1 --object-name EmployeeSkillImport --name Create
+
+## Skills
+https://developer.hcssapps.com/products/skills/spec/tag/Skills/#tag/Skills/operation/Skills_Get
+xchange data-object new --module-id skills-1 --name skill
+https://developer.hcssapps.com/products/skills/spec/tag/Skills/#tag/Skills/operation/Skills_Put
+xchange action new --module-id skills-1 --object-name skill --name Update
+https://developer.hcssapps.com/products/skills/spec/tag/Skills/#tag/Skills/operation/Skills_Delete
+xchange action new --module-id skills-1 --object-name skill --name Delete
+https://developer.hcssapps.com/products/skills/spec/tag/Skills/#tag/Skills/operation/Skills_GetList
+xchange data-object new --module-id skills-1 --name skills
+https://developer.hcssapps.com/products/skills/spec/tag/Skills/#tag/Skills/operation/Skills_Post
+xchange action new --module-id skills-1 --object-name skills --name Create
+xchange data-object new --module-id skills-1 --name skillsimport
+https://developer.hcssapps.com/products/skills/spec/tag/Skills/#tag/Skills/operation/Skills_Import
+xchange action new --module-id skills-1 --object-name skillsimport --name Create
+
+
+
+
+______
+
+
+
+
+
+
+# Telematics
+https://developer.hcssapps.com/products/telematics/overview/
+xchange module new --id telematics-1 --name Telematics --key telematics --version 1
+
+## Equipment
+https://developer.hcssapps.com/products/telematics/spec/tag/Equipment/#tag/Equipment/paths/~1api~1v1~1equipment/get
+xchange data-object new --module-id telematics-1 --name Equipment
+
+
+
+
+
+
+______
+
+
+
+
+
+
+# Users
+https://developer.hcssapps.com/products/users/overview/
+xchange module new --id users-1 --name Users --key users --version 1
+
+## BusinessUnits
+https://developer.hcssapps.com/products/users/spec/tag/BusinessUnits/#tag/BusinessUnits/paths/~1api~1v1~1BusinessUnits/get
+xchange data-object new --module-id users-1 --name BusinessUnits
+
+## Jobs
+https://developer.hcssapps.com/products/users/spec/tag/Jobs/#tag/Jobs/paths/~1api~1v1~1Jobs~1GetJobsByBusinessUnit/get
+xchange data-object new --module-id users-1 --name Jobs
+
+
+## Roles
+https://developer.hcssapps.com/products/users/spec/tag/Roles/#tag/Roles/paths/~1api~1v1~1Roles/get
+xchange data-object new --module-id users-1 --name Roles
+
+
+## SubscriptionGroups
+https://developer.hcssapps.com/products/users/spec/tag/SubscriptionGroups/#tag/SubscriptionGroups/paths/~1api~1v1~1SubscriptionGroups/get
+xchange data-object new --module-id users-1 --name SubscriptionGroups
+
+
+## Users
+https://developer.hcssapps.com/products/users/spec/tag/Users/#tag/Users/operation/Get
+xchange data-object new --module-id users-1 --name Users
+https://developer.hcssapps.com/products/users/spec/tag/Users/#tag/Users/operation/GetById
+xchange data-object new --module-id users-1 --name User
+https://developer.hcssapps.com/products/users/spec/tag/Users/#tag/Users/operation/CreateUser
+xchange action new --module-id users-1 --object-name User --name Create
+https://developer.hcssapps.com/products/users/spec/tag/Users/#tag/Users/operation/UpdateUser
+xchange action new --module-id users-1 --object-name User --name Update
+https://developer.hcssapps.com/products/users/spec/tag/Users/#tag/Users/operation/DeleteUser
+xchange action new --module-id users-1 --object-name User --name Delete
+https://developer.hcssapps.com/products/users/spec/tag/Users/#tag/Users/operation/GetByUsername
+xchange data-object new --module-id users-1 --name Username
+
+
+
+
+
+
+______
+
+
+
+
+
+
+
+# Webhooks
+https://developer.hcssapps.com/products/webhooks/overview/
+xchange module new --id webhooks-1 --name Webhooks --key webhooks --version 1
+
+## Setups
+https://developer.hcssapps.com/products/webhooks/spec/tag/Setups/#tag/Setups/operation/Setups_GetWebhooks
+xchange data-object new --module-id webhooks-1 --name SetupsWebhooks
+xchange data-object new --module-id webhooks-1 --name SetupsSubscription
+https://developer.hcssapps.com/products/webhooks/spec/tag/Setups/#tag/Setups/operation/Setups_CreateSubscription
+xchange action new --module-id webhooks-1 --object-name SetupsSubscription --name Create
+https://developer.hcssapps.com/products/webhooks/spec/tag/Setups/#tag/Setups/operation/Setups_UpdateSubscription
+xchange action new --module-id webhooks-1 --object-name SetupsSubscription --name Update
+https://developer.hcssapps.com/products/webhooks/spec/tag/Setups/#tag/Setups/operation/Setups_DeleteSubscription
+xchange action new --module-id webhooks-1 --object-name SetupsSubscription --name Delete
+
+## HeavyBidPreConstruction
+https://developer.hcssapps.com/products/webhooks/spec/tag/HeavyBid-Pre-Construction/#tag/HeavyBid-Pre-Construction/operation/PreCon_GetWebhooks
+xchange data-object new --module-id webhooks-1 --name PreConWebhooks
+xchange data-object new --module-id webhooks-1 --name PreConSubscription
+https://developer.hcssapps.com/products/webhooks/spec/tag/HeavyBid-Pre-Construction/#tag/HeavyBid-Pre-Construction/operation/PreCon_CreateSubscription
+xchange action new --module-id webhooks-1 --object-name PreConSubscription --name Create
+https://developer.hcssapps.com/products/webhooks/spec/tag/HeavyBid-Pre-Construction/#tag/HeavyBid-Pre-Construction/operation/PreCon_UpdateSubscription
+xchange action new --module-id webhooks-1 --object-name PreConSubscription --name Update
+https://developer.hcssapps.com/products/webhooks/spec/tag/HeavyBid-Pre-Construction/#tag/HeavyBid-Pre-Construction/operation/PreCon_DeleteSubscription
+xchange action new --module-id webhooks-1 --object-name PreConSubscription --name Delete
+
+## HeavyJob
+https://developer.hcssapps.com/products/webhooks/spec/tag/HeavyJob/#tag/HeavyJob/operation/HeavyJob_GetWebhooks
+xchange data-object new --module-id webhooks-1 --name HeavyJobWebhooks
+xchange data-object new --module-id webhooks-1 --name HeavyJobSubscription
+https://developer.hcssapps.com/products/webhooks/spec/tag/HeavyJob/#tag/HeavyJob/operation/HeavyJob_CreateSubscription
+xchange action new --module-id webhooks-1 --object-name HeavyJobSubscription --name Create
+https://developer.hcssapps.com/products/webhooks/spec/tag/HeavyJob/#tag/HeavyJob/operation/HeavyJob_UpdateSubscription
+xchange action new --module-id webhooks-1 --object-name HeavyJobSubscription --name Update
+https://developer.hcssapps.com/products/webhooks/spec/tag/HeavyJob/#tag/HeavyJob/operation/HeavyJob_DeleteSubscription
+xchange action new --module-id webhooks-1 --object-name HeavyJobSubscription --name Delete
