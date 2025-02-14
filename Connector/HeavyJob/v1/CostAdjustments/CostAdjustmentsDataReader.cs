@@ -1,77 +1,62 @@
 using Connector.Client;
-using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
 
 namespace Connector.HeavyJob.v1.CostAdjustments;
 
 public class CostAdjustmentsDataReader : TypedAsyncDataReaderBase<CostAdjustmentsDataObject>
 {
     private readonly ILogger<CostAdjustmentsDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public CostAdjustmentsDataReader(
-        ILogger<CostAdjustmentsDataReader> logger)
+        ILogger<CostAdjustmentsDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<CostAdjustmentsDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<CostAdjustmentsDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments, 
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        var businessUnitId = dataObjectRunArguments?.RequestParameterOverrides?.RootElement
+            .GetProperty("businessUnitId").GetString();
+        if (businessUnitId == null)
         {
-            var response = new ApiResponse<PaginatedResponse<CostAdjustmentsDataObject>>();
-            // If the CostAdjustmentsDataObject does not have the same structure as the CostAdjustments response from the API, create a new class for it and replace CostAdjustmentsDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<CostAdjustmentsResponse>>();
+            throw new ArgumentException("Business Unit ID is required");
+        }
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
+        ApiResponse<IEnumerable<CostAdjustmentsDataObject>> response;
+        try
+        {
+            response = await _apiClient.GetCostAdjustments(
+                Guid.Parse(businessUnitId), 
+                cancellationToken);
+        }
+        catch (HttpRequestException exception)
+        {
+            _logger.LogError(exception, "Exception while making a read request to data object 'CostAdjustmentsDataObject'");
+            throw;
+        }
+
+        if (!response.IsSuccessful)
+        {
+            throw new Exception($"Failed to retrieve records for 'CostAdjustmentsDataObject'. API StatusCode: {response.StatusCode}");
+        }
+
+        if (response.Data != null)
+        {
+            foreach (var item in response.Data)
             {
-                //response = await _apiClient.GetRecords<CostAdjustmentsDataObject>(
-                //    relativeUrl: "costAdjustments",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'CostAdjustmentsDataObject'");
-                throw;
-            }
-
-            if (!response.IsSuccessful)
-            {
-                throw new Exception($"Failed to retrieve records for 'CostAdjustmentsDataObject'. API StatusCode: {response.StatusCode}");
-            }
-
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new CostAdjustmentsDataObject object, map the properties and return a CostAdjustmentsDataObject.
-
-                // Example:
-                //var resource = new CostAdjustmentsDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
                 yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
-                break;
             }
         }
     }

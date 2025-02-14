@@ -14,11 +14,50 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a location")]
 public class LocationsDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The location id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit ID")]
+    public Guid BusinessUnitId { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The code")]
+    [Required]
+    public required string Code { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("An optional description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("enabled")]
+    [Description("Enabled? (Y/N)")]
+    public string? Enabled { get; init; }
+
+    [JsonPropertyName("address")]
+    [Description("A representation of an Address object returned by the API")]
+    public AddressObject? Address { get; init; }
+}
+
+public class AddressObject
+{
+    [JsonPropertyName("line1")]
+    public string? Line1 { get; init; }
+
+    [JsonPropertyName("line2")]
+    public string? Line2 { get; init; }
+
+    [JsonPropertyName("city")]
+    public string? City { get; init; }
+
+    [JsonPropertyName("state")]
+    public string? State { get; init; }
+
+    [JsonPropertyName("zip")]
+    public string? Zip { get; init; }
 }

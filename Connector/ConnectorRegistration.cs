@@ -16,6 +16,7 @@ using Connector.Webhooks.v1;
 using ESR.Hosting;
 using ESR.Hosting.Client;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Text.Json;
 using Xchange.Connector.SDK.Abstraction.Hosting;
 using Xchange.Connector.SDK.Client.Testing;
@@ -34,7 +35,18 @@ public class ConnectorRegistration : IConnectorRegistration<ConnectorRegistratio
     public void ConfigureServices(IServiceCollection serviceCollection, IHostContext hostContext)
     {
         var connectorRegistrationConfig = JsonSerializer.Deserialize<ConnectorRegistrationConfig>(hostContext.GetSystemConfig().Configuration);
-        serviceCollection.AddSingleton(connectorRegistrationConfig!);
+        
+        if (connectorRegistrationConfig == null)
+        {
+            throw new InvalidOperationException("Failed to load connector configuration");
+        }
+
+        if (!connectorRegistrationConfig.EnabledModules.HasEnabledModules())
+        {
+            throw new InvalidOperationException("At least one module must be enabled in the configuration");
+        }
+
+        serviceCollection.AddSingleton(connectorRegistrationConfig);
         serviceCollection.AddTransient<RetryPolicyHandler>();
     }
 
@@ -46,30 +58,79 @@ public class ConnectorRegistration : IConnectorRegistration<ConnectorRegistratio
     /// <param name = "serviceCollection"></param>
     public void RegisterServiceDefinitions(IServiceCollection serviceCollection)
     {
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, AttachmentsV1ActionProcessorServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, AttachmentsV1CacheWriterServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, ContactsV1ActionProcessorServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, ContactsV1CacheWriterServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, Equipment360V1ActionProcessorServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, Equipment360V1CacheWriterServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, HeavyBidEstimateV1ActionProcessorServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, HeavyBidEstimateV1CacheWriterServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, HeavyBidPreConstructionV1ActionProcessorServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, HeavyBidPreConstructionV1CacheWriterServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, HeavyJobV1ActionProcessorServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, HeavyJobV1CacheWriterServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, SafetyV1ActionProcessorServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, SafetyV1CacheWriterServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, SetupsV1ActionProcessorServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, SetupsV1CacheWriterServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, SkillsV1ActionProcessorServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, SkillsV1CacheWriterServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, TelematicsV1ActionProcessorServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, TelematicsV1CacheWriterServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, UsersV1ActionProcessorServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, UsersV1CacheWriterServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, WebhooksV1ActionProcessorServiceDefinition>();
-        serviceCollection.AddSingleton<IConnectorServiceDefinition, WebhooksV1CacheWriterServiceDefinition>();
+        var config = serviceCollection.BuildServiceProvider().GetRequiredService<ConnectorRegistrationConfig>();
+        
+        if (config.EnabledModules.Attachments)
+        {
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, AttachmentsV1ActionProcessorServiceDefinition>();
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, AttachmentsV1CacheWriterServiceDefinition>();
+        }
+
+        if (config.EnabledModules.Contacts)
+        {
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, ContactsV1ActionProcessorServiceDefinition>();
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, ContactsV1CacheWriterServiceDefinition>();
+        }
+
+        if (config.EnabledModules.Equipment360)
+        {
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, Equipment360V1ActionProcessorServiceDefinition>();
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, Equipment360V1CacheWriterServiceDefinition>();
+        }
+
+        if (config.EnabledModules.HeavyBidEstimate)
+        {
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, HeavyBidEstimateV1ActionProcessorServiceDefinition>();
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, HeavyBidEstimateV1CacheWriterServiceDefinition>();
+        }
+
+        if (config.EnabledModules.HeavyBidPreConstruction)
+        {
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, HeavyBidPreConstructionV1ActionProcessorServiceDefinition>();
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, HeavyBidPreConstructionV1CacheWriterServiceDefinition>();
+        }
+
+        if (config.EnabledModules.HeavyJob)
+        {
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, HeavyJobV1ActionProcessorServiceDefinition>();
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, HeavyJobV1CacheWriterServiceDefinition>();
+        }
+
+        if (config.EnabledModules.Safety)
+        {
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, SafetyV1ActionProcessorServiceDefinition>();
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, SafetyV1CacheWriterServiceDefinition>();
+        }
+
+        if (config.EnabledModules.Setups)
+        {
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, SetupsV1ActionProcessorServiceDefinition>();
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, SetupsV1CacheWriterServiceDefinition>();
+        }
+
+        if (config.EnabledModules.Skills)
+        {
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, SkillsV1ActionProcessorServiceDefinition>();
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, SkillsV1CacheWriterServiceDefinition>();
+        }
+
+        if (config.EnabledModules.Telematics)
+        {
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, TelematicsV1ActionProcessorServiceDefinition>();
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, TelematicsV1CacheWriterServiceDefinition>();
+        }
+
+        if (config.EnabledModules.Users)
+        {
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, UsersV1ActionProcessorServiceDefinition>();
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, UsersV1CacheWriterServiceDefinition>();
+        }
+
+        if (config.EnabledModules.Webhooks)
+        {
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, WebhooksV1ActionProcessorServiceDefinition>();
+            serviceCollection.AddSingleton<IConnectorServiceDefinition, WebhooksV1CacheWriterServiceDefinition>();
+        }
     }
 
     public void ConfigureConnectorApiClient(IServiceCollection serviceCollection, IHostConnectionContext hostConnectionContext)

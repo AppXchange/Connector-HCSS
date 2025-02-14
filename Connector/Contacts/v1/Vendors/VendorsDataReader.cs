@@ -3,7 +3,6 @@ using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
@@ -14,64 +13,57 @@ namespace Connector.Contacts.v1.Vendors;
 public class VendorsDataReader : TypedAsyncDataReaderBase<VendorsDataObject>
 {
     private readonly ILogger<VendorsDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public VendorsDataReader(
-        ILogger<VendorsDataReader> logger)
+        ILogger<VendorsDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<VendorsDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<VendorsDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        if (dataObjectRunArguments == null)
         {
-            var response = new ApiResponse<PaginatedResponse<VendorsDataObject>>();
-            // If the VendorsDataObject does not have the same structure as the Vendors response from the API, create a new class for it and replace VendorsDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<VendorsResponse>>();
+            _logger.LogError("DataObjectRunArguments is required");
+            throw new ArgumentNullException(nameof(dataObjectRunArguments));
+        }
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<VendorsDataObject>(
-                //    relativeUrl: "vendors",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'VendorsDataObject'");
-                throw;
-            }
+        var businessUnitIdElement = dataObjectRunArguments.RequestParameterOverrides?.RootElement
+            .GetProperty("businessUnitId");
+        
+        Guid? businessUnitId = null;
+        if (businessUnitIdElement != null && Guid.TryParse(businessUnitIdElement.Value.GetString(), out var buid))
+        {
+            businessUnitId = buid;
+        }
 
+        IEnumerable<VendorsDataObject>? vendors;
+        try
+        {
+            var response = await _apiClient.GetVendors(businessUnitId, cancellationToken);
             if (!response.IsSuccessful)
             {
-                throw new Exception($"Failed to retrieve records for 'VendorsDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve vendors. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve vendors. API StatusCode: {response.StatusCode}");
             }
+            vendors = response.Data;
+        }
+        catch (HttpRequestException exception)
+        {
+            _logger.LogError(exception, "Exception while retrieving vendors");
+            throw;
+        }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+        if (vendors != null)
+        {
+            foreach (var vendor in vendors)
             {
-                // If new class was created to match the API response, create a new VendorsDataObject object, map the properties and return a VendorsDataObject.
-
-                // Example:
-                //var resource = new VendorsDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
-                break;
+                yield return vendor;
             }
         }
     }

@@ -14,11 +14,14 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateCustomFieldAction Action description goes here")]
-public class CreateCustomFieldAction : IStandardAction<CreateCustomFieldActionInput, CreateCustomFieldActionOutput>
+[Description("Creates a new custom field record")]
+public class CreateCustomFieldAction : IStandardAction<CreateCustomFieldActionInput, CustomFieldDataObject>
 {
-    public CreateCustomFieldActionInput ActionInput { get; set; } = new();
-    public CreateCustomFieldActionOutput ActionOutput { get; set; } = new();
+    public CreateCustomFieldActionInput ActionInput { get; set; } = new(
+        customFieldCategoryId: 0,
+        entityGuid: Guid.Empty,
+        value: string.Empty);
+    public CustomFieldDataObject ActionOutput { get; set; } = new() { Id = Guid.Empty };
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +29,25 @@ public class CreateCustomFieldAction : IStandardAction<CreateCustomFieldActionIn
 
 public class CreateCustomFieldActionInput
 {
+    public CreateCustomFieldActionInput(int customFieldCategoryId, Guid entityGuid, string value)
+    {
+        CustomFieldCategoryId = customFieldCategoryId;
+        EntityGuid = entityGuid;
+        Value = value;
+    }
 
-}
+    [JsonPropertyName("customFieldCategoryId")]
+    [Description("The custom field category ID the custom field record is being created for")]
+    [Required]
+    public int CustomFieldCategoryId { get; init; }
 
-public class CreateCustomFieldActionOutput
-{
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("entityGuid")]
+    [Description("The ID of the target the custom field record is being created for")]
+    [Required]
+    public Guid EntityGuid { get; init; }
+
+    [JsonPropertyName("value")]
+    [Description("The value being assigned to the custom field record")]
+    [Required]
+    public string Value { get; init; }
 }

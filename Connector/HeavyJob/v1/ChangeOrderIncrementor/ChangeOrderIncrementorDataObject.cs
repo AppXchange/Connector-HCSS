@@ -12,13 +12,16 @@ using Xchange.Connector.SDK.CacheWriter;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[PrimaryKey("id", nameof(Id))]
-//[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[PrimaryKey("jobId", nameof(JobId))]
+[Description("Change order incrementor data for a job")]
 public class ChangeOrderIncrementorDataObject
 {
-    [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [JsonPropertyName("jobId")]
+    [Description("The job id of the change order")]
     [Required]
-    public required Guid Id { get; init; }
+    public required Guid JobId { get; init; }
+
+    [JsonPropertyName("changeOrderNumbers")]
+    [Description("The list of PCO numbers")]
+    public int[]? ChangeOrderNumbers { get; init; }
 }

@@ -14,11 +14,16 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateWorkOrderNotesAction Action description goes here")]
-public class CreateWorkOrderNotesAction : IStandardAction<CreateWorkOrderNotesActionInput, CreateWorkOrderNotesActionOutput>
+[Description("Creates a new work order note in Equipment360")]
+public class CreateWorkOrderNotesAction : IStandardAction<CreateWorkOrderNotesActionInput, WorkOrderNotesDataObject>
 {
-    public CreateWorkOrderNotesActionInput ActionInput { get; set; } = new();
-    public CreateWorkOrderNotesActionOutput ActionOutput { get; set; } = new();
+    public CreateWorkOrderNotesActionInput ActionInput { get; set; } = new() { WorkOrderId = Guid.Empty };
+    public WorkOrderNotesDataObject ActionOutput { get; set; } = new()
+    {
+        Id = Guid.Empty,
+        CreatedDate = DateTime.UtcNow,
+        Note = null
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +31,12 @@ public class CreateWorkOrderNotesAction : IStandardAction<CreateWorkOrderNotesAc
 
 public class CreateWorkOrderNotesActionInput
 {
+    [JsonIgnore]
+    [Description("The work order id")]
+    [Required]
+    public required Guid WorkOrderId { get; init; }
 
-}
-
-public class CreateWorkOrderNotesActionOutput
-{
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("note")]
+    [Description("The note")]
+    public string? Note { get; init; }
 }

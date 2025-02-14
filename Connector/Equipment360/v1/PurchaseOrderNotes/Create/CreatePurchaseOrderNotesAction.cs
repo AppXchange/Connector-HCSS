@@ -14,11 +14,18 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreatePurchaseOrderNotesAction Action description goes here")]
-public class CreatePurchaseOrderNotesAction : IStandardAction<CreatePurchaseOrderNotesActionInput, CreatePurchaseOrderNotesActionOutput>
+[Description("Creates a new purchase order note")]
+public class CreatePurchaseOrderNotesAction : IStandardAction<CreatePurchaseOrderNotesActionInput, PurchaseOrderNotesDataObject>
 {
-    public CreatePurchaseOrderNotesActionInput ActionInput { get; set; } = new();
-    public CreatePurchaseOrderNotesActionOutput ActionOutput { get; set; } = new();
+    public CreatePurchaseOrderNotesActionInput ActionInput { get; set; } = new()
+    {
+        PurchaseOrderId = Guid.Empty
+    };
+    public PurchaseOrderNotesDataObject ActionOutput { get; set; } = new()
+    {
+        Id = Guid.Empty,
+        CreatedDate = DateTime.UtcNow
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +33,12 @@ public class CreatePurchaseOrderNotesAction : IStandardAction<CreatePurchaseOrde
 
 public class CreatePurchaseOrderNotesActionInput
 {
+    [JsonIgnore]
+    [Description("The purchase order id")]
+    [Required]
+    public required Guid PurchaseOrderId { get; init; }
 
-}
-
-public class CreatePurchaseOrderNotesActionOutput
-{
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("note")]
+    [Description("The note")]
+    public string? Note { get; init; }
 }

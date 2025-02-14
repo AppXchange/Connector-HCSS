@@ -2,6 +2,7 @@ namespace Connector.Contacts.v1.Vendor.Delete;
 
 using Json.Schema.Generation;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Xchange.Connector.SDK.Action;
 
@@ -14,10 +15,10 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("DeleteVendorAction Action description goes here")]
+[Description("Deletes an existing vendor and all associated products, contacts, and offices")]
 public class DeleteVendorAction : IStandardAction<DeleteVendorActionInput, DeleteVendorActionOutput>
 {
-    public DeleteVendorActionInput ActionInput { get; set; } = new();
+    public DeleteVendorActionInput ActionInput { get; set; } = new() { VendorId = Guid.Empty };
     public DeleteVendorActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +27,16 @@ public class DeleteVendorAction : IStandardAction<DeleteVendorActionInput, Delet
 
 public class DeleteVendorActionInput
 {
+    [JsonPropertyName("vendorId")]
+    [Description("The vendor's unique identifier")]
+    [System.ComponentModel.DataAnnotations.Required]
+    public required Guid VendorId { get; init; }
 
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit's guid")]
+    public Guid? BusinessUnitId { get; init; }
 }
 
 public class DeleteVendorActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
 }

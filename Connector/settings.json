@@ -2,14 +2,14 @@
   "name": "HCSS",
   "urlPart": "hcss",
   "key": "hcss",
-  "description": "",
+  "description": "Enterprise-level integration with HCSS construction software suite, providing comprehensive solutions for construction estimating, operations management, equipment tracking, and safety compliance. This connector enables seamless data synchronization between HCSS products and your systems.",
   "modules": [
     {
       "id": "attachments-1",
       "name": "Attachments",
       "urlPart": "attachments",
       "key": "attachments",
-      "description": "",
+      "description": "Manage digital assets across HCSS applications. Supports uploading, downloading, and organizing documents, images, and files related to projects, equipment, safety records, and other business processes. Handles file metadata, versioning, and access controls.",
       "version": 1
     },
     {
@@ -17,7 +17,7 @@
       "name": "Contacts",
       "urlPart": "contacts",
       "key": "contacts",
-      "description": "",
+      "description": "Comprehensive vendor and contact management system. Maintain detailed records of suppliers, subcontractors, and business partners including contact information, certifications, performance history, and relationship data. Supports contact categorization and association with projects or business units.",
       "version": 1
     },
     {
@@ -25,7 +25,7 @@
       "name": "Equipment360",
       "urlPart": "equipment360",
       "key": "equipment360",
-      "description": "",
+      "description": "Complete equipment fleet management solution. Track maintenance schedules, repair histories, usage metrics, and costs. Manage equipment specifications, warranties, and certifications. Monitor equipment health, schedule preventive maintenance, and analyze equipment performance and utilization rates.",
       "version": 1
     },
     {
@@ -33,7 +33,7 @@
       "name": "Heavy Bid Estimate",
       "urlPart": "heavybidestimate",
       "key": "heavybidestimate",
-      "description": "",
+      "description": "Advanced construction estimating and bidding platform. Access and manage detailed cost estimates, material quantities, labor rates, and equipment costs. Handle bid submissions, change orders, and estimate revisions. Includes historical pricing data, production rates, and cost analysis tools.",
       "version": 1
     },
     {
@@ -41,7 +41,7 @@
       "name": "Heavy Bid Pre Construction",
       "urlPart": "heavybidpreconstruction",
       "key": "heavybidpreconstruction",
-      "description": "",
+      "description": "Pre-construction planning and project setup toolkit. Configure project parameters, work breakdown structures, and resource allocation plans. Manage preliminary schedules, risk assessments, and site logistics. Coordinate subcontractor scopes and project delivery methods.",
       "version": 1
     },
     {
@@ -49,7 +49,7 @@
       "name": "Heavy Job",
       "urlPart": "heavyjob",
       "key": "heavyjob",
-      "description": "",
+      "description": "Comprehensive job site management and productivity tracking system. Process time cards, material tickets, and equipment usage logs. Monitor project budgets, track progress against estimates, and manage daily work reports. Includes production tracking, cost coding, and budget forecasting capabilities.",
       "version": 1
     },
     {
@@ -57,7 +57,7 @@
       "name": "Safety",
       "urlPart": "safety",
       "key": "safety",
-      "description": "",
+      "description": "Integrated safety management and compliance system. Track incidents, near-misses, and safety meetings. Manage safety protocols, certifications, and training records. Generate safety reports, conduct audits, and monitor compliance metrics. Includes toolbox talks and safety observation tracking.",
       "version": 1
     },
     {
@@ -65,7 +65,7 @@
       "name": "Setups",
       "urlPart": "setups",
       "key": "setups",
-      "description": "",
+      "description": "Enterprise configuration and system integration hub. Configure accounting system integrations, cost codes, and business unit hierarchies. Manage company-wide settings, user roles, and permissions. Setup data synchronization rules and integration parameters across HCSS products.",
       "version": 1
     },
     {
@@ -73,7 +73,7 @@
       "name": "Skills",
       "urlPart": "skills",
       "key": "skills",
-      "description": "",
+      "description": "Workforce qualification and certification management system. Track employee skills, licenses, and certifications with expiration dates. Manage training programs, skill assessments, and development plans. Monitor compliance requirements and qualification status for specific job roles.",
       "version": 1
     },
     {
@@ -81,7 +81,7 @@
       "name": "Telematics",
       "urlPart": "telematics",
       "key": "telematics",
-      "description": "",
+      "description": "Real-time equipment monitoring and tracking platform. Collect GPS location data, engine hours, fuel usage, and diagnostic information. Monitor equipment utilization, idle time, and operational patterns. Generate alerts for maintenance needs and track equipment movement across job sites.",
       "version": 1
     },
     {
@@ -89,7 +89,7 @@
       "name": "Users",
       "urlPart": "users",
       "key": "users",
-      "description": "",
+      "description": "Enterprise user management and access control system. Manage user accounts, roles, and permissions across all HCSS applications. Handle user authentication, authorization, and single sign-on integration. Support for organizational hierarchies and role-based access control.",
       "version": 1
     },
     {
@@ -97,7 +97,7 @@
       "name": "Webhooks",
       "urlPart": "webhooks",
       "key": "webhooks",
-      "description": "",
+      "description": "Real-time event notification and integration system. Subscribe to and receive notifications for key events across HCSS applications. Support for custom webhook endpoints, event filtering, and retry policies. Enable real-time data synchronization and automated workflows based on system events.",
       "version": 1
     }
   ]

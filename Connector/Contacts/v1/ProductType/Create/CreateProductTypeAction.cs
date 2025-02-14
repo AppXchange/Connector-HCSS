@@ -14,10 +14,10 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateProductTypeAction Action description goes here")]
+[Description("Creates a new product type")]
 public class CreateProductTypeAction : IStandardAction<CreateProductTypeActionInput, CreateProductTypeActionOutput>
 {
-    public CreateProductTypeActionInput ActionInput { get; set; } = new();
+    public CreateProductTypeActionInput ActionInput { get; set; } = new() { Code = string.Empty };
     public CreateProductTypeActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +26,24 @@ public class CreateProductTypeAction : IStandardAction<CreateProductTypeActionIn
 
 public class CreateProductTypeActionInput
 {
+    [JsonPropertyName("code")]
+    [Description("A unique product type code")]
+    [Required]
+    [MinLength(1)]
+    public required string Code { get; init; }
 
+    [JsonPropertyName("description")]
+    [Description("The product type's description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit's guid")]
+    public Guid? BusinessUnitId { get; init; }
 }
 
 public class CreateProductTypeActionOutput
 {
     [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [Description("The created product type's unique identifier")]
+    public Guid Id { get; init; }
 }

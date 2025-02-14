@@ -14,11 +14,72 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a purchase order detail")]
 public class PurchaseOrderDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The purchase order detail id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("purchaseOrderId")]
+    [Description("Purchase Order Id")]
+    [Required]
+    public required Guid PurchaseOrderId { get; init; }
+
+    [JsonPropertyName("orderQuantityReceived")]
+    [Description("Order quantity received")]
+    public int? OrderQuantityReceived { get; init; }
+
+    [JsonPropertyName("taxAmount")]
+    [Description("The tax amount")]
+    public double? TaxAmount { get; init; }
+
+    [JsonPropertyName("totalCost")]
+    [Description("Total cost for this line item")]
+    [Required]
+    public required double TotalCost { get; init; }
+
+    [JsonPropertyName("type")]
+    [Description("Purchase order detail type")]
+    [Required]
+    public required string Type { get; init; }
+
+    [JsonPropertyName("approvalStatus")]
+    [Description("Purchase order approval status")]
+    public string? ApprovalStatus { get; init; }
+
+    [JsonPropertyName("partId")]
+    [Description("The part id (not required if there's a charge item)")]
+    public Guid? PartId { get; init; }
+
+    [JsonPropertyName("vendorPartNumber")]
+    [Description("Vendor part number")]
+    public string? VendorPartNumber { get; init; }
+
+    [JsonPropertyName("purchaseUnitOfMeasureId")]
+    [Description("The purchase unit of measure id (not required if there's a charge item)")]
+    public Guid? PurchaseUnitOfMeasureId { get; init; }
+
+    [JsonPropertyName("partLocationId")]
+    [Description("The inventory location id (to pre-populate inventory location on the invoice)")]
+    public Guid? PartLocationId { get; init; }
+
+    [JsonPropertyName("quantity")]
+    [Description("The quantity of the item")]
+    [Required]
+    public required int Quantity { get; init; }
+
+    [JsonPropertyName("unitPrice")]
+    [Description("The unit price of the item")]
+    [Required]
+    public required double UnitPrice { get; init; }
+
+    [JsonPropertyName("isTaxable")]
+    [Description("Whether the item is taxable")]
+    public bool? IsTaxable { get; init; }
+
+    [JsonPropertyName("chargeItem")]
+    [Description("A miscellaneous charge item (there will be no partId when this is on the detail)")]
+    public string? ChargeItem { get; init; }
 }

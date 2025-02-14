@@ -1,78 +1,75 @@
 using Connector.Client;
-using System;
+using Connector.Connections;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
 
 namespace Connector.HeavyJob.v1.CostCodeTransaction;
 
 public class CostCodeTransactionDataReader : TypedAsyncDataReaderBase<CostCodeTransactionDataObject>
 {
     private readonly ILogger<CostCodeTransactionDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private readonly ConnectionConfig _connectionConfig;
 
     public CostCodeTransactionDataReader(
-        ILogger<CostCodeTransactionDataReader> logger)
+        ILogger<CostCodeTransactionDataReader> logger,
+        ApiClient apiClient,
+        ConnectionConfig connectionConfig)
     {
         _logger = logger;
+        _apiClient = apiClient;
+        _connectionConfig = connectionConfig;
     }
 
-    public override async IAsyncEnumerable<CostCodeTransactionDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<CostCodeTransactionDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        string? cursor = null;
+
         while (true)
         {
-            var response = new ApiResponse<PaginatedResponse<CostCodeTransactionDataObject>>();
-            // If the CostCodeTransactionDataObject does not have the same structure as the CostCodeTransaction response from the API, create a new class for it and replace CostCodeTransactionDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<CostCodeTransactionResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<CostCodeTransactionDataObject>(
-                //    relativeUrl: "costCodeTransactions",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'CostCodeTransactionDataObject'");
-                throw;
-            }
+            var response = await _apiClient.GetCostCodeTransactions(
+                _connectionConfig.BusinessUnitId,
+                null, // jobIds
+                null, // jobTagIds
+                null, // foremanIds
+                null, // startDate
+                null, // endDate
+                cursor,
+                1000, // limit
+                null, // costCodeIds
+                false, // includeCostsAndHours
+                cancellationToken);
 
             if (!response.IsSuccessful)
             {
-                throw new Exception($"Failed to retrieve records for 'CostCodeTransactionDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve cost code transactions. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve cost code transactions. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            if (response.Data?.Results == null)
             {
-                // If new class was created to match the API response, create a new CostCodeTransactionDataObject object, map the properties and return a CostCodeTransactionDataObject.
-
-                // Example:
-                //var resource = new CostCodeTransactionDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
+                _logger.LogWarning("No cost code transactions found");
+                yield break;
             }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            foreach (var transaction in response.Data.Results)
+            {
+                yield return transaction;
+            }
+
+            if (string.IsNullOrEmpty(response.Data.Metadata.NextCursor))
             {
                 break;
             }
+
+            cursor = response.Data.Metadata.NextCursor;
         }
     }
 }

@@ -14,11 +14,43 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a part cost entry detail")]
 public class PartCostEntriesDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The part cost entry detail id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("vendorId")]
+    [Description("The vendor id for the cost entry")]
+    public Guid? VendorId { get; init; }
+
+    [JsonPropertyName("vendorCode")]
+    [Description("The vendor code for the cost entry")]
+    public string? VendorCode { get; init; }
+
+    [JsonPropertyName("partId")]
+    [Description("The part id for the cost entry")]
+    public Guid? PartId { get; init; }
+
+    [JsonPropertyName("partNum")]
+    [Description("The part num for the cost entry")]
+    public string? PartNum { get; init; }
+
+    [JsonPropertyName("itemCodeId")]
+    [Description("The value of the item code id")]
+    public int ItemCodeId { get; init; }
+
+    [JsonPropertyName("amount")]
+    [Description("The value of the amount")]
+    public double Amount { get; init; }
+
+    [JsonPropertyName("estimatedCost")]
+    [Description("The value of the estimated cost")]
+    public double EstimatedCost { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description of the cost entry")]
+    public string? Description { get; init; }
 }

@@ -14,11 +14,24 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreatePurchaseOrderDetailsAction Action description goes here")]
-public class CreatePurchaseOrderDetailsAction : IStandardAction<CreatePurchaseOrderDetailsActionInput, CreatePurchaseOrderDetailsActionOutput>
+[Description("Adds a detail to the purchase order")]
+public class CreatePurchaseOrderDetailsAction : IStandardAction<CreatePurchaseOrderDetailsActionInput, PurchaseOrderDetailsDataObject>
 {
-    public CreatePurchaseOrderDetailsActionInput ActionInput { get; set; } = new();
-    public CreatePurchaseOrderDetailsActionOutput ActionOutput { get; set; } = new();
+    public CreatePurchaseOrderDetailsActionInput ActionInput { get; set; } = new()
+    {
+        PurchaseOrderId = Guid.Empty,
+        Quantity = 0,
+        UnitPrice = 0
+    };
+    public PurchaseOrderDetailsDataObject ActionOutput { get; set; } = new()
+    {
+        Id = Guid.Empty,
+        PurchaseOrderId = Guid.Empty,
+        TotalCost = 0,
+        Type = "details",
+        Quantity = 0,
+        UnitPrice = 0
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +39,42 @@ public class CreatePurchaseOrderDetailsAction : IStandardAction<CreatePurchaseOr
 
 public class CreatePurchaseOrderDetailsActionInput
 {
+    [JsonIgnore]
+    [Description("Purchase Order Id for the detail being created")]
+    [Required]
+    public required Guid PurchaseOrderId { get; init; }
 
-}
+    [JsonPropertyName("partId")]
+    [Description("The part id (not required if there's a charge item)")]
+    public Guid? PartId { get; init; }
 
-public class CreatePurchaseOrderDetailsActionOutput
-{
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("vendorPartNumber")]
+    [Description("Vendor part number")]
+    public string? VendorPartNumber { get; init; }
+
+    [JsonPropertyName("purchaseUnitOfMeasureId")]
+    [Description("The purchase unit of measure id (not required if there's a charge item)")]
+    public Guid? PurchaseUnitOfMeasureId { get; init; }
+
+    [JsonPropertyName("partLocationId")]
+    [Description("The inventory location id (to pre-populate inventory location on the invoice)")]
+    public Guid? PartLocationId { get; init; }
+
+    [JsonPropertyName("quantity")]
+    [Description("The quantity of the item")]
+    [Required]
+    public required int Quantity { get; init; }
+
+    [JsonPropertyName("unitPrice")]
+    [Description("The unit price of the item")]
+    [Required]
+    public required double UnitPrice { get; init; }
+
+    [JsonPropertyName("isTaxable")]
+    [Description("Whether the item is taxable")]
+    public bool? IsTaxable { get; init; }
+
+    [JsonPropertyName("chargeItem")]
+    [Description("A miscellaneous charge item (there will be no partId when this is on the detail)")]
+    public string? ChargeItem { get; init; }
 }

@@ -1,78 +1,63 @@
 using Connector.Client;
-using System;
+using Connector.Connections;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
+using System.Text.Json;
 
 namespace Connector.HeavyBidPreConstruction.v1.Schema;
 
 public class SchemaDataReader : TypedAsyncDataReaderBase<SchemaDataObject>
 {
     private readonly ILogger<SchemaDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private readonly ConnectionConfig _connectionConfig;
 
     public SchemaDataReader(
-        ILogger<SchemaDataReader> logger)
+        ILogger<SchemaDataReader> logger,
+        ApiClient apiClient,
+        ConnectionConfig connectionConfig)
     {
         _logger = logger;
+        _apiClient = apiClient;
+        _connectionConfig = connectionConfig;
     }
 
-    public override async IAsyncEnumerable<SchemaDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<SchemaDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        if (_connectionConfig.BusinessUnitId == default)
         {
-            var response = new ApiResponse<PaginatedResponse<SchemaDataObject>>();
-            // If the SchemaDataObject does not have the same structure as the Schema response from the API, create a new class for it and replace SchemaDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<SchemaResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<SchemaDataObject>(
-                //    relativeUrl: "schemas",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'SchemaDataObject'");
-                throw;
-            }
-
-            if (!response.IsSuccessful)
-            {
-                throw new Exception($"Failed to retrieve records for 'SchemaDataObject'. API StatusCode: {response.StatusCode}");
-            }
-
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new SchemaDataObject object, map the properties and return a SchemaDataObject.
-
-                // Example:
-                //var resource = new SchemaDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
-                break;
-            }
+            throw new InvalidOperationException("BusinessUnitId must be configured in the connection settings");
         }
+        if (dataObjectRunArguments?.RequestParameterOverrides == null || 
+            !dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("id", out var idElement))
+        {
+            throw new InvalidOperationException("Schema ID must be provided");
+        }
+
+        var response = await _apiClient.GetSchema(
+            _connectionConfig.BusinessUnitId,
+            Guid.Parse(idElement.GetString()!),
+            cancellationToken);
+
+        if (!response.IsSuccessful)
+        {
+            _logger.LogError("Failed to retrieve schema. Status code: {StatusCode}", response.StatusCode);
+            throw new Exception($"Failed to retrieve schema. API StatusCode: {response.StatusCode}");
+        }
+
+        if (response.Data == null)
+        {
+            _logger.LogWarning("No schema found");
+            yield break;
+        }
+
+        yield return response.Data;
     }
 }

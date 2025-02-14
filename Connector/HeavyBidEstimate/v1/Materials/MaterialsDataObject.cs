@@ -12,13 +12,73 @@ using Xchange.Connector.SDK.CacheWriter;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[PrimaryKey("id", nameof(Id))]
-//[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[PrimaryKey("resourceId", nameof(ResourceId))]
+[Description("Represents materials for an estimate in HeavyBid")]
 public class MaterialsDataObject
 {
-    [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [JsonPropertyName("resourceId")]
+    [Description("The resource ID")]
     [Required]
-    public required Guid Id { get; init; }
+    public required Guid ResourceId { get; init; }
+
+    [JsonPropertyName("resourceCode")]
+    [Description("The resource code")]
+    public string? ResourceCode { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("currency")]
+    [Description("The currency")]
+    public string? Currency { get; init; }
+
+    [JsonPropertyName("units")]
+    [Description("The units")]
+    public string? Units { get; init; }
+
+    [JsonPropertyName("unitCost")]
+    [Description("The unit cost")]
+    public decimal UnitCost { get; init; }
+
+    [JsonPropertyName("total")]
+    [Description("The total cost")]
+    public decimal Total { get; init; }
+
+    [JsonPropertyName("biditems")]
+    [Description("The associated bid items")]
+    public BidItemDetail[]? BidItems { get; init; }
+}
+
+public class BidItemDetail
+{
+    [JsonPropertyName("biditemId")]
+    public Guid BidItemId { get; init; }
+
+    [JsonPropertyName("biditemCode")]
+    public int BidItemCode { get; init; }
+
+    [JsonPropertyName("activityId")]
+    public Guid ActivityId { get; init; }
+
+    [JsonPropertyName("activityCode")]
+    public int ActivityCode { get; init; }
+
+    [JsonPropertyName("quantity")]
+    public decimal Quantity { get; init; }
+
+    [JsonPropertyName("units")]
+    public string? Units { get; init; }
+
+    [JsonPropertyName("unitCost")]
+    public decimal UnitCost { get; init; }
+
+    [JsonPropertyName("percent")]
+    public decimal Percent { get; init; }
+
+    [JsonPropertyName("total")]
+    public decimal Total { get; init; }
+
+    [JsonPropertyName("escalationPercent")]
+    public decimal EscalationPercent { get; init; }
 }

@@ -1,78 +1,75 @@
 using Connector.Client;
-using System;
+using Connector.Connections;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
 
 namespace Connector.HeavyJob.v1.CostCodeTransactionAdjustment;
 
 public class CostCodeTransactionAdjustmentDataReader : TypedAsyncDataReaderBase<CostCodeTransactionAdjustmentDataObject>
 {
     private readonly ILogger<CostCodeTransactionAdjustmentDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private readonly ConnectionConfig _connectionConfig;
 
     public CostCodeTransactionAdjustmentDataReader(
-        ILogger<CostCodeTransactionAdjustmentDataReader> logger)
+        ILogger<CostCodeTransactionAdjustmentDataReader> logger,
+        ApiClient apiClient,
+        ConnectionConfig connectionConfig)
     {
         _logger = logger;
+        _apiClient = apiClient;
+        _connectionConfig = connectionConfig;
     }
 
-    public override async IAsyncEnumerable<CostCodeTransactionAdjustmentDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<CostCodeTransactionAdjustmentDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        string? cursor = null;
+
         while (true)
         {
-            var response = new ApiResponse<PaginatedResponse<CostCodeTransactionAdjustmentDataObject>>();
-            // If the CostCodeTransactionAdjustmentDataObject does not have the same structure as the CostCodeTransactionAdjustment response from the API, create a new class for it and replace CostCodeTransactionAdjustmentDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<CostCodeTransactionAdjustmentResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<CostCodeTransactionAdjustmentDataObject>(
-                //    relativeUrl: "costCodeTransactionAdjustments",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'CostCodeTransactionAdjustmentDataObject'");
-                throw;
-            }
+            var response = await _apiClient.GetCostCodeTransactionAdjustments(
+                _connectionConfig.BusinessUnitId,
+                null, // jobIds
+                null, // jobTagIds
+                null, // foremanIds
+                null, // startDate
+                null, // endDate
+                cursor,
+                1000, // limit
+                null, // costCodeIds
+                false, // includeCostsAndHours
+                cancellationToken);
 
             if (!response.IsSuccessful)
             {
-                throw new Exception($"Failed to retrieve records for 'CostCodeTransactionAdjustmentDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve cost code transaction adjustments. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve cost code transaction adjustments. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            if (response.Data?.Results == null)
             {
-                // If new class was created to match the API response, create a new CostCodeTransactionAdjustmentDataObject object, map the properties and return a CostCodeTransactionAdjustmentDataObject.
-
-                // Example:
-                //var resource = new CostCodeTransactionAdjustmentDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
+                _logger.LogWarning("No cost code transaction adjustments found");
+                yield break;
             }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            foreach (var adjustment in response.Data.Results)
+            {
+                yield return adjustment;
+            }
+
+            if (string.IsNullOrEmpty(response.Data.Metadata.NextCursor))
             {
                 break;
             }
+
+            cursor = response.Data.Metadata.NextCursor;
         }
     }
 }

@@ -14,11 +14,21 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateWorkOrderAction Action description goes here")]
-public class UpdateWorkOrderAction : IStandardAction<UpdateWorkOrderActionInput, UpdateWorkOrderActionOutput>
+[Description("Updates an existing work order in Equipment360")]
+public class UpdateWorkOrderAction : IStandardAction<UpdateWorkOrderActionInput, WorkOrderDataObject>
 {
-    public UpdateWorkOrderActionInput ActionInput { get; set; } = new();
-    public UpdateWorkOrderActionOutput ActionOutput { get; set; } = new();
+    public UpdateWorkOrderActionInput ActionInput { get; set; } = new()
+    {
+        Id = Guid.Empty
+    };
+    public WorkOrderDataObject ActionOutput { get; set; } = new()
+    {
+        Id = Guid.Empty,
+        BusinessUnitId = Guid.Empty,
+        WorkOrderNumber = 0,
+        StatusDate = DateTime.UtcNow,
+        IsPreventiveMaintenance = false
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +36,36 @@ public class UpdateWorkOrderAction : IStandardAction<UpdateWorkOrderActionInput,
 
 public class UpdateWorkOrderActionInput
 {
+    [JsonIgnore]
+    [Description("The Id of the work order to update")]
+    [Required]
+    public required Guid Id { get; init; }
 
-}
+    [JsonPropertyName("equipmentId")]
+    [Description("Equipment Id (can only be used for equipment type work orders)")]
+    public Guid? EquipmentId { get; init; }
 
-public class UpdateWorkOrderActionOutput
-{
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("equipmentJobId")]
+    [Description("Equipment Job Id (can only be used for equipment type work orders)")]
+    public Guid? EquipmentJobId { get; init; }
+
+    [JsonPropertyName("jobId")]
+    [Description("Job Id (can only be used for job type work orders)")]
+    public Guid? JobId { get; init; }
+
+    [JsonPropertyName("shopId")]
+    [Description("Shop Id (can only be used for shop type work orders)")]
+    public Guid? ShopId { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The work order description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("statusId")]
+    [Description("Work order Status Id")]
+    public Guid? StatusId { get; init; }
+
+    [JsonPropertyName("priorityId")]
+    [Description("Work order Priority Id")]
+    public Guid? PriorityId { get; init; }
 }

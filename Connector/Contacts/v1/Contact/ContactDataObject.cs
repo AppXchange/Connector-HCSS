@@ -14,11 +14,68 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a contact in the HCSS system with vendor association")]
 public class ContactDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("Contact's unique identifier")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("companyId")]
+    [Description("Company's unique identifier")]
+    [Required]
+    public required Guid CompanyId { get; init; }
+
+    [JsonPropertyName("companyName")]
+    [Description("Company's name")]
+    public string? CompanyName { get; init; }
+
+    [JsonPropertyName("firstName")]
+    [Description("Contact's first name")]
+    public string? FirstName { get; init; }
+
+    [JsonPropertyName("lastName")]
+    [Description("Contact's last name")]
+    public string? LastName { get; init; }
+
+    [JsonPropertyName("title")]
+    [Description("Contact's title")]
+    public string? Title { get; init; }
+
+    [JsonPropertyName("phoneNumber")]
+    [Description("Contact's phone number")]
+    public string? PhoneNumber { get; init; }
+
+    [JsonPropertyName("faxNumber")]
+    [Description("Contact's fax number")]
+    public string? FaxNumber { get; init; }
+
+    [JsonPropertyName("cellPhoneNumber")]
+    [Description("Contact's cell phone number")]
+    public string? CellPhoneNumber { get; init; }
+
+    [JsonPropertyName("emailAddress")]
+    [Description("Contact's email address")]
+    public string? EmailAddress { get; init; }
+
+    [JsonPropertyName("isMainContact")]
+    [Description("Whether it is the main contact")]
+    public bool IsMainContact { get; init; }
+
+    [JsonPropertyName("note")]
+    [Description("Note on the contact")]
+    public string? Note { get; init; }
+
+    [JsonPropertyName("role")]
+    [Description("A string specifying a contact's role")]
+    public string? Role { get; init; }
+
+    [JsonPropertyName("lastContacted")]
+    [Description("A DateTime when this contact was last contacted")]
+    public DateTime? LastContacted { get; init; }
+
+    [JsonPropertyName("vendorLocationId")]
+    [Description("A LocationId this contact tie to")]
+    public Guid? VendorLocationId { get; init; }
 }

@@ -2,6 +2,7 @@ namespace Connector.Equipment360.v1.PurchaseOrder.Create;
 
 using Json.Schema.Generation;
 using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Xchange.Connector.SDK.Action;
 
@@ -14,11 +15,19 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreatePurchaseOrderAction Action description goes here")]
-public class CreatePurchaseOrderAction : IStandardAction<CreatePurchaseOrderActionInput, CreatePurchaseOrderActionOutput>
+[Description("Creates a new purchase order")]
+public class CreatePurchaseOrderAction : IStandardAction<CreatePurchaseOrderActionInput, CreatePurchaseOrderResponse>
 {
-    public CreatePurchaseOrderActionInput ActionInput { get; set; } = new();
-    public CreatePurchaseOrderActionOutput ActionOutput { get; set; } = new();
+    public CreatePurchaseOrderActionInput ActionInput { get; set; } = new()
+    {
+        DateIssued = DateTime.UtcNow,
+        VendorId = Guid.Empty
+    };
+    public CreatePurchaseOrderResponse ActionOutput { get; set; } = new()
+    {
+        Id = Guid.Empty,
+        PurchaseOrderNumber = 0
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +35,40 @@ public class CreatePurchaseOrderAction : IStandardAction<CreatePurchaseOrderActi
 
 public class CreatePurchaseOrderActionInput
 {
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit id")]
+    public Guid? BusinessUnitId { get; init; }
 
+    [JsonPropertyName("dateIssued")]
+    [Description("The date purchase order was issued")]
+    [Required]
+    public required DateTime DateIssued { get; init; }
+
+    [JsonPropertyName("vendorId")]
+    [Description("The vendor id for the purchase order")]
+    [Required]
+    public required Guid VendorId { get; init; }
+
+    [JsonPropertyName("referenceNumber")]
+    [Description("The reference number to be used on the invoice")]
+    public string? ReferenceNumber { get; init; }
+
+    [JsonPropertyName("taxRatePercent")]
+    [Description("The tax rate, expressed as a percent (e.g., 8 means 8% tax)")]
+    public double? TaxRatePercent { get; init; }
+
+    [JsonPropertyName("estimatedTotal")]
+    [Description("The estimated total amount of the purchase order (in dollars)")]
+    public double? EstimatedTotal { get; init; }
+
+    [JsonPropertyName("notes")]
+    [Description("The notes for the purchase order")]
+    public IEnumerable<ApiNoteCreate>? Notes { get; init; }
 }
 
-public class CreatePurchaseOrderActionOutput
+public class ApiNoteCreate
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("note")]
+    [Description("The note text")]
+    public string? Note { get; init; }
 }

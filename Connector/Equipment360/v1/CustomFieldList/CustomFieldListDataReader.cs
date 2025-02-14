@@ -14,65 +14,43 @@ namespace Connector.Equipment360.v1.CustomFieldList;
 public class CustomFieldListDataReader : TypedAsyncDataReaderBase<CustomFieldListDataObject>
 {
     private readonly ILogger<CustomFieldListDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public CustomFieldListDataReader(
-        ILogger<CustomFieldListDataReader> logger)
+        ILogger<CustomFieldListDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<CustomFieldListDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<CustomFieldListDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        ApiResponse<IEnumerable<CustomFieldListDataObject>> response;
+        try
         {
-            var response = new ApiResponse<PaginatedResponse<CustomFieldListDataObject>>();
-            // If the CustomFieldListDataObject does not have the same structure as the CustomFieldList response from the API, create a new class for it and replace CustomFieldListDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<CustomFieldListResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<CustomFieldListDataObject>(
-                //    relativeUrl: "customFieldLists",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'CustomFieldListDataObject'");
-                throw;
-            }
+            response = await _apiClient.GetCustomFieldList(cancellationToken: cancellationToken);
 
             if (!response.IsSuccessful)
             {
-                throw new Exception($"Failed to retrieve records for 'CustomFieldListDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve custom field list. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve custom field list. API StatusCode: {response.StatusCode}");
             }
+        }
+        catch (HttpRequestException exception)
+        {
+            _logger.LogError(exception, "Exception while retrieving custom field list");
+            throw;
+        }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
+        if (response.Data == null)
+            yield break;
 
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new CustomFieldListDataObject object, map the properties and return a CustomFieldListDataObject.
-
-                // Example:
-                //var resource = new CustomFieldListDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
-                break;
-            }
+        foreach (var listItem in response.Data)
+        {
+            yield return listItem;
         }
     }
 }

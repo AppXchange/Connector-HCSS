@@ -14,11 +14,70 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a part")]
 public class PartsDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The Part id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("isDeleted")]
+    [Description("Indicates if the part has been disabled")]
+    public bool IsDeleted { get; init; }
+
+    [JsonPropertyName("partNumber")]
+    [Description("The Part's number")]
+    [Required]
+    public required string PartNumber { get; init; }
+
+    [JsonPropertyName("oemPartNumber")]
+    [Description("The original equipment manufacturer part number")]
+    public string? OemPartNumber { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description of the Part")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("name")]
+    [Description("The name of the part")]
+    public string? Name { get; init; }
+
+    [JsonPropertyName("barCode")]
+    [Description("The part's bar code")]
+    public string? BarCode { get; init; }
+
+    [JsonPropertyName("category")]
+    [Description("The part category")]
+    public string? Category { get; init; }
+
+    [JsonPropertyName("categoryId")]
+    [Description("The id of the part category")]
+    public Guid? CategoryId { get; init; }
+
+    [JsonPropertyName("stockUnitOfMeasure")]
+    [Description("The Unit of Measure for this part (e.g. \"EA\")")]
+    [Required]
+    public required string StockUnitOfMeasure { get; init; }
+
+    [JsonPropertyName("stockUnitOfMeasureId")]
+    [Description("The stock Unit of Measure's ID. (e.g. \"EA\")")]
+    public Guid? StockUnitOfMeasureId { get; init; }
+
+    [JsonPropertyName("purchaseUnitOfMeasure")]
+    [Description("The Unit of Measure used by default for purchases of this part. (e.g. \"EA\")")]
+    [Required]
+    public required string PurchaseUnitOfMeasure { get; init; }
+
+    [JsonPropertyName("purchaseUnitOfMeasureId")]
+    [Description("The purchase Unit of Measure's ID. (e.g. \"EA\")")]
+    public Guid? PurchaseUnitOfMeasureId { get; init; }
+
+    [JsonPropertyName("preferredVendor")]
+    [Description("The Preferred Vendor for this part")]
+    public string? PreferredVendor { get; init; }
+
+    [JsonPropertyName("preferredVendorId")]
+    [Description("The id of the Preferred Vendor for this part")]
+    public int? PreferredVendorId { get; init; }
 }

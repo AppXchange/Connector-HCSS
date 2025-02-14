@@ -3,7 +3,6 @@ using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
@@ -14,65 +13,64 @@ namespace Connector.Contacts.v1.Office;
 public class OfficeDataReader : TypedAsyncDataReaderBase<OfficeDataObject>
 {
     private readonly ILogger<OfficeDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public OfficeDataReader(
-        ILogger<OfficeDataReader> logger)
+        ILogger<OfficeDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<OfficeDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<OfficeDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        if (dataObjectRunArguments == null)
         {
-            var response = new ApiResponse<PaginatedResponse<OfficeDataObject>>();
-            // If the OfficeDataObject does not have the same structure as the Office response from the API, create a new class for it and replace OfficeDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<OfficeResponse>>();
+            _logger.LogError("DataObjectRunArguments is required");
+            throw new ArgumentNullException(nameof(dataObjectRunArguments));
+        }
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<OfficeDataObject>(
-                //    relativeUrl: "offices",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'OfficeDataObject'");
-                throw;
-            }
+        var officeIdElement = dataObjectRunArguments.RequestParameterOverrides?.RootElement
+            .GetProperty("officeId");
 
+        if (officeIdElement == null || !Guid.TryParse(officeIdElement.Value.GetString(), out var officeId))
+        {
+            _logger.LogError("Valid officeId (GUID) is required");
+            throw new ArgumentException("Valid officeId (GUID) is required");
+        }
+
+        var businessUnitIdElement = dataObjectRunArguments.RequestParameterOverrides?.RootElement
+            .GetProperty("businessUnitId");
+        
+        Guid? businessUnitId = null;
+        if (businessUnitIdElement != null && Guid.TryParse(businessUnitIdElement.Value.GetString(), out var buid))
+        {
+            businessUnitId = buid;
+        }
+
+        OfficeDataObject? office = null;
+        try
+        {
+            var response = await _apiClient.GetOffice(officeId, businessUnitId, cancellationToken);
             if (!response.IsSuccessful)
             {
-                throw new Exception($"Failed to retrieve records for 'OfficeDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve office. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve office. API StatusCode: {response.StatusCode}");
             }
+            office = response.Data;
+        }
+        catch (HttpRequestException exception)
+        {
+            _logger.LogError(exception, "Exception while retrieving office");
+            throw;
+        }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new OfficeDataObject object, map the properties and return a OfficeDataObject.
-
-                // Example:
-                //var resource = new OfficeDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
-                break;
-            }
+        if (office != null)
+        {
+            yield return office;
         }
     }
 }

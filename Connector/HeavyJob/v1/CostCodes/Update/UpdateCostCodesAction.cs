@@ -14,7 +14,7 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateCostCodesAction Action description goes here")]
+[Description("Creates or updates budgets for a list of cost code and custom cost type combination")]
 public class UpdateCostCodesAction : IStandardAction<UpdateCostCodesActionInput, UpdateCostCodesActionOutput>
 {
     public UpdateCostCodesActionInput ActionInput { get; set; } = new();
@@ -24,13 +24,32 @@ public class UpdateCostCodesAction : IStandardAction<UpdateCostCodesActionInput,
     public bool CreateRtap => true;
 }
 
+public class CostCodeBudget
+{
+    [JsonPropertyName("costCodeId")]
+    [Required]
+    [Description("The cost code id")]
+    public Guid CostCodeId { get; init; }
+
+    [JsonPropertyName("customCostTypeId")]
+    [Required]
+    [Description("The custom cost type id")]
+    public Guid CustomCostTypeId { get; init; }
+
+    [JsonPropertyName("budgetedCost")]
+    [Required]
+    [Description("The custom cost type budgeted cost")]
+    public double BudgetedCost { get; init; }
+}
+
 public class UpdateCostCodesActionInput
 {
-
+    [Required]
+    [Description("The list of cost codes to update")]
+    public CostCodeBudget[] Budgets { get; init; } = Array.Empty<CostCodeBudget>();
 }
 
 public class UpdateCostCodesActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    // No output properties needed since API returns 204 No Content
 }

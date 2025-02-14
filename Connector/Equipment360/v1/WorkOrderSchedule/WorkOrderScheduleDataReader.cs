@@ -3,7 +3,6 @@ using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
@@ -14,62 +13,50 @@ namespace Connector.Equipment360.v1.WorkOrderSchedule;
 public class WorkOrderScheduleDataReader : TypedAsyncDataReaderBase<WorkOrderScheduleDataObject>
 {
     private readonly ILogger<WorkOrderScheduleDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private int _currentPage = 1;
 
     public WorkOrderScheduleDataReader(
-        ILogger<WorkOrderScheduleDataReader> logger)
+        ILogger<WorkOrderScheduleDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<WorkOrderScheduleDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<WorkOrderScheduleDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         while (true)
         {
-            var response = new ApiResponse<PaginatedResponse<WorkOrderScheduleDataObject>>();
-            // If the WorkOrderScheduleDataObject does not have the same structure as the WorkOrderSchedule response from the API, create a new class for it and replace WorkOrderScheduleDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<WorkOrderScheduleResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
+            ApiResponse<PaginatedResponse<WorkOrderScheduleDataObject>> response;
             try
             {
-                //response = await _apiClient.GetRecords<WorkOrderScheduleDataObject>(
-                //    relativeUrl: "workOrderSchedules",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
+                response = await _apiClient.GetWorkOrderSchedules(
+                    cursor: _currentPage,
+                    count: 100,
+                    cancellationToken: cancellationToken);
             }
             catch (HttpRequestException exception)
             {
-                _logger.LogError(exception, "Exception while making a read request to data object 'WorkOrderScheduleDataObject'");
+                _logger.LogError(exception, "Exception while retrieving work order schedules");
                 throw;
             }
 
-            if (!response.IsSuccessful)
+            if (!response.IsSuccessful || response.Data?.Items == null)
             {
-                throw new Exception($"Failed to retrieve records for 'WorkOrderScheduleDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve work order schedules. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve work order schedules. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            foreach (var schedule in response.Data.Items)
             {
-                // If new class was created to match the API response, create a new WorkOrderScheduleDataObject object, map the properties and return a WorkOrderScheduleDataObject.
-
-                // Example:
-                //var resource = new WorkOrderScheduleDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
+                yield return schedule;
             }
 
-            // Handle pagination per API client design
             _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            if (_currentPage >= (response.Data?.TotalPages ?? 0))
             {
                 break;
             }

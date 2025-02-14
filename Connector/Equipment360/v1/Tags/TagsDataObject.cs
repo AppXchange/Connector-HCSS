@@ -14,11 +14,15 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a tag in Equipment360")]
 public class TagsDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The guid of the tag entity")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The tag's code")]
+    public string? Code { get; init; }
 }

@@ -3,76 +3,75 @@ using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
 using System.Net.Http;
+using static Connector.Client.ApiClient;
 
 namespace Connector.HeavyBidEstimate.v1.Activities;
 
 public class ActivitiesDataReader : TypedAsyncDataReaderBase<ActivitiesDataObject>
 {
     private readonly ILogger<ActivitiesDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private readonly ConnectionConfig _connectionConfig;
+    private int _skipValue = 0;
+    private readonly int _topValue = 100;
 
     public ActivitiesDataReader(
-        ILogger<ActivitiesDataReader> logger)
+        ILogger<ActivitiesDataReader> logger,
+        ApiClient apiClient,
+        ConnectionConfig connectionConfig)
     {
         _logger = logger;
+        _apiClient = apiClient;
+        _connectionConfig = connectionConfig;
     }
 
-    public override async IAsyncEnumerable<ActivitiesDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<ActivitiesDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        if (_connectionConfig.BusinessUnitId == default)
+        {
+            throw new InvalidOperationException("BusinessUnitId must be configured in the connection settings");
+        }
+
         while (true)
         {
-            var response = new ApiResponse<PaginatedResponse<ActivitiesDataObject>>();
-            // If the ActivitiesDataObject does not have the same structure as the Activities response from the API, create a new class for it and replace ActivitiesDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<ActivitiesResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
+            ApiResponse<HeavyBidResponse<ActivitiesDataObject>> response;
             try
             {
-                //response = await _apiClient.GetRecords<ActivitiesDataObject>(
-                //    relativeUrl: "activities",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
+                response = await _apiClient.GetActivities(
+                    businessUnitId: _connectionConfig.BusinessUnitId,
+                    top: _topValue,
+                    skip: _skipValue,
+                    cancellationToken: cancellationToken);
             }
             catch (HttpRequestException exception)
             {
-                _logger.LogError(exception, "Exception while making a read request to data object 'ActivitiesDataObject'");
+                _logger.LogError(exception, "Exception while retrieving activities");
                 throw;
             }
 
-            if (!response.IsSuccessful)
+            if (!response.IsSuccessful || response.Data?.Data == null)
             {
-                throw new Exception($"Failed to retrieve records for 'ActivitiesDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve activities. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve activities. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            foreach (var activity in response.Data.Data)
             {
-                // If new class was created to match the API response, create a new ActivitiesDataObject object, map the properties and return a ActivitiesDataObject.
-
-                // Example:
-                //var resource = new ActivitiesDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
+                yield return activity;
             }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            if (response.Data.NextSkipValue == null || response.Data.NextSkipValue <= _skipValue)
             {
                 break;
             }
+
+            _skipValue = response.Data.NextSkipValue.Value;
         }
     }
 }

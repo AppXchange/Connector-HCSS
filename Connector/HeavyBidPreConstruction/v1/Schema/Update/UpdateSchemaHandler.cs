@@ -1,83 +1,78 @@
 using Connector.Client;
+using Connector.Connections;
 using ESR.Hosting.Action;
-using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Net.Http;
+using System;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Xchange.Connector.SDK.Action;
-using Xchange.Connector.SDK.CacheWriter;
-using Xchange.Connector.SDK.Client.AppNetwork;
 
 namespace Connector.HeavyBidPreConstruction.v1.Schema.Update;
 
 public class UpdateSchemaHandler : IActionHandler<UpdateSchemaAction>
 {
     private readonly ILogger<UpdateSchemaHandler> _logger;
+    private readonly ApiClient _apiClient;
+    private readonly ConnectionConfig _connectionConfig;
 
     public UpdateSchemaHandler(
-        ILogger<UpdateSchemaHandler> logger)
+        ILogger<UpdateSchemaHandler> logger,
+        ApiClient apiClient,
+        ConnectionConfig connectionConfig)
     {
         _logger = logger;
+        _apiClient = apiClient;
+        _connectionConfig = connectionConfig;
     }
     
     public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(ActionInstance actionInstance, CancellationToken cancellationToken)
     {
-        var input = JsonSerializer.Deserialize<UpdateSchemaActionInput>(actionInstance.InputJson);
+        if (_connectionConfig.BusinessUnitId == default)
+        {
+            throw new InvalidOperationException("BusinessUnitId must be configured in the connection settings");
+        }
+
+        var input = JsonSerializer.Deserialize<UpdateSchemaActionInput>(actionInstance.InputJson)!;
+        
         try
         {
-            // Given the input for the action, make a call to your API/system
-            var response = new ApiResponse<UpdateSchemaActionOutput>();
-            // response = await _apiClient.PostSchemaDataObject(input, cancellationToken)
-            // .ConfigureAwait(false);
+            var response = await _apiClient.UpdateSchemaFieldAlias(
+                _connectionConfig.BusinessUnitId,
+                input.ExistingFieldAlias,
+                input.NewFieldAlias,
+                cancellationToken);
 
-            // The full record is needed for SyncOperations. If the endpoint used for the action returns a partial record (such as only returning the ID) then you can either:
-            // - Make a GET call using the ID that was returned
-            // - Add the ID property to your action input (Assuming this results in the proper data object shape)
-
-            // var resource = await _apiClient.GetSchemaDataObject(response.Data.id, cancellationToken);
-
-            // var resource = new UpdateSchemaActionOutput
-            // {
-            //      TODO : map
-            // };
-
-            // If the response is already the output object for the action, you can use the response directly
-
-            // Build sync operations to update the local cache as well as the Xchange cache system (if the data type is cached)
-            // For more information on SyncOperations and the KeyResolver, check: https://trimble-xchange.github.io/connector-docs/guides/creating-actions/#keyresolver-and-the-sync-cache-operations
-            var operations = new List<SyncOperation>();
-            var keyResolver = new DefaultDataObjectKey();
-            var key = keyResolver.BuildKeyResolver()(response.Data);
-            operations.Add(SyncOperation.CreateSyncOperation(UpdateOperation.Upsert.ToString(), key.UrlPart, key.PropertyNames, response.Data));
-
-            var resultList = new List<CacheSyncCollection>
+            if (!response.IsSuccessful)
             {
-                new CacheSyncCollection() { DataObjectType = typeof(SchemaDataObject), CacheChanges = operations.ToArray() }
-            };
+                return ActionHandlerOutcome.Failed(new StandardActionFailure
+                {
+                    Code = response.StatusCode.ToString(),
+                    Errors = new[]
+                    {
+                        new Error
+                        {
+                            Source = new[] { nameof(UpdateSchemaHandler) },
+                            Text = $"Failed to update schema field alias. Status code: {response.StatusCode}"
+                        }
+                    }
+                });
+            }
 
-            return ActionHandlerOutcome.Successful(response.Data, resultList);
+            return ActionHandlerOutcome.Successful(new UpdateSchemaActionOutput { Success = true });
         }
-        catch (HttpRequestException exception)
+        catch (Exception ex)
         {
-            // If an error occurs, we want to create a failure result for the action that matches
-            // the failure type for the action. 
-            // Common to create extension methods to map to Standard Action Failure
-
-            var errorSource = new List<string> { "UpdateSchemaHandler" };
-            if (string.IsNullOrEmpty(exception.Source)) errorSource.Add(exception.Source!);
-            
+            _logger.LogError(ex, "Error updating schema field alias");
             return ActionHandlerOutcome.Failed(new StandardActionFailure
             {
-                Code = exception.StatusCode?.ToString() ?? "500",
-                Errors = new []
+                Code = "500",
+                Errors = new[]
                 {
-                    new Xchange.Connector.SDK.Action.Error
+                    new Error
                     {
-                        Source = errorSource.ToArray(),
-                        Text = exception.Message
+                        Source = new[] { nameof(UpdateSchemaHandler) },
+                        Text = ex.Message
                     }
                 }
             });

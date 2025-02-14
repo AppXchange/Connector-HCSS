@@ -2,6 +2,7 @@ namespace Connector.HeavyBidEstimate.v1.DownloadEstimateAttachment;
 
 using Json.Schema.Generation;
 using System;
+using System.IO;
 using System.Text.Json.Serialization;
 using Xchange.Connector.SDK.CacheWriter;
 
@@ -14,11 +15,33 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a downloadable attachment in HeavyBid Estimate")]
 public class DownloadEstimateAttachmentDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The attachment id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit ID")]
+    [Required]
+    public required Guid BusinessUnitId { get; init; }
+
+    [JsonPropertyName("estimateId")]
+    [Description("The estimate ID")]
+    [Required] 
+    public required Guid EstimateId { get; init; }
+
+    [JsonPropertyName("fileName")]
+    [Description("The file name")]
+    public string? FileName { get; init; }
+
+    [JsonPropertyName("fileUrl")]
+    [Description("URL to download the file")]
+    public string? FileUrl { get; init; }
+
+    [JsonPropertyName("fileContent")]
+    [Description("The file content stream")]
+    public Stream? FileContent { get; init; }
 }

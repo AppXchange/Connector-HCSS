@@ -14,11 +14,54 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents an employee attendance hour tag in HeavyJob")]
 public class AttendanceHourTagsDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The attendance hour tag id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The code")]
+    [Required]
+    public required string Code { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("regularTimeDescription")]
+    [Description("The regular-time description")]
+    public string? RegularTimeDescription { get; init; }
+
+    [JsonPropertyName("overtimeDescription")]
+    [Description("The overtime description")]
+    public string? OvertimeDescription { get; init; }
+
+    [JsonPropertyName("doubleOvertimeDescription")]
+    [Description("The double overtime description")]
+    public string? DoubleOvertimeDescription { get; init; }
+
+    [JsonPropertyName("applyCost")]
+    [Description("How to apply cost")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public ApplyCostType ApplyCost { get; init; }
+
+    [JsonPropertyName("affectsOvertimeCalculation")]
+    [Description("Whether the non-work hour code will be used in the Timecard Tool's overtime calculation")]
+    public bool AffectsOvertimeCalculation { get; init; }
+
+    [JsonPropertyName("includeInHourTotal")]
+    [Description("Whether hours with this tag should be included in the total time card hours calculation")]
+    public bool IncludeInHourTotal { get; init; }
+}
+
+public enum ApplyCostType
+{
+    Undefined,
+    NoCost,
+    TotalCost,
+    OwnershipCost,
+    OperatingCost
 }

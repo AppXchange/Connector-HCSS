@@ -14,11 +14,20 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a business unit in the system")]
 public class BusinessUnitDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The business unit's unique identifier")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The business unit's code")]
+    [Required]
+    public required string Code { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("An optional description of the business unit")]
+    public string? Description { get; init; }
 }

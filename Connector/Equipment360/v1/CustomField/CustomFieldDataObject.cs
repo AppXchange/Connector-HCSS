@@ -14,11 +14,35 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a custom field record in the system")]
 public class CustomFieldDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The ID associated with the custom field record")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("customFieldType")]
+    [Description("The type of custom field record (e.g. Equipment, Employee, Location, etc.)")]
+    public string? CustomFieldType { get; init; }
+
+    [JsonPropertyName("customFieldName")]
+    [Description("The custom field category name associated with the custom field record")]
+    public string? CustomFieldName { get; init; }
+
+    [JsonPropertyName("customFieldCategoryId")]
+    [Description("The unique integer associated with the custom field category")]
+    public int CustomFieldCategoryId { get; init; }
+
+    [JsonPropertyName("entityId")]
+    [Description("The integer key associated with the target")]
+    public int EntityId { get; init; }
+
+    [JsonPropertyName("entityGuid")]
+    [Description("The ID associated with the target")]
+    public Guid? EntityGuid { get; init; }
+
+    [JsonPropertyName("value")]
+    [Description("The value assigned to the custom field record")]
+    public string? Value { get; init; }
 }

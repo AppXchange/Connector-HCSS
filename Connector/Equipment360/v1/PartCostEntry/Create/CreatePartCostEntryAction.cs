@@ -14,11 +14,22 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreatePartCostEntryAction Action description goes here")]
-public class CreatePartCostEntryAction : IStandardAction<CreatePartCostEntryActionInput, CreatePartCostEntryActionOutput>
+[Description("Creates a new part cost entry")]
+public class CreatePartCostEntryAction : IStandardAction<CreatePartCostEntryActionInput, PartCostEntryDataObject>
 {
-    public CreatePartCostEntryActionInput ActionInput { get; set; } = new();
-    public CreatePartCostEntryActionOutput ActionOutput { get; set; } = new();
+    public CreatePartCostEntryActionInput ActionInput { get; set; } = new()
+    {
+        WorkOrderNumber = 0,
+        Amount = 0,
+        EstimatedCost = 0
+    };
+    public PartCostEntryDataObject ActionOutput { get; set; } = new()
+    {
+        Id = Guid.Empty,
+        WorkOrderNumber = 0,
+        Amount = 0,
+        EstimatedCost = 0
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +37,28 @@ public class CreatePartCostEntryAction : IStandardAction<CreatePartCostEntryActi
 
 public class CreatePartCostEntryActionInput
 {
+    [JsonPropertyName("workOrderNumber")]
+    [Description("The work order number")]
+    [Required]
+    public required int WorkOrderNumber { get; init; }
 
-}
+    [JsonPropertyName("entryDate")]
+    [Description("The effective date of the sublet vendor cost entry, given in UTC")]
+    public DateTime? EntryDate { get; init; }
 
-public class CreatePartCostEntryActionOutput
-{
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("amount")]
+    [Description("The value of the amount")]
+    public double Amount { get; init; }
+
+    [JsonPropertyName("estimatedCost")]
+    [Description("The value of the estimated cost")]
+    public double EstimatedCost { get; init; }
+
+    [JsonPropertyName("referenceNumber")]
+    [Description("The reference number")]
+    public string? ReferenceNumber { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description of the cost entry")]
+    public string? Description { get; init; }
 }

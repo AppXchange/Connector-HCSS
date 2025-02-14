@@ -413,8 +413,6 @@ https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Busin
 xchange data-object new --module-id heavybidpreconstruction-1 --name BusinessUnit
 
 ## Projects
-https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Projects/#tag/Projects/operation/Projects_Get
-xchange data-object new --module-id heavybidpreconstruction-1 --name Projects
 https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Projects/#tag/Projects/operation/Projects_GetById
 xchange data-object new --module-id heavybidpreconstruction-1 --name Project
 https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Projects/#tag/Projects/operation/Projects_Post
@@ -425,6 +423,8 @@ https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Proje
 xchange action new --module-id heavybidpreconstruction-1 --object-name Project --name PartialChange
 https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Projects/#tag/Projects/operation/Projects_Delete
 xchange action new --module-id heavybidpreconstruction-1 --object-name Project --name Delete
+https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Projects/#tag/Projects/operation/Projects_Get
+xchange data-object new --module-id heavybidpreconstruction-1 --name Projects
 https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Projects/#tag/Projects/operation/Projects_PostArray
 xchange action new --module-id heavybidpreconstruction-1 --object-name Projects --name Create
 https://developer.hcssapps.com/products/heavybid-pre-construction/spec/tag/Projects/#tag/Projects/operation/Projects_DeleteMultiple

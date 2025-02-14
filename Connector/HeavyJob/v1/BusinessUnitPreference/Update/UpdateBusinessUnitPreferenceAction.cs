@@ -14,10 +14,13 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateBusinessUnitPreferenceAction Action description goes here")]
+[Description("Updates preferences for a business unit in HeavyJob")]
 public class UpdateBusinessUnitPreferenceAction : IStandardAction<UpdateBusinessUnitPreferenceActionInput, UpdateBusinessUnitPreferenceActionOutput>
 {
-    public UpdateBusinessUnitPreferenceActionInput ActionInput { get; set; } = new();
+    public UpdateBusinessUnitPreferenceActionInput ActionInput { get; set; } = new()
+    {
+        BusinessUnitId = Guid.Empty
+    };
     public UpdateBusinessUnitPreferenceActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +29,25 @@ public class UpdateBusinessUnitPreferenceAction : IStandardAction<UpdateBusiness
 
 public class UpdateBusinessUnitPreferenceActionInput
 {
+    [JsonPropertyName("businessUnitId")]
+    [Description("ID of the business unit that the preferences belong to")]
+    [Required]
+    public required Guid BusinessUnitId { get; init; }
 
+    [JsonPropertyName("defaultLaborRateSetId")]
+    [Description("ID of the default labor rate set to apply to a new job")]
+    public Guid? DefaultLaborRateSetId { get; init; }
+
+    [JsonPropertyName("defaultEquipmentRateSetId")]
+    [Description("ID of the default equipment rate set to apply to a new job")]
+    public Guid? DefaultEquipmentRateSetId { get; init; }
+
+    [JsonPropertyName("startOfPayWeek")]
+    [Description("The day of the week that the pay week starts")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public DayOfWeek StartOfPayWeek { get; init; }
 }
 
-public class UpdateBusinessUnitPreferenceActionOutput
+public class UpdateBusinessUnitPreferenceActionOutput : BusinessUnitPreferenceDataObject
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
 }

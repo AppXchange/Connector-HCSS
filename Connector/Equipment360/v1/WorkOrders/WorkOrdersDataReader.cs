@@ -3,73 +3,113 @@ using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
 using System.Net.Http;
+using System.Linq;
 
 namespace Connector.Equipment360.v1.WorkOrders;
 
 public class WorkOrdersDataReader : TypedAsyncDataReaderBase<WorkOrdersDataObject>
 {
     private readonly ILogger<WorkOrdersDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private int _currentPage = 1;
 
     public WorkOrdersDataReader(
-        ILogger<WorkOrdersDataReader> logger)
+        ILogger<WorkOrdersDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<WorkOrdersDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<WorkOrdersDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         while (true)
         {
-            var response = new ApiResponse<PaginatedResponse<WorkOrdersDataObject>>();
-            // If the WorkOrdersDataObject does not have the same structure as the WorkOrders response from the API, create a new class for it and replace WorkOrdersDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<WorkOrdersResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
+            ApiResponse<PaginatedResponse<WorkOrdersDataObject>> response;
             try
             {
-                //response = await _apiClient.GetRecords<WorkOrdersDataObject>(
-                //    relativeUrl: "workOrders",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
+                var responseData = await _apiClient.GetWorkOrdersList(
+                    cursor: _currentPage,
+                    count: 100,
+                    includeNotes: true,
+                    cancellationToken: cancellationToken);
+
+                // Map the response to our WorkOrdersDataObject
+                if (responseData.IsSuccessful && responseData.Data?.Items != null)
+                {
+                    response = new ApiResponse<PaginatedResponse<WorkOrdersDataObject>>
+                    {
+                        IsSuccessful = responseData.IsSuccessful,
+                        StatusCode = responseData.StatusCode,
+                        Data = new PaginatedResponse<WorkOrdersDataObject>
+                        {
+                            Page = responseData.Data.Page,
+                            PageSize = responseData.Data.PageSize,
+                            TotalRecords = responseData.Data.TotalRecords,
+                            TotalPages = responseData.Data.TotalPages,
+                            Items = responseData.Data.Items.Select(wo => new WorkOrdersDataObject
+                            {
+                                Id = wo.Id,
+                                BusinessUnitId = wo.BusinessUnitId,
+                                WorkOrderNumber = wo.WorkOrderNumber,
+                                EquipmentJobId = wo.EquipmentJobId,
+                                Tags = wo.Tags,
+                                Notes = wo.Notes?.Select(n => new WorkOrderNoteRead
+                                {
+                                    Id = n.Id,
+                                    CreatedBy = n.CreatedBy,
+                                    CreatedDate = n.CreatedDate,
+                                    ModifiedBy = n.ModifiedBy,
+                                    ModifiedDate = n.ModifiedDate,
+                                    Note = n.Note
+                                }),
+                                StatusDate = wo.StatusDate,
+                                IsPreventiveMaintenance = wo.IsPreventiveMaintenance,
+                                EquipmentId = wo.EquipmentId,
+                                JobId = wo.JobId,
+                                Description = wo.Description,
+                                Status = wo.Status,
+                                Priority = wo.Priority
+                            })
+                        }
+                    };
+                }
+                else
+                {
+                    response = new ApiResponse<PaginatedResponse<WorkOrdersDataObject>>
+                    {
+                        IsSuccessful = responseData.IsSuccessful,
+                        StatusCode = responseData.StatusCode,
+                        Data = null,
+                        RawResult = responseData.RawResult
+                    };
+                }
             }
             catch (HttpRequestException exception)
             {
-                _logger.LogError(exception, "Exception while making a read request to data object 'WorkOrdersDataObject'");
+                _logger.LogError(exception, "Exception while retrieving work orders");
                 throw;
             }
 
-            if (!response.IsSuccessful)
+            if (!response.IsSuccessful || response.Data?.Items == null)
             {
-                throw new Exception($"Failed to retrieve records for 'WorkOrdersDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve work orders. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve work orders. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            foreach (var workOrder in response.Data.Items)
             {
-                // If new class was created to match the API response, create a new WorkOrdersDataObject object, map the properties and return a WorkOrdersDataObject.
-
-                // Example:
-                //var resource = new WorkOrdersDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
+                yield return workOrder;
             }
 
-            // Handle pagination per API client design
             _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            if (_currentPage >= (response.Data?.TotalPages ?? 0))
             {
                 break;
             }

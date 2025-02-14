@@ -14,11 +14,18 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateInvoiceAction Action description goes here")]
-public class UpdateInvoiceAction : IStandardAction<UpdateInvoiceActionInput, UpdateInvoiceActionOutput>
+[Description("Update invoice status and add details to invoice")]
+public class UpdateInvoiceAction : IStandardAction<UpdateInvoiceActionInput, InvoiceDataObject>
 {
-    public UpdateInvoiceActionInput ActionInput { get; set; } = new();
-    public UpdateInvoiceActionOutput ActionOutput { get; set; } = new();
+    public UpdateInvoiceActionInput ActionInput { get; set; } = new()
+    {
+        VendorCode = string.Empty
+    };
+    public InvoiceDataObject ActionOutput { get; set; } = new() 
+    { 
+        Id = Guid.Empty,
+        VendorCode = string.Empty
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +33,64 @@ public class UpdateInvoiceAction : IStandardAction<UpdateInvoiceActionInput, Upd
 
 public class UpdateInvoiceActionInput
 {
+    [JsonPropertyName("invoiceNumber")]
+    [Description("The invoice number to be used on the invoice")]
+    public string? InvoiceNumber { get; init; }
 
+    [JsonPropertyName("referenceNumber")]
+    [Description("The reference number to be used on the invoice")]
+    public string? ReferenceNumber { get; init; }
+
+    [JsonPropertyName("receivalDate")]
+    [Description("The date invoice was issued. If not specified, the default value is the server time")]
+    public DateTime? ReceivalDate { get; init; }
+
+    [JsonPropertyName("vendorCode")]
+    [Description("The vendor code for the invoice")]
+    [Required]
+    public required string VendorCode { get; init; }
+
+    [JsonPropertyName("status")]
+    [Description("The purchasing status for the invoice (Open/Closed)")]
+    public string? Status { get; init; }
+
+    [JsonPropertyName("details")]
+    [Description("The notes for the purchase order")]
+    public UpdateInvoiceDetailInput[]? Details { get; init; }
 }
 
-public class UpdateInvoiceActionOutput
+public class UpdateInvoiceDetailInput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("partNum")]
+    public string? PartNum { get; init; }
+
+    [JsonPropertyName("vendorPartNumber")]
+    public string? VendorPartNumber { get; init; }
+
+    [JsonPropertyName("purchaseUnitOfMeasureId")]
+    public Guid PurchaseUnitOfMeasureId { get; init; }
+
+    [JsonPropertyName("partLocationId")]
+    public Guid PartLocationId { get; init; }
+
+    [JsonPropertyName("qtyOrdered")]
+    public double QtyOrdered { get; init; }
+
+    [JsonPropertyName("qtyReceived")]
+    public double QtyReceived { get; init; }
+
+    [JsonPropertyName("unitPrice")]
+    public double UnitPrice { get; init; }
+
+    [JsonPropertyName("isTaxable")]
+    public bool IsTaxable { get; init; }
+
+    [JsonPropertyName("taxRate")]
+    public double TaxRate { get; init; }
+
+    [JsonPropertyName("taxAmount")]
+    public double TaxAmount { get; init; }
+
+    [JsonPropertyName("totalCost")]
+    public double TotalCost { get; init; }
 }

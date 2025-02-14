@@ -2,6 +2,7 @@ using Connector.Client;
 using ESR.Hosting.Action;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
@@ -16,65 +17,47 @@ namespace Connector.Equipment360.v1.PartInventory.Create;
 public class CreatePartInventoryHandler : IActionHandler<CreatePartInventoryAction>
 {
     private readonly ILogger<CreatePartInventoryHandler> _logger;
+    private readonly ApiClient _apiClient;
 
     public CreatePartInventoryHandler(
-        ILogger<CreatePartInventoryHandler> logger)
+        ILogger<CreatePartInventoryHandler> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
     
-    public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(ActionInstance actionInstance, CancellationToken cancellationToken)
+    public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(
+        ActionInstance actionInstance,
+        CancellationToken cancellationToken)
     {
-        var input = JsonSerializer.Deserialize<CreatePartInventoryActionInput>(actionInstance.InputJson);
+        var input = JsonSerializer.Deserialize<CreatePartInventoryActionInput>(actionInstance.InputJson)!;
         try
         {
-            // Given the input for the action, make a call to your API/system
-            var response = new ApiResponse<CreatePartInventoryActionOutput>();
-            // response = await _apiClient.PostPartInventoryDataObject(input, cancellationToken)
-            // .ConfigureAwait(false);
+            var response = await _apiClient.CreatePartInventory(input, cancellationToken);
 
-            // The full record is needed for SyncOperations. If the endpoint used for the action returns a partial record (such as only returning the ID) then you can either:
-            // - Make a GET call using the ID that was returned
-            // - Add the ID property to your action input (Assuming this results in the proper data object shape)
-
-            // var resource = await _apiClient.GetPartInventoryDataObject(response.Data.id, cancellationToken);
-
-            // var resource = new CreatePartInventoryActionOutput
-            // {
-            //      TODO : map
-            // };
-
-            // If the response is already the output object for the action, you can use the response directly
-
-            // Build sync operations to update the local cache as well as the Xchange cache system (if the data type is cached)
-            // For more information on SyncOperations and the KeyResolver, check: https://trimble-xchange.github.io/connector-docs/guides/creating-actions/#keyresolver-and-the-sync-cache-operations
-            var operations = new List<SyncOperation>();
-            var keyResolver = new DefaultDataObjectKey();
-            var key = keyResolver.BuildKeyResolver()(response.Data);
-            operations.Add(SyncOperation.CreateSyncOperation(UpdateOperation.Upsert.ToString(), key.UrlPart, key.PropertyNames, response.Data));
-
-            var resultList = new List<CacheSyncCollection>
+            if (!response.IsSuccessful || response.Data == null)
             {
-                new CacheSyncCollection() { DataObjectType = typeof(PartInventoryDataObject), CacheChanges = operations.ToArray() }
-            };
+                _logger.LogError("Failed to create part inventory. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to create part inventory. API StatusCode: {response.StatusCode}");
+            }
 
-            return ActionHandlerOutcome.Successful(response.Data, resultList);
+            return ActionHandlerOutcome.Successful(response.Data);
         }
         catch (HttpRequestException exception)
         {
-            // If an error occurs, we want to create a failure result for the action that matches
-            // the failure type for the action. 
-            // Common to create extension methods to map to Standard Action Failure
-
-            var errorSource = new List<string> { "CreatePartInventoryHandler" };
-            if (string.IsNullOrEmpty(exception.Source)) errorSource.Add(exception.Source!);
+            _logger.LogError(exception, "Exception while creating part inventory");
+            
+            var errorSource = new List<string> { nameof(CreatePartInventoryHandler) };
+            if (!string.IsNullOrEmpty(exception.Source)) 
+                errorSource.Add(exception.Source);
             
             return ActionHandlerOutcome.Failed(new StandardActionFailure
             {
                 Code = exception.StatusCode?.ToString() ?? "500",
-                Errors = new []
+                Errors = new[]
                 {
-                    new Xchange.Connector.SDK.Action.Error
+                    new Error
                     {
                         Source = errorSource.ToArray(),
                         Text = exception.Message

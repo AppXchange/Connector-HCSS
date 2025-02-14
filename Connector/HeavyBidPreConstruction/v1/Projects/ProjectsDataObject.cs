@@ -2,6 +2,7 @@ namespace Connector.HeavyBidPreConstruction.v1.Projects;
 
 using Json.Schema.Generation;
 using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Xchange.Connector.SDK.CacheWriter;
 
@@ -14,11 +15,59 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("A collection of projects in HeavyBid Pre-Construction")]
 public class ProjectsDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The unique identifier for the project")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("lastModifiedByUserId")]
+    [Description("The last modified user Id of the project")]
+    public string? LastModifiedByUserId { get; init; }
+
+    [JsonPropertyName("lastModifiedByClientId")]
+    [Description("The last modified client_id")]
+    public string? LastModifiedByClientId { get; init; }
+
+    [JsonPropertyName("lastModifiedBySystemUser")]
+    [Description("Indicates if entity was last modified by system user")]
+    public bool LastModifiedBySystemUser { get; init; }
+
+    [JsonPropertyName("dateCreated")]
+    [Description("The created date of the project")]
+    public DateTime DateCreated { get; init; }
+
+    [JsonPropertyName("lastModified")]
+    [Description("The last modified date of the project")]
+    [Required]
+    public required DateTime LastModified { get; init; }
+
+    [JsonPropertyName("deleted")]
+    [Description("Whether the project is deleted")]
+    [Required]
+    public required bool Deleted { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The Business Unit Id the project belongs to")]
+    public Guid? BusinessUnitId { get; init; }
+
+    [JsonPropertyName("fields")]
+    [Description("Project fields from schema")]
+    [Required]
+    public required Dictionary<string, object> Fields { get; init; }
+
+    [JsonPropertyName("fieldsMetadata")]
+    [Description("Metadata for project fields")]
+    public Dictionary<string, object>? FieldsMetadata { get; init; }
+
+    [JsonPropertyName("locationId")]
+    [Description("The Location Id (HeavyJob) linked to the project")]
+    public Guid? LocationId { get; init; }
+
+    [JsonPropertyName("archived")]
+    [Description("Whether the project is archived")]
+    [Required]
+    public required bool Archived { get; init; }
 }

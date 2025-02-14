@@ -14,10 +14,15 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("DeleteContactProductsAction Action description goes here")]
+[Description("Deletes an existing product that is associated with a contact")]
 public class DeleteContactProductsAction : IStandardAction<DeleteContactProductsActionInput, DeleteContactProductsActionOutput>
 {
-    public DeleteContactProductsActionInput ActionInput { get; set; } = new();
+    public DeleteContactProductsActionInput ActionInput { get; set; } = new() 
+    { 
+        VendorId = Guid.Empty,
+        ContactId = Guid.Empty,
+        VendorProductId = Guid.Empty
+    };
     public DeleteContactProductsActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +31,27 @@ public class DeleteContactProductsAction : IStandardAction<DeleteContactProducts
 
 public class DeleteContactProductsActionInput
 {
+    [JsonPropertyName("vendorId")]
+    [Description("The vendor's unique identifier")]
+    [Required]
+    public required Guid VendorId { get; init; }
 
+    [JsonPropertyName("contactId")]
+    [Description("The contact's unique identifier")]
+    [Required]
+    public required Guid ContactId { get; init; }
+
+    [JsonPropertyName("vendorProductId")]
+    [Description("The product unique identifier")]
+    [Required]
+    public required Guid VendorProductId { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit's guid")]
+    public Guid? BusinessUnitId { get; init; }
 }
 
 public class DeleteContactProductsActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    // No properties needed since it's a 204 No Content response
 }

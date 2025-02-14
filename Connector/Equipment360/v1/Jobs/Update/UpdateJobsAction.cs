@@ -14,11 +14,20 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateJobsAction Action description goes here")]
-public class UpdateJobsAction : IStandardAction<UpdateJobsActionInput, UpdateJobsActionOutput>
+[Description("Update an existing job")]
+public class UpdateJobsAction : IStandardAction<UpdateJobsActionInput, JobsDataObject>
 {
-    public UpdateJobsActionInput ActionInput { get; set; } = new();
-    public UpdateJobsActionOutput ActionOutput { get; set; } = new();
+    public UpdateJobsActionInput ActionInput { get; set; } = new()
+    {
+        Id = Guid.Empty,
+        Code = string.Empty
+    };
+    public JobsDataObject ActionOutput { get; set; } = new() 
+    { 
+        Id = Guid.Empty,
+        BusinessUnitId = Guid.Empty,
+        Code = string.Empty
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +35,40 @@ public class UpdateJobsAction : IStandardAction<UpdateJobsActionInput, UpdateJob
 
 public class UpdateJobsActionInput
 {
-
-}
-
-public class UpdateJobsActionOutput
-{
     [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [Description("The job guid")]
+    [Required]
+    public required Guid Id { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The code")]
+    public string? Code { get; init; }
+
+    [JsonPropertyName("altCode")]
+    [Description("The alt code")]
+    public string? AltCode { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("An optional description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("enabled")]
+    [Description("Enabled? (Y/N)")]
+    public string? Enabled { get; init; }
+
+    [JsonPropertyName("regionCode")]
+    [Description("An optional region")]
+    public string? RegionCode { get; init; }
+
+    [JsonPropertyName("divisionCode")]
+    [Description("An optional division")]
+    public string? DivisionCode { get; init; }
+
+    [JsonPropertyName("address")]
+    [Description("A representation of an Address object returned by the API")]
+    public AddressObject? Address { get; init; }
+
+    [JsonPropertyName("status")]
+    [Description("The current status of the job")]
+    public string? Status { get; init; }
 }

@@ -3,76 +3,75 @@ using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
 using System.Net.Http;
+using static Connector.Client.ApiClient;
 
 namespace Connector.HeavyBidEstimate.v1.BiditemCodebook;
 
 public class BiditemCodebookDataReader : TypedAsyncDataReaderBase<BiditemCodebookDataObject>
 {
     private readonly ILogger<BiditemCodebookDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private readonly ConnectionConfig _connectionConfig;
+    private int _skipValue = 0;
+    private readonly int _topValue = 100;
 
     public BiditemCodebookDataReader(
-        ILogger<BiditemCodebookDataReader> logger)
+        ILogger<BiditemCodebookDataReader> logger,
+        ApiClient apiClient,
+        ConnectionConfig connectionConfig)
     {
         _logger = logger;
+        _apiClient = apiClient;
+        _connectionConfig = connectionConfig;
     }
 
-    public override async IAsyncEnumerable<BiditemCodebookDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<BiditemCodebookDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        if (_connectionConfig.BusinessUnitId == default)
+        {
+            throw new InvalidOperationException("BusinessUnitId must be configured in the connection settings");
+        }
+
         while (true)
         {
-            var response = new ApiResponse<PaginatedResponse<BiditemCodebookDataObject>>();
-            // If the BiditemCodebookDataObject does not have the same structure as the BiditemCodebook response from the API, create a new class for it and replace BiditemCodebookDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<BiditemCodebookResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
+            ApiResponse<HeavyBidResponse<BiditemCodebookDataObject>> response;
             try
             {
-                //response = await _apiClient.GetRecords<BiditemCodebookDataObject>(
-                //    relativeUrl: "biditemCodebooks",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
+                response = await _apiClient.GetBiditemCodebooks(
+                    businessUnitId: _connectionConfig.BusinessUnitId,
+                    top: _topValue,
+                    skip: _skipValue,
+                    cancellationToken: cancellationToken);
             }
             catch (HttpRequestException exception)
             {
-                _logger.LogError(exception, "Exception while making a read request to data object 'BiditemCodebookDataObject'");
+                _logger.LogError(exception, "Exception while retrieving biditem codebooks");
                 throw;
             }
 
-            if (!response.IsSuccessful)
+            if (!response.IsSuccessful || response.Data?.Data == null)
             {
-                throw new Exception($"Failed to retrieve records for 'BiditemCodebookDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve biditem codebooks. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve biditem codebooks. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            foreach (var codebook in response.Data.Data)
             {
-                // If new class was created to match the API response, create a new BiditemCodebookDataObject object, map the properties and return a BiditemCodebookDataObject.
-
-                // Example:
-                //var resource = new BiditemCodebookDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
+                yield return codebook;
             }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            if (response.Data.NextSkipValue == null || response.Data.NextSkipValue <= _skipValue)
             {
                 break;
             }
+
+            _skipValue = response.Data.NextSkipValue.Value;
         }
     }
 }

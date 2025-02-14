@@ -1,7 +1,7 @@
 using Connector.Client;
-using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -14,65 +14,53 @@ namespace Connector.Equipment360.v1.PurchaseOrder;
 public class PurchaseOrderDataReader : TypedAsyncDataReaderBase<PurchaseOrderDataObject>
 {
     private readonly ILogger<PurchaseOrderDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public PurchaseOrderDataReader(
-        ILogger<PurchaseOrderDataReader> logger)
+        ILogger<PurchaseOrderDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<PurchaseOrderDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<PurchaseOrderDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        // Get purchase order ID from arguments
+        Guid? purchaseOrderId = null;
+        if (dataObjectRunArguments != null && Guid.TryParse(dataObjectRunArguments.ToString(), out var id))
         {
-            var response = new ApiResponse<PaginatedResponse<PurchaseOrderDataObject>>();
-            // If the PurchaseOrderDataObject does not have the same structure as the PurchaseOrder response from the API, create a new class for it and replace PurchaseOrderDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<PurchaseOrderResponse>>();
+            purchaseOrderId = id;
+        }
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<PurchaseOrderDataObject>(
-                //    relativeUrl: "purchaseOrders",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'PurchaseOrderDataObject'");
-                throw;
-            }
+        if (!purchaseOrderId.HasValue)
+        {
+            _logger.LogError("Purchase order ID is required but was not provided in arguments");
+            yield break;
+        }
 
-            if (!response.IsSuccessful)
-            {
-                throw new Exception($"Failed to retrieve records for 'PurchaseOrderDataObject'. API StatusCode: {response.StatusCode}");
-            }
+        ApiResponse<IEnumerable<PurchaseOrderDataObject>> response;
+        try
+        {
+            response = await _apiClient.GetPurchaseOrderDetails(purchaseOrderId.Value, cancellationToken);
+        }
+        catch (HttpRequestException exception)
+        {
+            _logger.LogError(exception, "Exception while retrieving purchase order details for order {PurchaseOrderId}", purchaseOrderId);
+            throw;
+        }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
+        if (!response.IsSuccessful || response.Data == null)
+        {
+            _logger.LogError("Failed to retrieve purchase order details. Status code: {StatusCode}", response.StatusCode);
+            throw new Exception($"Failed to retrieve purchase order details. API StatusCode: {response.StatusCode}");
+        }
 
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new PurchaseOrderDataObject object, map the properties and return a PurchaseOrderDataObject.
-
-                // Example:
-                //var resource = new PurchaseOrderDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
-                break;
-            }
+        foreach (var detail in response.Data)
+        {
+            yield return detail;
         }
     }
 }

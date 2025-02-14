@@ -14,10 +14,14 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateProductTypeAction Action description goes here")]
+[Description("Updates an existing product type")]
 public class UpdateProductTypeAction : IStandardAction<UpdateProductTypeActionInput, UpdateProductTypeActionOutput>
 {
-    public UpdateProductTypeActionInput ActionInput { get; set; } = new();
+    public UpdateProductTypeActionInput ActionInput { get; set; } = new() 
+    { 
+        Id = Guid.Empty,
+        Code = string.Empty 
+    };
     public UpdateProductTypeActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +30,29 @@ public class UpdateProductTypeAction : IStandardAction<UpdateProductTypeActionIn
 
 public class UpdateProductTypeActionInput
 {
+    [JsonPropertyName("id")]
+    [Description("Existing product type's identifier")]
+    [Required]
+    public required Guid Id { get; init; }
 
+    [JsonPropertyName("code")]
+    [Description("Unique product type code")]
+    [Required]
+    [MinLength(1)]
+    public required string Code { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The product type's description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit's guid")]
+    public Guid? BusinessUnitId { get; init; }
 }
 
 public class UpdateProductTypeActionOutput
 {
     [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [Description("The updated product type's unique identifier")]
+    public Guid Id { get; init; }
 }

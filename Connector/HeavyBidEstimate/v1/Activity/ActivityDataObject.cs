@@ -14,11 +14,61 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a single activity in HeavyBid Estimate")]
 public class ActivityDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The activity id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("estimateId")]
+    [Description("The estimate ID")]
+    public Guid EstimateId { get; init; }
+
+    [JsonPropertyName("estimateCode")]
+    [Description("The estimate code")]
+    public string? EstimateCode { get; init; }
+
+    [JsonPropertyName("lastModified")]
+    [Description("Last modified timestamp")]
+    public DateTime LastModified { get; init; }
+
+    [JsonPropertyName("biditemId")]
+    [Description("The bid item ID")]
+    public Guid BiditemId { get; init; }
+
+    [JsonPropertyName("activityCode")]
+    [Description("The activity code")]
+    public int ActivityCode { get; init; }
+
+    [JsonPropertyName("biditemCode")]
+    [Description("The bid item code")]
+    public int BiditemCode { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("Activity description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("quantity")]
+    [Description("Activity quantity")]
+    public decimal Quantity { get; init; }
+
+    [JsonPropertyName("units")]
+    [Description("Units of measurement")]
+    public string? Units { get; init; }
+
+    [JsonPropertyName("directTotal")]
+    [Description("Direct total cost")]
+    public decimal DirectTotal { get; init; }
+
+    [JsonPropertyName("crewCost")]
+    [Description("Crew cost")]
+    public decimal CrewCost { get; init; }
+
+    [JsonPropertyName("manHours")]
+    [Description("Man hours")]
+    public decimal ManHours { get; init; }
+
+    // Add other properties as needed from the API response
 }

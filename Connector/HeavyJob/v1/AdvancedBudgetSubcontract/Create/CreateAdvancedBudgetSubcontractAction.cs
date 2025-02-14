@@ -14,23 +14,47 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateAdvancedBudgetSubcontractAction Action description goes here")]
+[Description("Creates a new subcontract advanced budget")]
 public class CreateAdvancedBudgetSubcontractAction : IStandardAction<CreateAdvancedBudgetSubcontractActionInput, CreateAdvancedBudgetSubcontractActionOutput>
 {
-    public CreateAdvancedBudgetSubcontractActionInput ActionInput { get; set; } = new();
-    public CreateAdvancedBudgetSubcontractActionOutput ActionOutput { get; set; } = new();
+    public CreateAdvancedBudgetSubcontractActionInput ActionInput { get; set; } = new() 
+    { 
+        CostCodeId = Guid.Empty,
+        VendorContractDetailId = Guid.Empty
+    };
+    public CreateAdvancedBudgetSubcontractActionOutput ActionOutput { get; set; } = new() 
+    { 
+        Id = Guid.Empty,
+        CostCodeId = Guid.Empty,
+        JobSubcontractId = Guid.Empty,
+        VendorContractDetailId = Guid.Empty
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
-
     public bool CreateRtap => true;
 }
 
 public class CreateAdvancedBudgetSubcontractActionInput
 {
+    [JsonPropertyName("costCodeId")]
+    [Description("The cost code id")]
+    [Required]
+    public required Guid CostCodeId { get; init; }
 
+    [JsonPropertyName("vendorContractDetailId")]
+    [Description("The vendor contract detail id")]
+    [Required]
+    public required Guid VendorContractDetailId { get; init; }
+
+    [JsonPropertyName("status")]
+    [Description("The status of the work item")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public WorkItemStatus Status { get; init; }
+
+    [JsonPropertyName("quantity")]
+    [Description("The quantity of the subcontract")]
+    public double Quantity { get; init; }
 }
 
-public class CreateAdvancedBudgetSubcontractActionOutput
+public class CreateAdvancedBudgetSubcontractActionOutput : AdvancedBudgetSubcontractDataObject
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
 }

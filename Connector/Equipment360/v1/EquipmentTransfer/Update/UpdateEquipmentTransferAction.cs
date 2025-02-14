@@ -1,4 +1,5 @@
 namespace Connector.Equipment360.v1.EquipmentTransfer.Update;
+using Connector.Equipment360.v1.EquipmentTransfer.Create;
 
 using Json.Schema.Generation;
 using System;
@@ -14,23 +15,20 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateEquipmentTransferAction Action description goes here")]
-public class UpdateEquipmentTransferAction : IStandardAction<UpdateEquipmentTransferActionInput, UpdateEquipmentTransferActionOutput>
+[Description("Transfer ownership of equipment between business units")]
+public class UpdateEquipmentTransferAction : IStandardAction<CreateEquipmentTransferActionInput, EquipmentTransferDataObject>
 {
-    public UpdateEquipmentTransferActionInput ActionInput { get; set; } = new();
-    public UpdateEquipmentTransferActionOutput ActionOutput { get; set; } = new();
+    public CreateEquipmentTransferActionInput ActionInput { get; set; } = new()
+    {
+        EquipmentId = Guid.Empty,
+        CurrentBusinessUnitId = Guid.Empty,
+        NewBusinessUnitId = Guid.Empty
+    };
+    public EquipmentTransferDataObject ActionOutput { get; set; } = new() 
+    { 
+        Id = Guid.Empty
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
-}
-
-public class UpdateEquipmentTransferActionInput
-{
-
-}
-
-public class UpdateEquipmentTransferActionOutput
-{
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
 }

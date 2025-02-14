@@ -14,11 +14,67 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents an activity codebook entry in HeavyBid Estimate")]
 public class ActivityCodeBookDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The activity codebook id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("systemBackupId")]
+    [Description("The system backup ID")]
+    public Guid SystemBackupId { get; init; }
+
+    [JsonPropertyName("activityCode")]
+    [Description("The activity code")]
+    public string? ActivityCode { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("Activity description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("categoryLevel")]
+    [Description("Category level")]
+    public string? CategoryLevel { get; init; }
+
+    [JsonPropertyName("units")]
+    [Description("Units of measurement")]
+    public string? Units { get; init; }
+
+    [JsonPropertyName("lastUpdate")]
+    [Description("Last update timestamp")]
+    public DateTime LastUpdate { get; init; }
+
+    [JsonPropertyName("lastUpdateUser")]
+    [Description("Last update user ID")]
+    public int LastUpdateUser { get; init; }
+
+    [JsonPropertyName("marineLand")]
+    [Description("Marine land indicator")]
+    public string? MarineLand { get; init; }
+
+    [JsonPropertyName("factorable")]
+    [Description("Factorable indicator")]
+    public string? Factorable { get; init; }
+
+    [JsonPropertyName("crew")]
+    [Description("Crew code")]
+    public string? Crew { get; init; }
+
+    [JsonPropertyName("calendar")]
+    [Description("Calendar code")]
+    public string? Calendar { get; init; }
+
+    [JsonPropertyName("defaultProdType")]
+    [Description("Default production type")]
+    public string? DefaultProdType { get; init; }
+
+    [JsonPropertyName("defaultProdRate")]
+    [Description("Default production rate")]
+    public decimal DefaultProdRate { get; init; }
+
+    [JsonPropertyName("workersCompCode")]
+    [Description("Workers compensation code")]
+    public string? WorkersCompCode { get; init; }
 }

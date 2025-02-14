@@ -14,7 +14,7 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateCostCodesAction Action description goes here")]
+[Description("Returns a list of cost codes for the specified business unit, jobs, cost codes, or accounting template")]
 public class CreateCostCodesAction : IStandardAction<CreateCostCodesActionInput, CreateCostCodesActionOutput>
 {
     public CreateCostCodesActionInput ActionInput { get; set; } = new();
@@ -26,11 +26,38 @@ public class CreateCostCodesAction : IStandardAction<CreateCostCodesActionInput,
 
 public class CreateCostCodesActionInput
 {
+    [JsonPropertyName("businessUnitId")]
+    [Description("Business Unit Id")]
+    public Guid? BusinessUnitId { get; init; }
 
+    [JsonPropertyName("jobIds")]
+    [Description("Job Ids")]
+    public Guid[]? JobIds { get; init; }
+
+    [JsonPropertyName("costCodeIds")]
+    [Description("List of cost code Ids")]
+    public Guid[]? CostCodeIds { get; init; }
+
+    [JsonPropertyName("cursor")]
+    [Description("Optional cursor for pagination")]
+    public string? Cursor { get; init; }
+
+    [JsonPropertyName("accountingTemplateName")]
+    [Description("Optional accounting template name")]
+    public string? AccountingTemplateName { get; init; }
+
+    [JsonPropertyName("limit")]
+    [Description("The maximum number of results that should be returned")]
+    public int? Limit { get; init; }
 }
 
 public class CreateCostCodesActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("results")]
+    [Required]
+    public CostCodesDataObject[] Results { get; init; } = Array.Empty<CostCodesDataObject>();
+
+    [JsonPropertyName("metadata")]
+    [Required]
+    public CostCodesMetadata Metadata { get; init; } = new();
 }

@@ -3,76 +3,76 @@ using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
 using System.Net.Http;
+using static Connector.Client.ApiClient;
+using Connector.HeavyBidEstimate.v1.Estimate;
 
 namespace Connector.HeavyBidEstimate.v1.Estimates;
 
-public class EstimatesDataReader : TypedAsyncDataReaderBase<EstimatesDataObject>
+public class EstimatesDataReader : TypedAsyncDataReaderBase<EstimateDataObject>
 {
     private readonly ILogger<EstimatesDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private readonly ConnectionConfig _connectionConfig;
+    private int _skipValue = 0;
+    private readonly int _topValue = 100;
 
     public EstimatesDataReader(
-        ILogger<EstimatesDataReader> logger)
+        ILogger<EstimatesDataReader> logger,
+        ApiClient apiClient,
+        ConnectionConfig connectionConfig)
     {
         _logger = logger;
+        _apiClient = apiClient;
+        _connectionConfig = connectionConfig;
     }
 
-    public override async IAsyncEnumerable<EstimatesDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<EstimateDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        if (_connectionConfig.BusinessUnitId == default)
+        {
+            throw new InvalidOperationException("BusinessUnitId must be configured in the connection settings");
+        }
+
         while (true)
         {
-            var response = new ApiResponse<PaginatedResponse<EstimatesDataObject>>();
-            // If the EstimatesDataObject does not have the same structure as the Estimates response from the API, create a new class for it and replace EstimatesDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<EstimatesResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
+            ApiResponse<HeavyBidResponse<EstimateDataObject>> response;
             try
             {
-                //response = await _apiClient.GetRecords<EstimatesDataObject>(
-                //    relativeUrl: "estimates",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
+                response = await _apiClient.GetEstimates(
+                    businessUnitId: _connectionConfig.BusinessUnitId,
+                    top: _topValue,
+                    skip: _skipValue,
+                    cancellationToken: cancellationToken);
             }
             catch (HttpRequestException exception)
             {
-                _logger.LogError(exception, "Exception while making a read request to data object 'EstimatesDataObject'");
+                _logger.LogError(exception, "Exception while retrieving estimates");
                 throw;
             }
 
-            if (!response.IsSuccessful)
+            if (!response.IsSuccessful || response.Data?.Data == null)
             {
-                throw new Exception($"Failed to retrieve records for 'EstimatesDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve estimates. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve estimates. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            foreach (var estimate in response.Data.Data)
             {
-                // If new class was created to match the API response, create a new EstimatesDataObject object, map the properties and return a EstimatesDataObject.
-
-                // Example:
-                //var resource = new EstimatesDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
+                yield return estimate;
             }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            if (response.Data.NextSkipValue == null || response.Data.NextSkipValue <= _skipValue)
             {
                 break;
             }
+
+            _skipValue = response.Data.NextSkipValue.Value;
         }
     }
 }

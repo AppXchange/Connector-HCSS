@@ -14,11 +14,79 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a cost code in HeavyJob")]
 public class CostCodesDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The cost code ID")]
     [Required]
-    public required Guid Id { get; init; }
+    public Guid Id { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The cost code code")]
+    [Required]
+    public string Code { get; init; } = string.Empty;
+
+    [JsonPropertyName("description")]
+    [Description("The cost code description")]
+    [Required]
+    public string Description { get; init; } = string.Empty;
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit ID")]
+    [Required]
+    public Guid BusinessUnitId { get; init; }
+
+    [JsonPropertyName("businessUnitCode")]
+    [Description("The business unit code")]
+    public string BusinessUnitCode { get; init; } = string.Empty;
+
+    [JsonPropertyName("jobId")]
+    [Description("The job ID")]
+    public Guid JobId { get; init; }
+
+    [JsonPropertyName("jobCode")]
+    [Description("The job code")]
+    public string JobCode { get; init; } = string.Empty;
+
+    [JsonPropertyName("isHiddenFromMobile")]
+    [Description("Whether the cost code is hidden from mobile")]
+    public bool IsHiddenFromMobile { get; init; }
+
+    [JsonPropertyName("quantity")]
+    [Description("The quantity")]
+    public double Quantity { get; init; }
+
+    [JsonPropertyName("unitOfMeasure")]
+    [Description("The unit of measure")]
+    public string? UnitOfMeasure { get; init; }
+
+    [JsonPropertyName("status")]
+    [Description("The status")]
+    public string Status { get; init; } = string.Empty;
+
+    [JsonPropertyName("isDeleted")]
+    [Description("Whether the cost code is deleted")]
+    public bool IsDeleted { get; init; }
+
+    [JsonPropertyName("accountingCode")]
+    [Description("The accounting code")]
+    public string? AccountingCode { get; init; }
+}
+
+public class CostCodesResponse
+{
+    [JsonPropertyName("results")]
+    [Required]
+    public CostCodesDataObject[] Results { get; init; } = Array.Empty<CostCodesDataObject>();
+
+    [JsonPropertyName("metadata")]
+    [Required]
+    public CostCodesMetadata Metadata { get; init; } = new();
+}
+
+public class CostCodesMetadata
+{
+    [JsonPropertyName("nextCursor")]
+    public string? NextCursor { get; init; }
 }

@@ -11,7 +11,9 @@ namespace Connector.Connections
         private readonly ILogger<IConnectionTestHandler> _logger;
         private readonly ApiClient _apiClient;
 
-        public ConnectionTestHandler(ILogger<IConnectionTestHandler> logger, ApiClient apiClient)
+        public ConnectionTestHandler(
+            ILogger<IConnectionTestHandler> logger,
+            ApiClient apiClient)
         {
             _logger = logger;
             _apiClient = apiClient;
@@ -19,55 +21,75 @@ namespace Connector.Connections
 
         public async Task<TestConnectionResult> TestConnection()
         {
-            // Make a call to your API/system to obtain the connection test result.
-
-            var response = await _apiClient.TestConnection();
-
-            // Depending on the response, make your own specific messages.
-
-            if (response == null)
+            try
             {
-                return new TestConnectionResult()
+                _logger.LogInformation("Testing connection to HCSS API");
+                var response = await _apiClient.TestConnection();
+
+                if (response == null)
+                {
+                    _logger.LogError("No response received from HCSS API");
+                    return new TestConnectionResult
+                    {
+                        Success = false,
+                        Message = "Failed to get response from HCSS API",
+                        StatusCode = 500
+                    };
+                }
+
+                if (response.IsSuccessful)
+                {
+                    return new TestConnectionResult
+                    {
+                        Success = true,
+                        Message = "Successfully authenticated with HCSS API",
+                        StatusCode = response.StatusCode
+                    };
+                }
+
+                switch (response.StatusCode)
+                {
+                    case 400:
+                        return new TestConnectionResult
+                        {
+                            Success = false,
+                            Message = "Invalid request. Please check your connection settings.",
+                            StatusCode = response.StatusCode
+                        };
+                    case 401:
+                        return new TestConnectionResult
+                        {
+                            Success = false,
+                            Message = "Invalid credentials: Unauthorized. Please check your client ID and secret.",
+                            StatusCode = response.StatusCode
+                        };
+                    case 403:
+                        return new TestConnectionResult
+                        {
+                            Success = false,
+                            Message = "Invalid credentials: Forbidden. Please check if you have the correct scope permissions.",
+                            StatusCode = response.StatusCode
+                        };
+                    default:
+                        _logger.LogError("Unexpected response from HCSS API. Status: {StatusCode}", 
+                            response.StatusCode);
+                        return new TestConnectionResult
+                        {
+                            Success = false,
+                            Message = $"Unexpected response from server (Status code: {response.StatusCode})",
+                            StatusCode = response.StatusCode
+                        };
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error testing connection to HCSS API");
+                return new TestConnectionResult
                 {
                     Success = false,
-                    Message = "Failed to get response from server",
+                    Message = $"Connection test failed: {ex.Message}",
                     StatusCode = 500
                 };
-            }
-
-            if (response.IsSuccessful)
-            {
-                return new TestConnectionResult()
-                {
-                    Success = true,
-                    Message = "Successful test.",
-                    StatusCode = response.StatusCode
-                };
-            }
-
-            switch (response.StatusCode)
-            {
-                case 403:
-                    return new TestConnectionResult()
-                    {
-                        Success = false,
-                        Message = "Invalid Credentials: Forbidden.",
-                        StatusCode = response.StatusCode
-                    };
-                case 401:
-                    return new TestConnectionResult()
-                    {
-                        Success = false,
-                        Message = "Invalid Credentials: Unauthorized",
-                        StatusCode = response.StatusCode
-                    };
-                default:
-                    return new TestConnectionResult()
-                    {
-                        Success = false,
-                        Message = "Unknown Issue.",
-                        StatusCode = response.StatusCode
-                    };
             }
         }
     }

@@ -12,13 +12,24 @@ using Xchange.Connector.SDK.CacheWriter;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[PrimaryKey("id", nameof(Id))]
-//[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[PrimaryKey("customFieldCategoryId", nameof(CustomFieldCategoryId))]
+[Description("Represents a custom field list type category and its options")]
 public class CustomFieldListDataObject
 {
-    [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [JsonPropertyName("customFieldType")]
+    [Description("The type of custom field record (e.g. Equipment, Employee, Location, etc.)")]
+    public string? CustomFieldType { get; init; }
+
+    [JsonPropertyName("customFieldName")]
+    [Description("The custom field category name associated with the custom field record")]
+    public string? CustomFieldName { get; init; }
+
+    [JsonPropertyName("customFieldCategoryId")]
+    [Description("The unique integer associated with the custom field category")]
     [Required]
-    public required Guid Id { get; init; }
+    public required int CustomFieldCategoryId { get; init; }
+
+    [JsonPropertyName("listOptions")]
+    [Description("Available options for custom field record of type List")]
+    public string[]? ListOptions { get; init; }
 }

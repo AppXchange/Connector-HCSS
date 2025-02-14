@@ -14,11 +14,32 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a part location")]
 public class PartLocationsDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The part location id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The part location's Business Unit id")]
+    [Required]
+    public required Guid BusinessUnitId { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The location code")]
+    public string? Code { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The location description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("isDefault")]
+    [Description("Indicates whether this location is the default location for received parts")]
+    public bool IsDefault { get; init; }
+
+    [JsonPropertyName("isDeleted")]
+    [Description("Indicates whether this location has been soft deleted")]
+    public bool IsDeleted { get; init; }
 }

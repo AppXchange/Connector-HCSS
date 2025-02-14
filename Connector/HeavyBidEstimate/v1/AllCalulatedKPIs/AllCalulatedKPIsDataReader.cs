@@ -3,76 +3,86 @@ using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
 using System.Net.Http;
+using static Connector.Client.ApiClient;
 
 namespace Connector.HeavyBidEstimate.v1.AllCalulatedKPIs;
 
 public class AllCalulatedKPIsDataReader : TypedAsyncDataReaderBase<AllCalulatedKPIsDataObject>
 {
     private readonly ILogger<AllCalulatedKPIsDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private readonly ConnectionConfig _connectionConfig;
+    private int _skipValue = 0;
+    private readonly int _topValue = 100;
 
     public AllCalulatedKPIsDataReader(
-        ILogger<AllCalulatedKPIsDataReader> logger)
+        ILogger<AllCalulatedKPIsDataReader> logger,
+        ApiClient apiClient,
+        ConnectionConfig connectionConfig)
     {
         _logger = logger;
+        _apiClient = apiClient;
+        _connectionConfig = connectionConfig;
     }
 
-    public override async IAsyncEnumerable<AllCalulatedKPIsDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<AllCalulatedKPIsDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        if (_connectionConfig.BusinessUnitId == default)
+        {
+            throw new InvalidOperationException("BusinessUnitId must be configured in the connection settings");
+        }
+        var estimateIdString = dataObjectRunArguments?.RequestParameterOverrides?.RootElement.GetProperty("estimateId").GetString();
+        if (string.IsNullOrEmpty(estimateIdString))
+        {
+            throw new InvalidOperationException("estimateId argument is required");
+        }
+
+        if (!Guid.TryParse(estimateIdString, out var estimateId))
+        {
+            throw new InvalidOperationException("estimateId must be a valid GUID");
+        }
+
         while (true)
         {
-            var response = new ApiResponse<PaginatedResponse<AllCalulatedKPIsDataObject>>();
-            // If the AllCalulatedKPIsDataObject does not have the same structure as the AllCalulatedKPIs response from the API, create a new class for it and replace AllCalulatedKPIsDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<AllCalulatedKPIsResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
+            ApiResponse<HeavyBidResponse<AllCalulatedKPIsDataObject>> response;
             try
             {
-                //response = await _apiClient.GetRecords<AllCalulatedKPIsDataObject>(
-                //    relativeUrl: "allCalulatedKPIs",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
+                response = await _apiClient.GetAllCalculatedKPIs(
+                    businessUnitId: _connectionConfig.BusinessUnitId,
+                    estimateId: estimateId,
+                    top: _topValue,
+                    skip: _skipValue,
+                    cancellationToken: cancellationToken);
             }
             catch (HttpRequestException exception)
             {
-                _logger.LogError(exception, "Exception while making a read request to data object 'AllCalulatedKPIsDataObject'");
+                _logger.LogError(exception, "Exception while retrieving KPIs");
                 throw;
             }
 
-            if (!response.IsSuccessful)
+            if (!response.IsSuccessful || response.Data?.Data == null)
             {
-                throw new Exception($"Failed to retrieve records for 'AllCalulatedKPIsDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve KPIs. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve KPIs. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            foreach (var kpi in response.Data.Data)
             {
-                // If new class was created to match the API response, create a new AllCalulatedKPIsDataObject object, map the properties and return a AllCalulatedKPIsDataObject.
-
-                // Example:
-                //var resource = new AllCalulatedKPIsDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
+                yield return kpi;
             }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            if (response.Data.NextSkipValue == null || response.Data.NextSkipValue <= _skipValue)
             {
                 break;
             }
+
+            _skipValue = response.Data.NextSkipValue.Value;
         }
     }
 }

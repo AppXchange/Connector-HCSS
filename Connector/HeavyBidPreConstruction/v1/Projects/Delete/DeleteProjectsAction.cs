@@ -2,6 +2,7 @@ namespace Connector.HeavyBidPreConstruction.v1.Projects.Delete;
 
 using Json.Schema.Generation;
 using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Xchange.Connector.SDK.Action;
 
@@ -14,23 +15,36 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("DeleteProjectsAction Action description goes here")]
+[Description("Deletes multiple projects in HeavyBid Pre-Construction")]
 public class DeleteProjectsAction : IStandardAction<DeleteProjectsActionInput, DeleteProjectsActionOutput>
 {
-    public DeleteProjectsActionInput ActionInput { get; set; } = new();
-    public DeleteProjectsActionOutput ActionOutput { get; set; } = new();
+    public DeleteProjectsActionInput ActionInput { get; set; } = new() { ProjectIds = new() };
+    public DeleteProjectsActionOutput ActionOutput { get; set; } = new() 
+    { 
+        Success = Array.Empty<string>(),
+        Failed = Array.Empty<string>()
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
-
     public bool CreateRtap => true;
 }
 
 public class DeleteProjectsActionInput
 {
-
+    [JsonPropertyName("projectIds")]
+    [Description("Array of project IDs to delete")]
+    [Required]
+    public required List<string> ProjectIds { get; init; }
 }
 
 public class DeleteProjectsActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("success")]
+    [Description("Successfully deleted project IDs")]
+    [Required]
+    public required string[] Success { get; init; }
+
+    [JsonPropertyName("failed")]
+    [Description("Failed to delete project IDs")]
+    [Required]
+    public required string[] Failed { get; init; }
 }

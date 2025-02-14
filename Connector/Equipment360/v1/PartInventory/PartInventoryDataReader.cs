@@ -1,78 +1,96 @@
 using Connector.Client;
-using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
 using System.Net.Http;
+using Connector.Client.Equipment360;
+using System.Linq;
+using System.Threading.Tasks;
+using Connector.Equipment360.v1.BusinessUnit;
+using Connector.Equipment360.v1.Parts;
 
 namespace Connector.Equipment360.v1.PartInventory;
 
 public class PartInventoryDataReader : TypedAsyncDataReaderBase<PartInventoryDataObject>
 {
     private readonly ILogger<PartInventoryDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public PartInventoryDataReader(
-        ILogger<PartInventoryDataReader> logger)
+        ILogger<PartInventoryDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<PartInventoryDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<PartInventoryDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        var businessUnits = await GetBusinessUnits(cancellationToken);
+        foreach (var businessUnit in businessUnits)
         {
-            var response = new ApiResponse<PaginatedResponse<PartInventoryDataObject>>();
-            // If the PartInventoryDataObject does not have the same structure as the PartInventory response from the API, create a new class for it and replace PartInventoryDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<PartInventoryResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
+            // Get all parts using the Parts endpoint
+            var parts = await GetParts(cancellationToken);
+            
+            foreach (var part in parts)
             {
-                //response = await _apiClient.GetRecords<PartInventoryDataObject>(
-                //    relativeUrl: "partInventorys",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'PartInventoryDataObject'");
-                throw;
-            }
+                ApiResponse<Equipment360PaginatedResponse<PartInventoryDataObject>> response;
+                try
+                {
+                    response = await _apiClient.GetPartInventory(
+                        businessUnitId: businessUnit.Id,
+                        partNum: part.PartNumber,
+                        cancellationToken: cancellationToken);
+                }
+                catch (HttpRequestException exception)
+                {
+                    _logger.LogError(exception, "Exception while retrieving part inventory for business unit {BusinessUnitId} and part {PartNum}", 
+                        businessUnit.Id, part.PartNumber);
+                    continue;
+                }
 
-            if (!response.IsSuccessful)
-            {
-                throw new Exception($"Failed to retrieve records for 'PartInventoryDataObject'. API StatusCode: {response.StatusCode}");
-            }
+                if (!response.IsSuccessful || response.Data?.Data == null)
+                {
+                    _logger.LogError("Failed to retrieve part inventory for business unit {BusinessUnitId} and part {PartNum}. Status code: {StatusCode}", 
+                        businessUnit.Id, part.PartNumber, response.StatusCode);
+                    continue;
+                }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new PartInventoryDataObject object, map the properties and return a PartInventoryDataObject.
-
-                // Example:
-                //var resource = new PartInventoryDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
-                break;
+                foreach (var inventory in response.Data.Data)
+                {
+                    yield return inventory;
+                }
             }
         }
+    }
+
+    private async Task<IEnumerable<BusinessUnitDataObject>> GetBusinessUnits(CancellationToken cancellationToken)
+    {
+        var response = await _apiClient.GetBusinessUnits(cancellationToken);
+        if (!response.IsSuccessful || response.Data == null)
+        {
+            _logger.LogError("Failed to retrieve business units. Status code: {StatusCode}", response.StatusCode);
+            throw new Exception($"Failed to retrieve business units. API StatusCode: {response.StatusCode}");
+        }
+        return response.Data;
+    }
+
+    private async Task<IEnumerable<PartsDataObject>> GetParts(CancellationToken cancellationToken)
+    {
+        var response = await _apiClient.GetParts(
+            partNumber: null, 
+            cancellationToken: cancellationToken);
+        if (!response.IsSuccessful || response.Data == null)
+        {
+            _logger.LogError("Failed to retrieve parts. Status code: {StatusCode}", response.StatusCode);
+            throw new Exception($"Failed to retrieve parts. API StatusCode: {response.StatusCode}");
+        }
+        return response.Data;
     }
 }

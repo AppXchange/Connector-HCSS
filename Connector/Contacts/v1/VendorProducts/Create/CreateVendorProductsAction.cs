@@ -2,6 +2,7 @@ namespace Connector.Contacts.v1.VendorProducts.Create;
 
 using Json.Schema.Generation;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Xchange.Connector.SDK.Action;
 
@@ -14,10 +15,10 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateVendorProductsAction Action description goes here")]
+[Description("Creates a new product for a vendor")]
 public class CreateVendorProductsAction : IStandardAction<CreateVendorProductsActionInput, CreateVendorProductsActionOutput>
 {
-    public CreateVendorProductsActionInput ActionInput { get; set; } = new();
+    public CreateVendorProductsActionInput ActionInput { get; set; } = new() { VendorId = Guid.Empty, ProductTypeId = Guid.Empty };
     public CreateVendorProductsActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +27,32 @@ public class CreateVendorProductsAction : IStandardAction<CreateVendorProductsAc
 
 public class CreateVendorProductsActionInput
 {
+    [JsonPropertyName("vendorId")]
+    [Description("The vendor's unique identifier")]
+    [System.ComponentModel.DataAnnotations.Required]
+    public required Guid VendorId { get; init; }
 
+    [JsonPropertyName("productTypeId")]
+    [Description("The product type's unique identifier")]
+    [System.ComponentModel.DataAnnotations.Required]
+    public required Guid ProductTypeId { get; init; }
+
+    [JsonPropertyName("regionId")]
+    [Description("The product region's unique identifier")]
+    public Guid? RegionId { get; init; }
+
+    [JsonPropertyName("date")]
+    [Description("The date")]
+    public DateTime? Date { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit's guid")]
+    public Guid? BusinessUnitId { get; init; }
 }
 
 public class CreateVendorProductsActionOutput
 {
     [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [Description("The created product's unique identifier")]
+    public Guid Id { get; init; }
 }

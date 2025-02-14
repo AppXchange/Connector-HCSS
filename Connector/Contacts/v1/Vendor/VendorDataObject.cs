@@ -14,11 +14,73 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a vendor")]
 public class VendorDataObject
 {
+    public class CompanyTypeDto
+    {
+        [JsonPropertyName("id")]
+        [Description("The company type's unique identifier")]
+        public string? Id { get; init; }
+
+        [JsonPropertyName("code")]
+        [Description("The company type's code")]
+        public string? Code { get; init; }
+
+        [JsonPropertyName("description")]
+        [Description("The company type's description")]
+        public string? Description { get; init; }
+    }
+
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The vendor's unique identifier")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The vendor's business unit unique identifier")]
+    [Required]
+    public required Guid BusinessUnitId { get; init; }
+
+    [JsonPropertyName("name")]
+    [Description("The vendor's name")]
+    public string? Name { get; init; }
+
+    [JsonPropertyName("webAddress")]
+    [Description("The vendor's website address")]
+    public string? WebAddress { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The vendor's unique code")]
+    [Required]
+    [MinLength(1)]
+    public required string Code { get; init; }
+
+    [JsonPropertyName("type")]
+    [Description("A company type data transfer object")]
+    public CompanyTypeDto? Type { get; init; }
+
+    [JsonPropertyName("isBonded")]
+    [Description("A flag indicating if this vendor is bonded")]
+    public bool IsBonded { get; init; }
+
+    [JsonPropertyName("bondRate")]
+    [Description("The rate at which this vendor is bonded")]
+    public double BondRate { get; init; }
+
+    [JsonPropertyName("note")]
+    [Description("Notes about this vendor")]
+    public string? Note { get; init; }
+
+    [JsonPropertyName("experienceModificationRating")]
+    [Description("The vendor's experience modification rating, which is used for workers' compensation premium")]
+    public double? ExperienceModificationRating { get; init; }
+
+    [JsonPropertyName("isUnion")]
+    [Description("A flag indicating if the vendor is in a union")]
+    public bool IsUnion { get; init; }
+
+    [JsonPropertyName("rating")]
+    [Description("The rating this vendor has been given")]
+    public int? Rating { get; init; }
 }

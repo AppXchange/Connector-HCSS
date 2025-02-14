@@ -14,11 +14,47 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a work order schedule in Equipment360")]
 public class WorkOrderScheduleDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The work order schedule id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("workOrderNumber")]
+    [Description("The work order number")]
+    public int WorkOrderNumber { get; init; }
+
+    [JsonPropertyName("workOrder_ID")]
+    [Description("The associated work order ID")]
+    public Guid WorkOrderId { get; init; }
+
+    [JsonPropertyName("scheduledDate")]
+    [Description("The scheduled date for the work order")]
+    public DateTime ScheduledDate { get; init; }
+
+    [JsonPropertyName("workComplete")]
+    [Description("Whether the work is complete")]
+    public bool WorkComplete { get; init; }
+
+    [JsonPropertyName("mechanic_ID")]
+    [Description("The ID of the assigned mechanic")]
+    public Guid? MechanicId { get; init; }
+
+    [JsonPropertyName("mechanic_FirstName")]
+    [Description("The first name of the assigned mechanic")]
+    public string? MechanicFirstName { get; init; }
+
+    [JsonPropertyName("mechanic_LastName")]
+    [Description("The last name of the assigned mechanic")]
+    public string? MechanicLastName { get; init; }
+
+    [JsonPropertyName("vendor_ID")]
+    [Description("The ID of the assigned vendor")]
+    public Guid? VendorId { get; init; }
+
+    [JsonPropertyName("vendor_Name")]
+    [Description("The name of the assigned vendor")]
+    public string? VendorName { get; init; }
 }

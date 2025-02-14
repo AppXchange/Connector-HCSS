@@ -14,10 +14,14 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateFileAction Action description goes here")]
+[Description("Creates a new file in the HCSS system")]
 public class CreateFileAction : IStandardAction<CreateFileActionInput, CreateFileActionOutput>
 {
-    public CreateFileActionInput ActionInput { get; set; } = new();
+    public CreateFileActionInput ActionInput { get; set; } = new(
+        Array.Empty<byte>(),
+        string.Empty,
+        Guid.Empty,
+        Guid.Empty);
     public CreateFileActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +30,34 @@ public class CreateFileAction : IStandardAction<CreateFileActionInput, CreateFil
 
 public class CreateFileActionInput
 {
+    [JsonPropertyName("file")]
+    [Description("The binary data of the file")]
+    public byte[] FileData { get; set; } = Array.Empty<byte>();
 
+    [JsonPropertyName("fileName")]
+    [Description("The name of the file")]
+    public string FileName { get; set; } = string.Empty;
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The unique identifier of the business unit")]
+    public Guid BusinessUnitId { get; set; }
+
+    [JsonPropertyName("jobId")]
+    [Description("The unique identifier of the job")]
+    public Guid JobId { get; set; }
+
+    public CreateFileActionInput(byte[] fileData, string fileName, Guid businessUnitId, Guid jobId)
+    {
+        FileData = fileData;
+        FileName = fileName;
+        BusinessUnitId = businessUnitId;
+        JobId = jobId;
+    }
 }
 
 public class CreateFileActionOutput
 {
     [JsonPropertyName("id")]
+    [Description("The unique identifier of the created file")]
     public Guid Id { get; set; }
 }

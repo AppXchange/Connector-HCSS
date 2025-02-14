@@ -14,11 +14,42 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents an attachment in HeavyJob")]
 public class AttachmentDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The unique identifier of the attachment")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("transactionDate")]
+    [Description("The transaction date")]
+    [Required]
+    public required DateTime TransactionDate { get; init; }
+
+    [JsonPropertyName("jobId")]
+    [Description("The job id")]
+    [Required]
+    public required Guid JobId { get; init; }
+
+    [JsonPropertyName("foremanId")]
+    [Description("The foreman id")]
+    [Required]
+    public required Guid ForemanId { get; init; }
+
+    [JsonPropertyName("attachmentInfos")]
+    [Description("The attachment infos")]
+    public AttachmentInfo[]? AttachmentInfos { get; init; }
+}
+
+public class AttachmentInfo
+{
+    [JsonPropertyName("fileId")]
+    [Description("The file id")]
+    [Required]
+    public required Guid FileId { get; init; }
+
+    [JsonPropertyName("note")]
+    [Description("The note associated with the attachment")]
+    public string? Note { get; init; }
 }

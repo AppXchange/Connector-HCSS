@@ -8,71 +8,63 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
 using System.Net.Http;
+using Namotion.Reflection;
 
 namespace Connector.Contacts.v1.Contact;
 
 public class ContactDataReader : TypedAsyncDataReaderBase<ContactDataObject>
 {
     private readonly ILogger<ContactDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public ContactDataReader(
-        ILogger<ContactDataReader> logger)
+        ILogger<ContactDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<ContactDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<ContactDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        if (dataObjectRunArguments == null)
         {
-            var response = new ApiResponse<PaginatedResponse<ContactDataObject>>();
-            // If the ContactDataObject does not have the same structure as the Contact response from the API, create a new class for it and replace ContactDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<ContactResponse>>();
+            _logger.LogError("DataObjectRunArguments is required");
+            throw new ArgumentNullException(nameof(dataObjectRunArguments));
+        }
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<ContactDataObject>(
-                //    relativeUrl: "contacts",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'ContactDataObject'");
-                throw;
-            }
+        var contactIdElement = dataObjectRunArguments.RequestParameterOverrides?.RootElement
+            .GetProperty("contactId");
 
-            if (!response.IsSuccessful)
-            {
-                throw new Exception($"Failed to retrieve records for 'ContactDataObject'. API StatusCode: {response.StatusCode}");
-            }
+        if (contactIdElement == null || !Guid.TryParse(contactIdElement.Value.GetString(), out var contactId))
+        {
+            _logger.LogError("Valid contactId (GUID) is required");
+            throw new ArgumentException("Valid contactId (GUID) is required");
+        }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
+        // Get BusinessUnitId if provided
+        var businessUnitIdElement = dataObjectRunArguments.RequestParameterOverrides?.RootElement
+            .GetProperty("businessUnitId");
+        
+        Guid? businessUnitId = null;
+        if (businessUnitIdElement != null && Guid.TryParse(businessUnitIdElement.Value.GetString(), out var buid))
+        {
+            businessUnitId = buid;
+        }
 
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new ContactDataObject object, map the properties and return a ContactDataObject.
+        var response = await _apiClient.GetContact(contactId, businessUnitId, cancellationToken);
 
-                // Example:
-                //var resource = new ContactDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
+        if (!response.IsSuccessful)
+        {
+            _logger.LogError("Failed to retrieve contact. Status code: {StatusCode}", response.StatusCode);
+            throw new Exception($"Failed to retrieve contact. API StatusCode: {response.StatusCode}");
+        }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
-                break;
-            }
+        if (response.Data != null)
+        {
+            yield return response.Data;
         }
     }
 }

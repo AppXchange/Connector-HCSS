@@ -14,23 +14,35 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateSchemaAction Action description goes here")]
+[Description("Updates a field alias in the schema")]
 public class UpdateSchemaAction : IStandardAction<UpdateSchemaActionInput, UpdateSchemaActionOutput>
 {
-    public UpdateSchemaActionInput ActionInput { get; set; } = new();
+    public UpdateSchemaActionInput ActionInput { get; set; } = new() 
+    { 
+        ExistingFieldAlias = string.Empty,
+        NewFieldAlias = string.Empty
+    };
     public UpdateSchemaActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
-
     public bool CreateRtap => true;
 }
 
 public class UpdateSchemaActionInput
 {
+    [JsonPropertyName("existingFieldAlias")]
+    [Description("The existing field alias")]
+    [Required]
+    public required string ExistingFieldAlias { get; init; }
 
+    [JsonPropertyName("newFieldAlias")]
+    [Description("The new field alias")]
+    [Required]
+    public required string NewFieldAlias { get; init; }
 }
 
 public class UpdateSchemaActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("success")]
+    [Description("Whether the update was successful")]
+    public bool Success { get; init; }
 }

@@ -14,11 +14,31 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents an equipment transfer record between business units")]
 public class EquipmentTransferDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The unique identifier of the transfer")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("equipmentId")]
+    [Description("The ID of the equipment being transferred")]
+    public int EquipmentId { get; init; }
+
+    [JsonPropertyName("equipmentName")]
+    [Description("The name/code of the equipment")]
+    public string? EquipmentName { get; init; }
+
+    [JsonPropertyName("oldBusinessUnit")]
+    [Description("The business unit the equipment was transferred from")]
+    public string? OldBusinessUnit { get; init; }
+
+    [JsonPropertyName("newBusinessUnit")]
+    [Description("The business unit the equipment was transferred to")]
+    public string? NewBusinessUnit { get; init; }
+
+    [JsonPropertyName("transferDateTime")]
+    [Description("The date and time when the transfer occurred")]
+    public DateTime TransferDateTime { get; init; }
 }

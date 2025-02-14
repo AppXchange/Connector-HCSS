@@ -14,11 +14,36 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a sublet vendor cost entry")]
 public class SubletVendorCostEntryDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The sublet vendor cost entry id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("workOrderNumber")]
+    [Description("The work order number")]
+    [Required]
+    public required int WorkOrderNumber { get; init; }
+
+    [JsonPropertyName("entryDate")]
+    [Description("The effective date of the sublet vendor cost entry")]
+    public DateTime? EntryDate { get; init; }
+
+    [JsonPropertyName("amount")]
+    [Description("The value of the amount")]
+    public double? Amount { get; init; }
+
+    [JsonPropertyName("estimatedCost")]
+    [Description("The value of the estimated cost")]
+    public double? EstimatedCost { get; init; }
+
+    [JsonPropertyName("referenceNumber")]
+    [Description("The reference number")]
+    public string? ReferenceNumber { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description of the cost entry")]
+    public string? Description { get; init; }
 }

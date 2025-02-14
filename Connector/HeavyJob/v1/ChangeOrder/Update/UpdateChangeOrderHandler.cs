@@ -16,65 +16,89 @@ namespace Connector.HeavyJob.v1.ChangeOrder.Update;
 public class UpdateChangeOrderHandler : IActionHandler<UpdateChangeOrderAction>
 {
     private readonly ILogger<UpdateChangeOrderHandler> _logger;
+    private readonly ApiClient _apiClient;
 
     public UpdateChangeOrderHandler(
-        ILogger<UpdateChangeOrderHandler> logger)
+        ILogger<UpdateChangeOrderHandler> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
     
     public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(ActionInstance actionInstance, CancellationToken cancellationToken)
     {
         var input = JsonSerializer.Deserialize<UpdateChangeOrderActionInput>(actionInstance.InputJson);
+        if (input == null)
+        {
+            return ActionHandlerOutcome.Failed(new StandardActionFailure
+            {
+                Code = "400",
+                Errors = new[] { new Error { Source = new[] { "UpdateChangeOrderHandler" }, Text = "Invalid input" } }
+            });
+        }
+
         try
         {
-            // Given the input for the action, make a call to your API/system
-            var response = new ApiResponse<UpdateChangeOrderActionOutput>();
-            // response = await _apiClient.PostChangeOrderDataObject(input, cancellationToken)
-            // .ConfigureAwait(false);
+            var response = await _apiClient.UpdateChangeOrder(input, cancellationToken);
 
-            // The full record is needed for SyncOperations. If the endpoint used for the action returns a partial record (such as only returning the ID) then you can either:
-            // - Make a GET call using the ID that was returned
-            // - Add the ID property to your action input (Assuming this results in the proper data object shape)
+            if (!response.IsSuccessful)
+            {
+                return ActionHandlerOutcome.Failed(new StandardActionFailure
+                {
+                    Code = response.StatusCode.ToString(),
+                    Errors = new[]
+                    {
+                        new Error
+                        {
+                            Source = new[] { "UpdateChangeOrderHandler" },
+                            Text = $"Failed to update change order. Status code: {response.StatusCode}"
+                        }
+                    }
+                });
+            }
 
-            // var resource = await _apiClient.GetChangeOrderDataObject(response.Data.id, cancellationToken);
+            // Get updated change order to return
+            var updatedOrder = await _apiClient.GetChangeOrder(input.Id, cancellationToken);
+            if (!updatedOrder.IsSuccessful || updatedOrder.Data == null)
+            {
+                return ActionHandlerOutcome.Failed(new StandardActionFailure
+                {
+                    Code = updatedOrder.StatusCode.ToString(),
+                    Errors = new[]
+                    {
+                        new Error
+                        {
+                            Source = new[] { "UpdateChangeOrderHandler" },
+                            Text = $"Failed to retrieve updated change order. Status code: {updatedOrder.StatusCode}"
+                        }
+                    }
+                });
+            }
 
-            // var resource = new UpdateChangeOrderActionOutput
-            // {
-            //      TODO : map
-            // };
-
-            // If the response is already the output object for the action, you can use the response directly
-
-            // Build sync operations to update the local cache as well as the Xchange cache system (if the data type is cached)
-            // For more information on SyncOperations and the KeyResolver, check: https://trimble-xchange.github.io/connector-docs/guides/creating-actions/#keyresolver-and-the-sync-cache-operations
             var operations = new List<SyncOperation>();
             var keyResolver = new DefaultDataObjectKey();
-            var key = keyResolver.BuildKeyResolver()(response.Data);
-            operations.Add(SyncOperation.CreateSyncOperation(UpdateOperation.Upsert.ToString(), key.UrlPart, key.PropertyNames, response.Data));
+            var key = keyResolver.BuildKeyResolver()(updatedOrder.Data);
+            operations.Add(SyncOperation.CreateSyncOperation(UpdateOperation.Upsert.ToString(), key.UrlPart, key.PropertyNames, updatedOrder.Data));
 
             var resultList = new List<CacheSyncCollection>
             {
-                new CacheSyncCollection() { DataObjectType = typeof(ChangeOrderDataObject), CacheChanges = operations.ToArray() }
+                new() { DataObjectType = typeof(ChangeOrderDataObject), CacheChanges = operations.ToArray() }
             };
 
-            return ActionHandlerOutcome.Successful(response.Data, resultList);
+            return ActionHandlerOutcome.Successful(updatedOrder.Data, resultList);
         }
         catch (HttpRequestException exception)
         {
-            // If an error occurs, we want to create a failure result for the action that matches
-            // the failure type for the action. 
-            // Common to create extension methods to map to Standard Action Failure
-
             var errorSource = new List<string> { "UpdateChangeOrderHandler" };
-            if (string.IsNullOrEmpty(exception.Source)) errorSource.Add(exception.Source!);
+            if (!string.IsNullOrEmpty(exception.Source)) errorSource.Add(exception.Source);
             
             return ActionHandlerOutcome.Failed(new StandardActionFailure
             {
                 Code = exception.StatusCode?.ToString() ?? "500",
-                Errors = new []
+                Errors = new[]
                 {
-                    new Xchange.Connector.SDK.Action.Error
+                    new Error
                     {
                         Source = errorSource.ToArray(),
                         Text = exception.Message

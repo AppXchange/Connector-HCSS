@@ -14,10 +14,10 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateOfficeAction Action description goes here")]
+[Description("Creates a new office location for a vendor")]
 public class CreateOfficeAction : IStandardAction<CreateOfficeActionInput, CreateOfficeActionOutput>
 {
-    public CreateOfficeActionInput ActionInput { get; set; } = new();
+    public CreateOfficeActionInput ActionInput { get; set; } = new() { VendorId = Guid.Empty };
     public CreateOfficeActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +26,56 @@ public class CreateOfficeAction : IStandardAction<CreateOfficeActionInput, Creat
 
 public class CreateOfficeActionInput
 {
+    [JsonPropertyName("vendorId")]
+    [Description("The vendor's unique id")]
+    [Required]
+    public required Guid VendorId { get; init; }
 
+    [JsonPropertyName("address")]
+    [Description("The office address")]
+    public AddressDto? Address { get; init; }
+
+    [JsonPropertyName("phoneNumber")]
+    [Description("The vendor location's phonenumber")]
+    public string? PhoneNumber { get; init; }
+
+    [JsonPropertyName("faxNumber")]
+    [Description("The vendor location's faxnumber")]
+    public string? FaxNumber { get; init; }
+
+    [JsonPropertyName("webAddress")]
+    [Description("The vendor location's website address")]
+    public string? WebAddress { get; init; }
+
+    [JsonPropertyName("regionId")]
+    [Description("The unique identifier of the region the vendor location operates in")]
+    public Guid? RegionId { get; init; }
+
+    [JsonPropertyName("nickname")]
+    [Description("The nickname for a vendor location")]
+    public string? Nickname { get; init; }
+
+    [JsonPropertyName("isQualified")]
+    [Description("A flag if a vendor location is qualified")]
+    public bool IsQualified { get; init; }
+
+    [JsonPropertyName("isBlacklisted")]
+    [Description("A flag if a vendor location is blacklisted")]
+    public bool IsBlacklisted { get; init; }
+
+    [JsonPropertyName("communicationMethod")]
+    [Description("The preferred communication method")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public CommunicationMethod CommunicationMethod { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit's guid")]
+    public Guid? BusinessUnitId { get; init; }
 }
 
 public class CreateOfficeActionOutput
 {
     [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [Description("The created office's unique identifier")]
+    public Guid Id { get; init; }
 }

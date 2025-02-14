@@ -3,76 +3,75 @@ using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
 using System.Net.Http;
+using static Connector.Client.ApiClient;
 
 namespace Connector.HeavyBidEstimate.v1.ActivityCodeBooks;
 
 public class ActivityCodeBooksDataReader : TypedAsyncDataReaderBase<ActivityCodeBooksDataObject>
 {
     private readonly ILogger<ActivityCodeBooksDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private readonly ConnectionConfig _connectionConfig;
+    private int _skipValue = 0;
+    private readonly int _topValue = 100;
 
     public ActivityCodeBooksDataReader(
-        ILogger<ActivityCodeBooksDataReader> logger)
+        ILogger<ActivityCodeBooksDataReader> logger,
+        ApiClient apiClient,
+        ConnectionConfig connectionConfig)
     {
         _logger = logger;
+        _apiClient = apiClient;
+        _connectionConfig = connectionConfig;
     }
 
-    public override async IAsyncEnumerable<ActivityCodeBooksDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<ActivityCodeBooksDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        if (_connectionConfig.BusinessUnitId == default)
+        {
+            throw new InvalidOperationException("BusinessUnitId must be configured in the connection settings");
+        }
+
         while (true)
         {
-            var response = new ApiResponse<PaginatedResponse<ActivityCodeBooksDataObject>>();
-            // If the ActivityCodeBooksDataObject does not have the same structure as the ActivityCodeBooks response from the API, create a new class for it and replace ActivityCodeBooksDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<ActivityCodeBooksResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
+            ApiResponse<HeavyBidResponse<ActivityCodeBooksDataObject>> response;
             try
             {
-                //response = await _apiClient.GetRecords<ActivityCodeBooksDataObject>(
-                //    relativeUrl: "activityCodeBooks",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
+                response = await _apiClient.GetActivityCodeBooks(
+                    businessUnitId: _connectionConfig.BusinessUnitId,
+                    top: _topValue,
+                    skip: _skipValue,
+                    cancellationToken: cancellationToken);
             }
             catch (HttpRequestException exception)
             {
-                _logger.LogError(exception, "Exception while making a read request to data object 'ActivityCodeBooksDataObject'");
+                _logger.LogError(exception, "Exception while retrieving activity codebooks");
                 throw;
             }
 
-            if (!response.IsSuccessful)
+            if (!response.IsSuccessful || response.Data?.Data == null)
             {
-                throw new Exception($"Failed to retrieve records for 'ActivityCodeBooksDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve activity codebooks. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve activity codebooks. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            foreach (var codebook in response.Data.Data)
             {
-                // If new class was created to match the API response, create a new ActivityCodeBooksDataObject object, map the properties and return a ActivityCodeBooksDataObject.
-
-                // Example:
-                //var resource = new ActivityCodeBooksDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
+                yield return codebook;
             }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            if (response.Data.NextSkipValue == null || response.Data.NextSkipValue <= _skipValue)
             {
                 break;
             }
+
+            _skipValue = response.Data.NextSkipValue.Value;
         }
     }
 }

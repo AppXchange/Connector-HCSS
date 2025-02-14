@@ -3,22 +3,6 @@
     "Connector": {
       "commandName": "Project"
     },
-    "Action Processor Local Development": {
-      "commandName": "Project",
-      "commandLineArgs": "--isLocal true --moduleId app-1 --serviceType ActionProcessor --dataObjectUrl health-check --actionUrl add",
-      "environmentVariables": {
-        "DIFFYCACHE_DBLOCATION": "./databases",
-        "ESR__QueueName": "localrun"
-      }
-    },
-    "Cache Writer Local Development": {
-      "commandName": "Project",
-      "commandLineArgs": "--isLocal true --moduleId app-1 --serviceType CacheWriter",
-      "environmentVariables": {
-        "DIFFYCACHE_DBLOCATION": "./databases",
-        "ESR__QueueName": "localrun"
-      }
-    },
     "Test Connection Local Development": {
       "commandName": "Project",
       "commandLineArgs": "--isLocal true --testingConnection true",
@@ -26,6 +10,1311 @@
         "DIFFYCACHE_DBLOCATION": "./databases",
         "ESR__QueueName": "localrun"
       }
-    }
+    },
+    "Attachments Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId attachments-1 --serviceType ActionProcessor --dataObjectUrl files --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Attachments Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId attachments-1 --serviceType CacheWriter",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Contact Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType CacheWriter --dataObjectUrl contact",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Contacts Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType CacheWriter --dataObjectUrl contacts",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Contacts Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType ActionProcessor --dataObjectUrl contacts --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Contacts Delete Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType ActionProcessor --dataObjectUrl contacts --actionUrl delete",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Contacts Update Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType ActionProcessor --dataObjectUrl contacts --actionUrl update",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ContactProducts Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType CacheWriter --dataObjectUrl products/contacts",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ProductContacts Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType CacheWriter --dataObjectUrl products/contacts",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Products Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType CacheWriter --dataObjectUrl products",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ProductType Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType CacheWriter --dataObjectUrl producttype",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ProductType Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType ActionProcessor --dataObjectUrl producttype --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ProductType Delete Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType ActionProcessor --dataObjectUrl producttype --actionUrl delete",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ProductType Update Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType ActionProcessor --dataObjectUrl producttype --actionUrl update",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ProductVendors Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType CacheWriter --dataObjectUrl products/vendors",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Vendor Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType CacheWriter --dataObjectUrl vendor",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Vendor Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType ActionProcessor --dataObjectUrl vendor --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Vendor Delete Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType ActionProcessor --dataObjectUrl vendor --actionUrl delete",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Vendor Update Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType ActionProcessor --dataObjectUrl vendor --actionUrl update",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "VendorProducts Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType CacheWriter --dataObjectUrl vendors/products",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "VendorProducts Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType ActionProcessor --dataObjectUrl vendors/products --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Vendors Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId contacts-1 --serviceType CacheWriter --dataObjectUrl vendors",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "AllEquipment Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl equipment",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "BusinessUnit Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl businessUnits",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CustomField Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl customField",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CustomField Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl customField --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CustomFieldCategories Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl customFieldCategories",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CustomFieldList Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl customFieldList",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Employee Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl employees",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Employee Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl employees --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Employee Update Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl employees --actionUrl update",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Employees Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl employees",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Equipment Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl equipment",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Equipment Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl equipment --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Equipment Update Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl equipment --actionUrl update",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "EquipmentTransfer Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl equipmentTransfer",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "EquipmentTransfer Update Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl equipmentTransfer --actionUrl update",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "EquipmentType Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl equipmentType",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "EquipmentType Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl equipmentType --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "FuelCosts Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl fuelCosts",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Invoice Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl invoice",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Invoice Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl invoice --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Invoice Update Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl invoice --actionUrl update",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Jobs Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl jobs",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Jobs Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl jobs --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Jobs Update Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl jobs --actionUrl update",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Locations Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl locations",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Locations Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl locations --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Locations Update Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl locations --actionUrl update",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "MaintenanceRequest Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl maintenanceRequest",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "MaintenanceRequest Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl maintenanceRequest --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "MeterReading Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl meterReading",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "MeterReading Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl meterReading --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "PartCostEntries Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl partCostEntries --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "PartCostEntry Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl partCostEntry --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "PartInventory Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl partInventory",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "PartInventory Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl partInventory --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "PartLocations Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl partLocations",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Parts Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl parts",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Parts Update Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl parts --actionUrl update",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "PurchaseOrder Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl purchaseOrder",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "PurchaseOrder Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl purchaseOrder --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "PurchaseOrderDetails Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl purchaseOrderDetails --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "PurchaseOrderNotes Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl purchaseOrderNotes --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "PurchaseOrders Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl purchaseOrders",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "SubletVendorCostEntries Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl subletVendorCostEntries --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "SubletVendorCostEntry Create Action Processor Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl subletVendorCostEntry --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Tags Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl tags",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "TimeCard Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl timeCard",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "UnitOfMeasure Cache Writer Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl unitOfMeasure",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Vendors Cache Writer Equipment360 Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl vendors",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Vendors Create Action Processor Equipment360 Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl vendors --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Vendors Update Action Processor Equipment360 Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl vendors --actionUrl update",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "WorkOrder Cache Writer Equipment360 Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl workOrder",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "WorkOrder Create Action Processor Equipment360 Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl workOrder --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "WorkOrder Update Action Processor Equipment360 Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl workOrder --actionUrl update",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "WorkOrderCosts Cache Writer Equipment360 Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl workOrderCosts",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "WorkOrderCostsDetails Cache Writer Equipment360 Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl workOrderCostsDetails",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "WorkOrderNotes Create Action Processor Equipment360 Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType ActionProcessor --dataObjectUrl workOrderNotes --actionUrl create",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "WorkOrderPurchase Cache Writer Equipment360 Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl workOrderPurchase",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "WorkOrders Cache Writer Equipment360 Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl workOrders",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "WorkOrderSchedule Cache Writer Equipment360 Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId equipment360-1 --serviceType CacheWriter --dataObjectUrl workOrderSchedule",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Activities Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl activities",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Activity Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl activity --requestParameterOverrides activityId=2cf04cfb-7f3d-4456-9bd7-7513c725f5fc",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ActivityCodebook Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl activityCodeBook --arguments activityCodeBookId=8D3BC1EB-4105-4DA6-86B9-6D079D40DC7E",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ActivityCodebookResource Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl activityCodebookResource --arguments activityCodebookResourceId=16D39CAD-3FEE-4498-8861-3C0ABD285819",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ActivityCodebookResources Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl activityCodebookResources",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ActivityCodeBooks Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl activityCodeBooks",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "AllBiditemCodebook Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl allBiditemCodebook",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "AllCalculatedKPIs Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl allCalculatedKPIs --arguments estimateId=483e8356-7c9d-4949-b882-154072a8e38a",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "AllMaterialCodebook Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl allMaterialCodebook",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Biditem Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl biditem",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "BiditemCodebook Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl biditemCodebook",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Biditems Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl biditems",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "BusinessUnits Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl businessunits",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "DownloadEstimateAttachment Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl downloadestimateattachment",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Estimate Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl estimate",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "EstimateAttachments Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl estimateattachments",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Estimates Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl estimates",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "MaterialCodebook Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      },
+    },
+    "UpdateMaterialCodebook Action Processor HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType ActionProcessor --dataObjectUrl materialcodebook --actionUrl update",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Materials Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl materials",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Partition Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl partition",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Partitions Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl partitions",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "QuoteFolder Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl quoteFolder",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "QuoteFolders Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl quoteFolders",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Resource Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl resource",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Resources Cache Writer HeavyBidEstimate Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybid-estimate-1 --serviceType CacheWriter --dataObjectUrl resources",
+      "environmentVariables": {
+        "DIFFYCACHE_DBLOCATION": "./databases",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "BusinessUnit Cache Writer HeavyBidPreConstruction Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybidpreconstruction-1 --serviceType CacheWriter --dataObjectUrl businessUnit",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+        
+      },
+    },
+    "Project Cache Writer HeavyBidPreConstruction Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybidpreconstruction-1 --serviceType CacheWriter --dataObjectUrl project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Project Create Action Processor HeavyBidPreConstruction Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybidpreconstruction-1 --serviceType ActionProcessor --dataObjectUrl project --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Project Delete Action Processor HeavyBidPreConstruction Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybidpreconstruction-1 --serviceType ActionProcessor --dataObjectUrl project --actionUrl delete",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Project Update Action Processor HeavyBidPreConstruction Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybidpreconstruction-1 --serviceType ActionProcessor --dataObjectUrl project --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Project PartialChange Action Processor HeavyBidPreConstruction Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybidpreconstruction-1 --serviceType ActionProcessor --dataObjectUrl project --actionUrl partialchange",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Projects Cache Writer HeavyBidPreConstruction Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybidpreconstruction-1 --serviceType CacheWriter --dataObjectUrl projects",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Projects Create Action Processor HeavyBidPreConstruction Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybidpreconstruction-1 --serviceType ActionProcessor --dataObjectUrl projects --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Projects Delete Action Processor HeavyBidPreConstruction Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybidpreconstruction-1 --serviceType ActionProcessor --dataObjectUrl projects --actionUrl delete",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Reports Create Action Processor HeavyBidPreConstruction Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybidpreconstruction-1 --serviceType ActionProcessor --dataObjectUrl reports --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Schema Cache Writer HeavyBidPreConstruction Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybidpreconstruction-1 --serviceType CacheWriter --dataObjectUrl schema",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Schema Update Action Processor HeavyBidPreConstruction Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybidpreconstruction-1 --serviceType ActionProcessor --dataObjectUrl schema --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Schemas Cache Writer HeavyBidPreConstruction Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavybidpreconstruction-1 --serviceType CacheWriter --dataObjectUrl schemas",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "AccessGroup Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl accessGroup",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Accounting Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl accounting",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "AdvancedBudgetCustomCostTypeItem Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl advancedBudgetCustomCostTypeItem --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "AdvancedBudgetCustomCostTypes Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl advancedBudgetCustomCostTypes",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "AdvancedBudgetMaterial Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl advancedBudgetMaterial",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "AdvancedBudgetMaterial Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl advancedBudgetMaterial --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "AdvancedBudgetSubcontract Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl advancedBudgetSubcontract",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "AdvancedBudgetSubcontract Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl advancedBudgetSubcontract --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Attachment Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl attachment",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Attachment Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl attachment --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "AttendanceHourTags Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl attendanceHourTags",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "BusinessUnit Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl businessUnit",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "BusinessUnitPreference Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl businessUnitPreference",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "BusinessUnitPreference Update Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl businessUnitPreference --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ChangeOrder Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl changeOrder",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ChangeOrder Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl changeOrder --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ChangeOrder Delete Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl changeOrder --actionUrl delete",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ChangeOrder Update Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl changeOrder --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ChangeOrderIncrementor Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl changeOrderIncrementor",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ChangeOrdersByBusinessUnit Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl changeOrdersByBusinessUnit",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ChangeOrdersByJob Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl changeOrdersByJob",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostAdjustments Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl costAdjustments",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostAdjustments Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl costAdjustments --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostAdjustments Delete Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl costAdjustments --actionUrl delete",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostAdjustments Update Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl costAdjustments --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCategories Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl costCategories",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCategories Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl costCategories --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCodeCosts Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl costCodeCosts",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCodeCosts Update Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl costCodeCosts --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCodeProgress Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl costCodeProgress",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCodeProgress Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl costCodeProgress --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCodes Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl costCodes",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCodes Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl costCodes --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCodes Update Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl costCodes --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCodeTags Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl costCodeTags",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCodeTags Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl costCodeTags --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCodeTags Delete Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl costCodeTags --actionUrl delete",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCodeTags Update Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl costCodeTags --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCodeTransaction Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl costCodeTransaction",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCodeTransaction Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl costCodeTransaction --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCodeTransactionAdjustment Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl costCodeTransactionAdjustment",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCodeTransactionAdjustment Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl costCodeTransactionAdjustment --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
   }
 }

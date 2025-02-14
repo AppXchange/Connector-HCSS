@@ -16,65 +16,94 @@ namespace Connector.HeavyJob.v1.BusinessUnitPreference.Update;
 public class UpdateBusinessUnitPreferenceHandler : IActionHandler<UpdateBusinessUnitPreferenceAction>
 {
     private readonly ILogger<UpdateBusinessUnitPreferenceHandler> _logger;
+    private readonly ApiClient _apiClient;
 
     public UpdateBusinessUnitPreferenceHandler(
-        ILogger<UpdateBusinessUnitPreferenceHandler> logger)
+        ILogger<UpdateBusinessUnitPreferenceHandler> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
     
     public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(ActionInstance actionInstance, CancellationToken cancellationToken)
     {
         var input = JsonSerializer.Deserialize<UpdateBusinessUnitPreferenceActionInput>(actionInstance.InputJson);
+        if (input == null)
+        {
+            return ActionHandlerOutcome.Failed(new StandardActionFailure
+            {
+                Code = "400",
+                Errors = new[] { new Error { Source = new[] { "UpdateBusinessUnitPreferenceHandler" }, Text = "Invalid input" } }
+            });
+        }
+
         try
         {
-            // Given the input for the action, make a call to your API/system
-            var response = new ApiResponse<UpdateBusinessUnitPreferenceActionOutput>();
-            // response = await _apiClient.PostBusinessUnitPreferenceDataObject(input, cancellationToken)
-            // .ConfigureAwait(false);
+            var response = await _apiClient.UpdateBusinessUnitPreferences(
+                input,
+                cancellationToken);
 
-            // The full record is needed for SyncOperations. If the endpoint used for the action returns a partial record (such as only returning the ID) then you can either:
-            // - Make a GET call using the ID that was returned
-            // - Add the ID property to your action input (Assuming this results in the proper data object shape)
+            if (!response.IsSuccessful)
+            {
+                return ActionHandlerOutcome.Failed(new StandardActionFailure
+                {
+                    Code = response.StatusCode.ToString(),
+                    Errors = new[]
+                    {
+                        new Error
+                        {
+                            Source = new[] { "UpdateBusinessUnitPreferenceHandler" },
+                            Text = $"Failed to update business unit preferences. Status code: {response.StatusCode}"
+                        }
+                    }
+                });
+            }
 
-            // var resource = await _apiClient.GetBusinessUnitPreferenceDataObject(response.Data.id, cancellationToken);
+            // Get updated preferences to return
+            var updatedPreferences = await _apiClient.GetBusinessUnitPreferences(
+                input.BusinessUnitId,
+                cancellationToken);
 
-            // var resource = new UpdateBusinessUnitPreferenceActionOutput
-            // {
-            //      TODO : map
-            // };
+            if (!updatedPreferences.IsSuccessful || updatedPreferences.Data == null)
+            {
+                return ActionHandlerOutcome.Failed(new StandardActionFailure
+                {
+                    Code = updatedPreferences.StatusCode.ToString(),
+                    Errors = new[]
+                    {
+                        new Error
+                        {
+                            Source = new[] { "UpdateBusinessUnitPreferenceHandler" },
+                            Text = $"Failed to retrieve updated business unit preferences. Status code: {updatedPreferences.StatusCode}"
+                        }
+                    }
+                });
+            }
 
-            // If the response is already the output object for the action, you can use the response directly
-
-            // Build sync operations to update the local cache as well as the Xchange cache system (if the data type is cached)
-            // For more information on SyncOperations and the KeyResolver, check: https://trimble-xchange.github.io/connector-docs/guides/creating-actions/#keyresolver-and-the-sync-cache-operations
             var operations = new List<SyncOperation>();
             var keyResolver = new DefaultDataObjectKey();
-            var key = keyResolver.BuildKeyResolver()(response.Data);
-            operations.Add(SyncOperation.CreateSyncOperation(UpdateOperation.Upsert.ToString(), key.UrlPart, key.PropertyNames, response.Data));
+            var key = keyResolver.BuildKeyResolver()(updatedPreferences.Data);
+            operations.Add(SyncOperation.CreateSyncOperation(UpdateOperation.Upsert.ToString(), key.UrlPart, key.PropertyNames, updatedPreferences.Data));
 
             var resultList = new List<CacheSyncCollection>
             {
-                new CacheSyncCollection() { DataObjectType = typeof(BusinessUnitPreferenceDataObject), CacheChanges = operations.ToArray() }
+                new() { DataObjectType = typeof(BusinessUnitPreferenceDataObject), CacheChanges = operations.ToArray() }
             };
 
-            return ActionHandlerOutcome.Successful(response.Data, resultList);
+            return ActionHandlerOutcome.Successful(updatedPreferences.Data, resultList);
         }
         catch (HttpRequestException exception)
         {
-            // If an error occurs, we want to create a failure result for the action that matches
-            // the failure type for the action. 
-            // Common to create extension methods to map to Standard Action Failure
-
             var errorSource = new List<string> { "UpdateBusinessUnitPreferenceHandler" };
-            if (string.IsNullOrEmpty(exception.Source)) errorSource.Add(exception.Source!);
+            if (!string.IsNullOrEmpty(exception.Source)) errorSource.Add(exception.Source);
             
             return ActionHandlerOutcome.Failed(new StandardActionFailure
             {
                 Code = exception.StatusCode?.ToString() ?? "500",
-                Errors = new []
+                Errors = new[]
                 {
-                    new Xchange.Connector.SDK.Action.Error
+                    new Error
                     {
                         Source = errorSource.ToArray(),
                         Text = exception.Message

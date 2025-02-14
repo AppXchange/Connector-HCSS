@@ -2,6 +2,7 @@ using Connector.Client;
 using ESR.Hosting.Action;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
@@ -16,70 +17,83 @@ namespace Connector.Contacts.v1.Contact.Create;
 public class CreateContactHandler : IActionHandler<CreateContactAction>
 {
     private readonly ILogger<CreateContactHandler> _logger;
+    private readonly ApiClient _apiClient;
 
     public CreateContactHandler(
-        ILogger<CreateContactHandler> logger)
+        ILogger<CreateContactHandler> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
     
-    public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(ActionInstance actionInstance, CancellationToken cancellationToken)
+    public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(
+        ActionInstance actionInstance, 
+        CancellationToken cancellationToken)
     {
         var input = JsonSerializer.Deserialize<CreateContactActionInput>(actionInstance.InputJson);
+        if (input == null)
+        {
+            return ActionHandlerOutcome.Failed(new StandardActionFailure
+            {
+                Code = "400",
+                Errors = new[] { new Error { Source = new[] { "CreateContactHandler" }, Text = "Invalid input" } }
+            });
+        }
+
         try
         {
-            // Given the input for the action, make a call to your API/system
-            var response = new ApiResponse<CreateContactActionOutput>();
-            // response = await _apiClient.PostContactDataObject(input, cancellationToken)
-            // .ConfigureAwait(false);
-
-            // The full record is needed for SyncOperations. If the endpoint used for the action returns a partial record (such as only returning the ID) then you can either:
-            // - Make a GET call using the ID that was returned
-            // - Add the ID property to your action input (Assuming this results in the proper data object shape)
-
-            // var resource = await _apiClient.GetContactDataObject(response.Data.id, cancellationToken);
-
-            // var resource = new CreateContactActionOutput
-            // {
-            //      TODO : map
-            // };
-
-            // If the response is already the output object for the action, you can use the response directly
-
-            // Build sync operations to update the local cache as well as the Xchange cache system (if the data type is cached)
-            // For more information on SyncOperations and the KeyResolver, check: https://trimble-xchange.github.io/connector-docs/guides/creating-actions/#keyresolver-and-the-sync-cache-operations
-            var operations = new List<SyncOperation>();
-            var keyResolver = new DefaultDataObjectKey();
-            var key = keyResolver.BuildKeyResolver()(response.Data);
-            operations.Add(SyncOperation.CreateSyncOperation(UpdateOperation.Upsert.ToString(), key.UrlPart, key.PropertyNames, response.Data));
-
-            var resultList = new List<CacheSyncCollection>
+            var response = await _apiClient.CreateContact(input, cancellationToken);
+            if (!response.IsSuccessful)
             {
-                new CacheSyncCollection() { DataObjectType = typeof(ContactDataObject), CacheChanges = operations.ToArray() }
-            };
+                return ActionHandlerOutcome.Failed(new StandardActionFailure
+                {
+                    Code = response.StatusCode.ToString(),
+                    Errors = new[] { new Error 
+                    { 
+                        Source = new[] { "CreateContactHandler" }, 
+                        Text = $"Failed to create contact. Status code: {response.StatusCode}" 
+                    }}
+                });
+            }
 
-            return ActionHandlerOutcome.Successful(response.Data, resultList);
+            // Get the full contact details for cache sync
+            var contactDetails = await _apiClient.GetContact(response.Data, input.BusinessUnitId, cancellationToken);
+            if (contactDetails.Data != null)
+            {
+                var operations = new List<SyncOperation>();
+                var keyResolver = new DefaultDataObjectKey();
+                var key = keyResolver.BuildKeyResolver()(contactDetails.Data);
+                operations.Add(SyncOperation.CreateSyncOperation(
+                    UpdateOperation.Upsert.ToString(), 
+                    key.UrlPart, 
+                    key.PropertyNames, 
+                    contactDetails.Data));
+
+                var resultList = new List<CacheSyncCollection>
+                {
+                    new() { 
+                        DataObjectType = typeof(ContactDataObject), 
+                        CacheChanges = operations.ToArray() 
+                    }
+                };
+
+                return ActionHandlerOutcome.Successful(new CreateContactActionOutput { Id = response.Data }, resultList);
+            }
+
+            return ActionHandlerOutcome.Successful(new CreateContactActionOutput { Id = response.Data });
         }
         catch (HttpRequestException exception)
         {
-            // If an error occurs, we want to create a failure result for the action that matches
-            // the failure type for the action. 
-            // Common to create extension methods to map to Standard Action Failure
-
-            var errorSource = new List<string> { "CreateContactHandler" };
-            if (string.IsNullOrEmpty(exception.Source)) errorSource.Add(exception.Source!);
-            
+            _logger.LogError(exception, "Error creating contact");
             return ActionHandlerOutcome.Failed(new StandardActionFailure
             {
                 Code = exception.StatusCode?.ToString() ?? "500",
-                Errors = new []
+                Errors = new[] { new Error
                 {
-                    new Xchange.Connector.SDK.Action.Error
-                    {
-                        Source = errorSource.ToArray(),
-                        Text = exception.Message
-                    }
-                }
+                    Source = new[] { "CreateContactHandler", exception.Source ?? "Unknown" },
+                    Text = exception.Message
+                }}
             });
         }
     }

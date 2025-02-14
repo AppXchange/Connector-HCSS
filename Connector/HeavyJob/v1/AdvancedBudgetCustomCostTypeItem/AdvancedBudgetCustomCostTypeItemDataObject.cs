@@ -14,11 +14,69 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a custom cost type item advanced budget in HeavyJob")]
 public class AdvancedBudgetCustomCostTypeItemDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The unique identifier")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("costCodeId")]
+    [Description("The cost code id")]
+    [Required]
+    public required Guid CostCodeId { get; init; }
+
+    [JsonPropertyName("purchaseOrderDetailId")]
+    [Description("The purchase order detail id")]
+    public Guid? PurchaseOrderDetailId { get; init; }
+
+    [JsonPropertyName("status")]
+    [Description("The status of the custom cost type")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public CustomCostTypeStatus Status { get; init; }
+
+    [JsonPropertyName("quantity")]
+    [Description("The quantity of the custom-cost-type item")]
+    public double Quantity { get; init; }
+
+    [JsonPropertyName("jobCustomCostTypeItemId")]
+    public Guid JobCustomCostTypeItemId { get; init; }
+
+    [JsonPropertyName("customCostTypeItemDescription")]
+    public string? CustomCostTypeItemDescription { get; init; }
+
+    [JsonPropertyName("purchaseOrderId")]
+    public Guid? PurchaseOrderId { get; init; }
+
+    [JsonPropertyName("costCode")]
+    public string? CostCode { get; init; }
+
+    [JsonPropertyName("costCodeDescription")]
+    public string? CostCodeDescription { get; init; }
+
+    [JsonPropertyName("salesTaxPercent")]
+    public double SalesTaxPercent { get; init; }
+
+    [JsonPropertyName("unitCost")]
+    public double UnitCost { get; init; }
+
+    [JsonPropertyName("unitOfMeasure")]
+    public string? UnitOfMeasure { get; init; }
+
+    [JsonPropertyName("vendorId")]
+    public Guid? VendorId { get; init; }
+
+    [JsonPropertyName("isDeleted")]
+    public bool IsDeleted { get; init; }
+
+    [JsonPropertyName("mCostTypeItemBusinessUnitId")]
+    public Guid MCostTypeItemBusinessUnitId { get; init; }
+}
+
+public enum CustomCostTypeStatus
+{
+    Active,
+    Completed,
+    Discontinued
 }

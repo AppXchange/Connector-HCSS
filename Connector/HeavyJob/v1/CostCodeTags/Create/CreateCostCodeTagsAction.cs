@@ -14,7 +14,7 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateCostCodeTagsAction Action description goes here")]
+[Description("Returns cost codes with associated setup tags")]
 public class CreateCostCodeTagsAction : IStandardAction<CreateCostCodeTagsActionInput, CreateCostCodeTagsActionOutput>
 {
     public CreateCostCodeTagsActionInput ActionInput { get; set; } = new();
@@ -26,11 +26,38 @@ public class CreateCostCodeTagsAction : IStandardAction<CreateCostCodeTagsAction
 
 public class CreateCostCodeTagsActionInput
 {
+    [JsonPropertyName("costCodeIds")]
+    [Description("List of Cost Code Ids")]
+    public Guid[]? CostCodeIds { get; init; }
 
+    [JsonPropertyName("jobIds")]
+    [Description("List of Job Ids")]
+    public Guid[]? JobIds { get; init; }
+
+    [JsonPropertyName("tagIds")]
+    [Description("List of Tag Ids")]
+    public Guid[]? TagIds { get; init; }
+
+    [JsonPropertyName("modifiedSince")]
+    [Description("The date since the last update")]
+    public DateTime? ModifiedSince { get; init; }
+
+    [JsonPropertyName("cursor")]
+    [Description("Optional cursor for pagination")]
+    public string? Cursor { get; init; }
+
+    [JsonPropertyName("limit")]
+    [Description("The maximum number of results that should be returned")]
+    public int? Limit { get; init; }
 }
 
 public class CreateCostCodeTagsActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("results")]
+    [Required]
+    public CostCodeTagsDataObject[] Results { get; init; } = Array.Empty<CostCodeTagsDataObject>();
+
+    [JsonPropertyName("metadata")]
+    [Required]
+    public CostCodeTagsMetadata Metadata { get; init; } = new();
 }

@@ -14,7 +14,7 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("DeleteCostAdjustmentsAction Action description goes here")]
+[Description("Deletes a cost adjustment by its ID")]
 public class DeleteCostAdjustmentsAction : IStandardAction<DeleteCostAdjustmentsActionInput, DeleteCostAdjustmentsActionOutput>
 {
     public DeleteCostAdjustmentsActionInput ActionInput { get; set; } = new();
@@ -26,11 +26,15 @@ public class DeleteCostAdjustmentsAction : IStandardAction<DeleteCostAdjustments
 
 public class DeleteCostAdjustmentsActionInput
 {
-
+    [JsonPropertyName("id")]
+    [Required]
+    [Description("The unique identifier of the cost adjustment to delete")]
+    public Guid Id { get; set; }
 }
 
 public class DeleteCostAdjustmentsActionOutput
 {
     [JsonPropertyName("id")]
+    [Description("The ID of the deleted cost adjustment")]
     public Guid Id { get; set; }
 }

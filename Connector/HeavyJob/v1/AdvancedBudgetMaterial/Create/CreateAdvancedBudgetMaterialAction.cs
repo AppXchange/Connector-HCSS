@@ -14,23 +14,43 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateAdvancedBudgetMaterialAction Action description goes here")]
+[Description("Creates a new material advanced budget")]
 public class CreateAdvancedBudgetMaterialAction : IStandardAction<CreateAdvancedBudgetMaterialActionInput, CreateAdvancedBudgetMaterialActionOutput>
 {
-    public CreateAdvancedBudgetMaterialActionInput ActionInput { get; set; } = new();
-    public CreateAdvancedBudgetMaterialActionOutput ActionOutput { get; set; } = new();
+    public CreateAdvancedBudgetMaterialActionInput ActionInput { get; set; } = new() { CostCodeId = Guid.Empty, PurchaseOrderDetailId = Guid.Empty };
+    public CreateAdvancedBudgetMaterialActionOutput ActionOutput { get; set; } = new() 
+    { 
+        Id = Guid.Empty,
+        CostCodeId = Guid.Empty,
+        JobMaterialId = Guid.Empty,
+        PurchaseOrderDetailId = Guid.Empty
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
-
     public bool CreateRtap => true;
 }
 
 public class CreateAdvancedBudgetMaterialActionInput
 {
+    [JsonPropertyName("costCodeId")]
+    [Description("The cost code id")]
+    [Required]
+    public required Guid CostCodeId { get; init; }
 
+    [JsonPropertyName("purchaseOrderDetailId")]
+    [Description("The purchase order detail id")]
+    [Required]
+    public required Guid PurchaseOrderDetailId { get; init; }
+
+    [JsonPropertyName("status")]
+    [Description("The status of the material")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public MaterialStatus Status { get; init; }
+
+    [JsonPropertyName("quantity")]
+    [Description("The quantity of the material")]
+    public double Quantity { get; init; }
 }
 
-public class CreateAdvancedBudgetMaterialActionOutput
+public class CreateAdvancedBudgetMaterialActionOutput : AdvancedBudgetMaterialDataObject
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
 }

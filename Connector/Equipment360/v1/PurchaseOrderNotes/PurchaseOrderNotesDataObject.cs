@@ -14,11 +14,32 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a purchase order note")]
 public class PurchaseOrderNotesDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The note id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("createdBy")]
+    [Description("The user who created the note")]
+    public string? CreatedBy { get; init; }
+
+    [JsonPropertyName("createdDate")]
+    [Description("The date on which the note was created")]
+    [Required]
+    public required DateTime CreatedDate { get; init; }
+
+    [JsonPropertyName("modifiedBy")]
+    [Description("The last user who modified the note")]
+    public string? ModifiedBy { get; init; }
+
+    [JsonPropertyName("modifiedDate")]
+    [Description("The most recent date on which the note was modified")]
+    public DateTime? ModifiedDate { get; init; }
+
+    [JsonPropertyName("note")]
+    [Description("The note")]
+    public string? Note { get; init; }
 }

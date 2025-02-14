@@ -1,7 +1,9 @@
 using Connector.Client;
+using Connector.Equipment360.v1.EquipmentTransfer.Create;
 using ESR.Hosting.Action;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
@@ -16,65 +18,61 @@ namespace Connector.Equipment360.v1.EquipmentTransfer.Update;
 public class UpdateEquipmentTransferHandler : IActionHandler<UpdateEquipmentTransferAction>
 {
     private readonly ILogger<UpdateEquipmentTransferHandler> _logger;
+    private readonly ApiClient _apiClient;
 
     public UpdateEquipmentTransferHandler(
-        ILogger<UpdateEquipmentTransferHandler> logger)
+        ILogger<UpdateEquipmentTransferHandler> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
     
-    public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(ActionInstance actionInstance, CancellationToken cancellationToken)
+    public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(
+        ActionInstance actionInstance,
+        CancellationToken cancellationToken)
     {
-        var input = JsonSerializer.Deserialize<UpdateEquipmentTransferActionInput>(actionInstance.InputJson);
+        var input = JsonSerializer.Deserialize<CreateEquipmentTransferActionInput>(actionInstance.InputJson)!;
         try
         {
-            // Given the input for the action, make a call to your API/system
-            var response = new ApiResponse<UpdateEquipmentTransferActionOutput>();
-            // response = await _apiClient.PostEquipmentTransferDataObject(input, cancellationToken)
-            // .ConfigureAwait(false);
+            var response = await _apiClient.CreateEquipmentTransfer(input, cancellationToken);
 
-            // The full record is needed for SyncOperations. If the endpoint used for the action returns a partial record (such as only returning the ID) then you can either:
-            // - Make a GET call using the ID that was returned
-            // - Add the ID property to your action input (Assuming this results in the proper data object shape)
+            if (!response.IsSuccessful || response.Data == null)
+            {
+                _logger.LogError("Failed to transfer equipment. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to transfer equipment. API StatusCode: {response.StatusCode}");
+            }
 
-            // var resource = await _apiClient.GetEquipmentTransferDataObject(response.Data.id, cancellationToken);
-
-            // var resource = new UpdateEquipmentTransferActionOutput
-            // {
-            //      TODO : map
-            // };
-
-            // If the response is already the output object for the action, you can use the response directly
-
-            // Build sync operations to update the local cache as well as the Xchange cache system (if the data type is cached)
-            // For more information on SyncOperations and the KeyResolver, check: https://trimble-xchange.github.io/connector-docs/guides/creating-actions/#keyresolver-and-the-sync-cache-operations
             var operations = new List<SyncOperation>();
             var keyResolver = new DefaultDataObjectKey();
             var key = keyResolver.BuildKeyResolver()(response.Data);
-            operations.Add(SyncOperation.CreateSyncOperation(UpdateOperation.Upsert.ToString(), key.UrlPart, key.PropertyNames, response.Data));
+            operations.Add(SyncOperation.CreateSyncOperation(
+                UpdateOperation.Upsert.ToString(),
+                key.UrlPart,
+                key.PropertyNames,
+                response.Data));
 
             var resultList = new List<CacheSyncCollection>
             {
-                new CacheSyncCollection() { DataObjectType = typeof(EquipmentTransferDataObject), CacheChanges = operations.ToArray() }
+                new() { DataObjectType = typeof(EquipmentTransferDataObject), CacheChanges = operations.ToArray() }
             };
 
             return ActionHandlerOutcome.Successful(response.Data, resultList);
         }
         catch (HttpRequestException exception)
         {
-            // If an error occurs, we want to create a failure result for the action that matches
-            // the failure type for the action. 
-            // Common to create extension methods to map to Standard Action Failure
-
-            var errorSource = new List<string> { "UpdateEquipmentTransferHandler" };
-            if (string.IsNullOrEmpty(exception.Source)) errorSource.Add(exception.Source!);
+            _logger.LogError(exception, "Exception while transferring equipment");
+            
+            var errorSource = new List<string> { nameof(UpdateEquipmentTransferHandler) };
+            if (!string.IsNullOrEmpty(exception.Source)) 
+                errorSource.Add(exception.Source);
             
             return ActionHandlerOutcome.Failed(new StandardActionFailure
             {
                 Code = exception.StatusCode?.ToString() ?? "500",
-                Errors = new []
+                Errors = new[]
                 {
-                    new Xchange.Connector.SDK.Action.Error
+                    new Error
                     {
                         Source = errorSource.ToArray(),
                         Text = exception.Message

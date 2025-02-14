@@ -12,13 +12,67 @@ using Xchange.Connector.SDK.CacheWriter;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[PrimaryKey("id", nameof(Id))]
-//[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[PrimaryKey("costCodeId", nameof(CostCodeId))]
+[Description("Represents cost code costs in HeavyJob")]
 public class CostCodeCostsDataObject
 {
-    [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [JsonPropertyName("costCodeId")]
+    [Description("The cost code ID")]
     [Required]
-    public required Guid Id { get; init; }
+    public Guid CostCodeId { get; init; }
+
+    [JsonPropertyName("equipmentCost")]
+    [Description("The equipment cost")]
+    public double EquipmentCost { get; init; }
+
+    [JsonPropertyName("equipmentHours")]
+    [Description("The equipment hours")]
+    public double EquipmentHours { get; init; }
+
+    [JsonPropertyName("laborCost")]
+    [Description("The labor cost")]
+    public double LaborCost { get; init; }
+
+    [JsonPropertyName("laborHours")]
+    [Description("The labor hours")]
+    public double LaborHours { get; init; }
+
+    [JsonPropertyName("materialCost")]
+    [Description("The material cost")]
+    public double MaterialCost { get; init; }
+
+    [JsonPropertyName("subcontractCost")]
+    [Description("The subcontract cost")]
+    public double SubcontractCost { get; init; }
+
+    [JsonPropertyName("truckingCost")]
+    [Description("The trucking cost")]
+    public double TruckingCost { get; init; }
+
+    [JsonPropertyName("quantity")]
+    [Description("The quantity")]
+    public double Quantity { get; init; }
+
+    [JsonPropertyName("customCostTypeValues")]
+    [Description("List of custom-cost-type actual costs")]
+    public CustomCostTypeValue[]? CustomCostTypeValues { get; init; }
+}
+
+public class CustomCostTypeValue
+{
+    [JsonPropertyName("costCategoryCode")]
+    [Description("The cost category code")]
+    public string CostCategoryCode { get; init; } = string.Empty;
+
+    [JsonPropertyName("costCategoryDescription")]
+    [Description("The cost category description")]
+    public string CostCategoryDescription { get; init; } = string.Empty;
+
+    [JsonPropertyName("costCategoryId")]
+    [Description("The cost category ID")]
+    public Guid CostCategoryId { get; init; }
+
+    [JsonPropertyName("cost")]
+    [Description("The cost value")]
+    public double Cost { get; init; }
 }

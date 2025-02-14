@@ -14,11 +14,43 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents an activity codebook resource in HeavyBid Estimate")]
 public class ActivityCodebookResourceDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The activity codebook resource id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("activityCodebookId")]
+    [Description("The parent activity codebook ID")]
+    public Guid ActivityCodebookId { get; init; }
+
+    [JsonPropertyName("activityCodebookCode")]
+    [Description("The activity codebook code")]
+    public string? ActivityCodebookCode { get; init; }
+
+    [JsonPropertyName("resourceCode")]
+    [Description("Resource code")]
+    public string? ResourceCode { get; init; }
+
+    [JsonPropertyName("unitPrice")]
+    [Description("Unit price")]
+    public decimal UnitPrice { get; init; }
+
+    [JsonPropertyName("units")]
+    [Description("Units of measurement")]
+    public string? Units { get; init; }
+
+    [JsonPropertyName("quantityFactor")]
+    [Description("Quantity factor")]
+    public decimal QuantityFactor { get; init; }
+
+    [JsonPropertyName("wasteFactor")]
+    [Description("Waste factor")]
+    public decimal WasteFactor { get; init; }
+
+    [JsonPropertyName("mhPerUnit")]
+    [Description("Man hours per unit")]
+    public decimal MhPerUnit { get; init; }
 }

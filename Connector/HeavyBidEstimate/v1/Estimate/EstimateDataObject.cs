@@ -14,11 +14,72 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents an estimate in HeavyBid")]
 public class EstimateDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The estimate id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("partitionId")]
+    [Description("The partition ID")]
+    public Guid PartitionId { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit ID")]
+    public Guid BusinessUnitId { get; init; }
+
+    [JsonPropertyName("businessUnitCode")]
+    [Description("The business unit code")]
+    public string? BusinessUnitCode { get; init; }
+
+    [JsonPropertyName("heavyBidDivision")]
+    [Description("The HeavyBid division")]
+    public string? HeavyBidDivision { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The estimate code")]
+    public string? Code { get; init; }
+
+    [JsonPropertyName("name")]
+    [Description("The estimate name")]
+    public string? Name { get; init; }
+
+    [JsonPropertyName("processedStatus")]
+    [Description("The processed status")]
+    public int ProcessedStatus { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The estimate description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("estimateVersion")]
+    [Description("The estimate version")]
+    public int EstimateVersion { get; init; }
+
+    [JsonPropertyName("lastModified")]
+    [Description("Last modified timestamp")]
+    public DateTime LastModified { get; init; }
+
+    [JsonPropertyName("lastProcessed")]
+    [Description("Last processed timestamp")]
+    public DateTime LastProcessed { get; init; }
+
+    [JsonPropertyName("isExcludedEstimate")]
+    [Description("Whether the estimate is excluded")]
+    public bool IsExcludedEstimate { get; init; }
+
+    [JsonPropertyName("isActiveEstimate")]
+    [Description("Whether the estimate is active")]
+    public bool IsActiveEstimate { get; init; }
+
+    [JsonPropertyName("isDeleted")]
+    [Description("Whether the estimate is deleted")]
+    public bool IsDeleted { get; init; }
+
+    [JsonPropertyName("deletedTimestamp")]
+    [Description("Deletion timestamp")]
+    [Nullable(true)]
+    public DateTime? DeletedTimestamp { get; init; }
 }

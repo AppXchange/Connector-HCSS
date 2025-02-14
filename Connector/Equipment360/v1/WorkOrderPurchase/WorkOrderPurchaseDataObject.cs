@@ -14,11 +14,71 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a work order purchase in Equipment360")]
 public class WorkOrderPurchaseDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The unique identifier")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("workOrderNumber")]
+    [Description("The work order number")]
+    public int WorkOrderNumber { get; init; }
+
+    [JsonPropertyName("vendorCode")]
+    [Description("The vendor code")]
+    public string? VendorCode { get; init; }
+
+    [JsonPropertyName("referenceNumber")]
+    [Description("The reference number (e.g. Invoice #)")]
+    public string? ReferenceNumber { get; init; }
+
+    [JsonPropertyName("partNumber")]
+    [Description("The part number")]
+    public string? PartNumber { get; init; }
+
+    [JsonPropertyName("partDescription")]
+    [Description("The part description")]
+    public string? PartDescription { get; init; }
+
+    [JsonPropertyName("vendorPartNumber")]
+    [Description("The vendor's part number")]
+    public string? VendorPartNumber { get; init; }
+
+    [JsonPropertyName("itemCode")]
+    [Description("The item code")]
+    public string? ItemCode { get; init; }
+
+    [JsonPropertyName("unitOfMeasure")]
+    [Description("The unit of measure")]
+    public string? UnitOfMeasure { get; init; }
+
+    [JsonPropertyName("qtyOrdered")]
+    [Description("The quantity ordered")]
+    public double QtyOrdered { get; init; }
+
+    [JsonPropertyName("qtyUsed")]
+    [Description("The quantity used")]
+    public double QtyUsed { get; init; }
+
+    [JsonPropertyName("purchaseDate")]
+    [Description("The purchase date")]
+    public DateTime PurchaseDate { get; init; }
+
+    [JsonPropertyName("equipmentCode")]
+    [Description("The equipment code")]
+    public string? EquipmentCode { get; init; }
+
+    [JsonPropertyName("modifiedTimestamp")]
+    [Description("The last modified timestamp")]
+    public DateTime ModifiedTimestamp { get; init; }
+
+    [JsonPropertyName("isReconciled")]
+    [Description("Whether the purchase has been reconciled")]
+    public bool IsReconciled { get; init; }
+
+    [JsonPropertyName("inventoryLocation")]
+    [Description("The inventory location")]
+    public string? InventoryLocation { get; init; }
 }

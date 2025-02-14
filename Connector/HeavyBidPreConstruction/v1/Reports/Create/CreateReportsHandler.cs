@@ -1,83 +1,71 @@
 using Connector.Client;
-using ESR.Hosting.Action;
-using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text.Json;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Text.Json;
 using Xchange.Connector.SDK.Action;
-using Xchange.Connector.SDK.CacheWriter;
-using Xchange.Connector.SDK.Client.AppNetwork;
+using ESR.Hosting.Action;
 
 namespace Connector.HeavyBidPreConstruction.v1.Reports.Create;
 
 public class CreateReportsHandler : IActionHandler<CreateReportsAction>
 {
     private readonly ILogger<CreateReportsHandler> _logger;
+    private readonly ApiClient _apiClient;
 
     public CreateReportsHandler(
-        ILogger<CreateReportsHandler> logger)
+        ILogger<CreateReportsHandler> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
     
     public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(ActionInstance actionInstance, CancellationToken cancellationToken)
     {
-        var input = JsonSerializer.Deserialize<CreateReportsActionInput>(actionInstance.InputJson);
+        var input = JsonSerializer.Deserialize<CreateReportsActionInput>(actionInstance.InputJson)!;
+        
         try
         {
-            // Given the input for the action, make a call to your API/system
-            var response = new ApiResponse<CreateReportsActionOutput>();
-            // response = await _apiClient.PostReportsDataObject(input, cancellationToken)
-            // .ConfigureAwait(false);
+            var response = await _apiClient.GenerateProjectReport(
+                input.BusinessUnitId,
+                input.ProjectId,
+                input.HiddenProjectFields,
+                input.HiddenEstimateColumns,
+                input.Settings,
+                cancellationToken);
 
-            // The full record is needed for SyncOperations. If the endpoint used for the action returns a partial record (such as only returning the ID) then you can either:
-            // - Make a GET call using the ID that was returned
-            // - Add the ID property to your action input (Assuming this results in the proper data object shape)
-
-            // var resource = await _apiClient.GetReportsDataObject(response.Data.id, cancellationToken);
-
-            // var resource = new CreateReportsActionOutput
-            // {
-            //      TODO : map
-            // };
-
-            // If the response is already the output object for the action, you can use the response directly
-
-            // Build sync operations to update the local cache as well as the Xchange cache system (if the data type is cached)
-            // For more information on SyncOperations and the KeyResolver, check: https://trimble-xchange.github.io/connector-docs/guides/creating-actions/#keyresolver-and-the-sync-cache-operations
-            var operations = new List<SyncOperation>();
-            var keyResolver = new DefaultDataObjectKey();
-            var key = keyResolver.BuildKeyResolver()(response.Data);
-            operations.Add(SyncOperation.CreateSyncOperation(UpdateOperation.Upsert.ToString(), key.UrlPart, key.PropertyNames, response.Data));
-
-            var resultList = new List<CacheSyncCollection>
+            if (!response.IsSuccessful || response.Data == null)
             {
-                new CacheSyncCollection() { DataObjectType = typeof(ReportsDataObject), CacheChanges = operations.ToArray() }
-            };
+                return ActionHandlerOutcome.Failed(new StandardActionFailure
+                {
+                    Code = response.StatusCode.ToString(),
+                    Errors = new[]
+                    {
+                        new Error
+                        {
+                            Source = new[] { nameof(CreateReportsHandler) },
+                            Text = $"Failed to generate report. Status code: {response.StatusCode}"
+                        }
+                    }
+                });
+            }
 
-            return ActionHandlerOutcome.Successful(response.Data, resultList);
+            return ActionHandlerOutcome.Successful(response.Data);
         }
-        catch (HttpRequestException exception)
+        catch (Exception ex)
         {
-            // If an error occurs, we want to create a failure result for the action that matches
-            // the failure type for the action. 
-            // Common to create extension methods to map to Standard Action Failure
-
-            var errorSource = new List<string> { "CreateReportsHandler" };
-            if (string.IsNullOrEmpty(exception.Source)) errorSource.Add(exception.Source!);
-            
+            _logger.LogError(ex, "Error generating report");
             return ActionHandlerOutcome.Failed(new StandardActionFailure
             {
-                Code = exception.StatusCode?.ToString() ?? "500",
-                Errors = new []
+                Code = "500",
+                Errors = new[]
                 {
-                    new Xchange.Connector.SDK.Action.Error
+                    new Error
                     {
-                        Source = errorSource.ToArray(),
-                        Text = exception.Message
+                        Source = new[] { nameof(CreateReportsHandler) },
+                        Text = ex.Message
                     }
                 }
             });

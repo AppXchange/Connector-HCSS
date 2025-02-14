@@ -14,10 +14,15 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateContactProductsAction Action description goes here")]
+[Description("Creates a new product to be associated with a contact")]
 public class CreateContactProductsAction : IStandardAction<CreateContactProductsActionInput, CreateContactProductsActionOutput>
 {
-    public CreateContactProductsActionInput ActionInput { get; set; } = new();
+    public CreateContactProductsActionInput ActionInput { get; set; } = new() 
+    { 
+        VendorId = Guid.Empty, 
+        ContactId = Guid.Empty,
+        VendorProductId = Guid.Empty 
+    };
     public CreateContactProductsActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +31,29 @@ public class CreateContactProductsAction : IStandardAction<CreateContactProducts
 
 public class CreateContactProductsActionInput
 {
+    [JsonPropertyName("vendorId")]
+    [Description("The vendor's unique identifier")]
+    [Required]
+    public required Guid VendorId { get; init; }
 
+    [JsonPropertyName("contactId")]
+    [Description("The contact's unique identifier")]
+    [Required]
+    public required Guid ContactId { get; init; }
+
+    [JsonPropertyName("vendorProductId")]
+    [Description("The vendor product's unique identifier")]
+    [Required]
+    public required Guid VendorProductId { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit's guid")]
+    public Guid? BusinessUnitId { get; init; }
 }
 
 public class CreateContactProductsActionOutput
 {
     [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [Description("The created product's unique identifier")]
+    public Guid Id { get; init; }
 }

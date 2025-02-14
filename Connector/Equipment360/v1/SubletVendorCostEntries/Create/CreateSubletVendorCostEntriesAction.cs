@@ -14,11 +14,19 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateSubletVendorCostEntriesAction Action description goes here")]
-public class CreateSubletVendorCostEntriesAction : IStandardAction<CreateSubletVendorCostEntriesActionInput, CreateSubletVendorCostEntriesActionOutput>
+[Description("Adds a detail to the sublet vendor cost entry")]
+public class CreateSubletVendorCostEntriesAction : IStandardAction<CreateSubletVendorCostEntriesActionInput, SubletVendorCostEntriesDataObject>
 {
-    public CreateSubletVendorCostEntriesActionInput ActionInput { get; set; } = new();
-    public CreateSubletVendorCostEntriesActionOutput ActionOutput { get; set; } = new();
+    public CreateSubletVendorCostEntriesActionInput ActionInput { get; set; } = new()
+    {
+        SubletVendorCostEntryId = Guid.Empty,
+        VendorId = Guid.Empty
+    };
+    public SubletVendorCostEntriesDataObject ActionOutput { get; set; } = new()
+    {
+        Id = Guid.Empty,
+        VendorId = Guid.Empty
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +34,25 @@ public class CreateSubletVendorCostEntriesAction : IStandardAction<CreateSubletV
 
 public class CreateSubletVendorCostEntriesActionInput
 {
+    [JsonIgnore]
+    [Description("Sublet Vendor Cost Entry Id for the detail being created")]
+    [Required]
+    public required Guid SubletVendorCostEntryId { get; init; }
 
-}
+    [JsonPropertyName("vendorId")]
+    [Description("The vendor id for the cost entry")]
+    [Required]
+    public required Guid VendorId { get; init; }
 
-public class CreateSubletVendorCostEntriesActionOutput
-{
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("amount")]
+    [Description("The value of the amount")]
+    public double? Amount { get; init; }
+
+    [JsonPropertyName("estimatedCost")]
+    [Description("The value of the estimated cost")]
+    public double? EstimatedCost { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description of the cost entry")]
+    public string? Description { get; init; }
 }

@@ -14,11 +14,17 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateEquipmentTypeAction Action description goes here")]
-public class CreateEquipmentTypeAction : IStandardAction<CreateEquipmentTypeActionInput, CreateEquipmentTypeActionOutput>
+[Description("Create a new equipment type")]
+public class CreateEquipmentTypeAction : IStandardAction<CreateEquipmentTypeActionInput, EquipmentTypeDataObject>
 {
-    public CreateEquipmentTypeActionInput ActionInput { get; set; } = new();
-    public CreateEquipmentTypeActionOutput ActionOutput { get; set; } = new();
+    public CreateEquipmentTypeActionInput ActionInput { get; set; } = new()
+    {
+        Name = string.Empty
+    };
+    public EquipmentTypeDataObject ActionOutput { get; set; } = new() 
+    { 
+        EquipmentTypeId = 0
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +32,52 @@ public class CreateEquipmentTypeAction : IStandardAction<CreateEquipmentTypeActi
 
 public class CreateEquipmentTypeActionInput
 {
+    [JsonPropertyName("name")]
+    [Description("The equipment type name")]
+    [Required]
+    public required string Name { get; init; }
 
-}
+    [JsonPropertyName("description")]
+    [Description("The equipment type description")]
+    public string? Description { get; init; }
 
-public class CreateEquipmentTypeActionOutput
-{
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("ParentType")]
+    [Description("The equipment type long description. This will determine the parent (Example: 'Excavator:Mini'), default to All type")]
+    public string? ParentType { get; init; }
+
+    [JsonPropertyName("budget")]
+    [Description("The equipment type budget")]
+    public double Budget { get; init; }
+
+    [JsonPropertyName("utilizedHoursPerYear")]
+    [Description("The equipment type utilized hours per year")]
+    public int UtilizedHoursPerYear { get; init; }
+
+    [JsonPropertyName("utilizedMilesPerYear")]
+    [Description("The equipment type utilized miles per year")]
+    public int UtilizedMilesPerYear { get; init; }
+
+    [JsonPropertyName("replacementCycleYears")]
+    [Description("The equipment type replacement cycle years")]
+    public double ReplacementCycleYears { get; init; }
+
+    [JsonPropertyName("sweetSpotK")]
+    [Description("The equipment type sweet spot K")]
+    public double SweetSpotK { get; init; }
+
+    [JsonPropertyName("sweetSpotEx")]
+    [Description("The equipment type sweet spot ex")]
+    public double SweetSpotEx { get; init; }
+
+    [JsonPropertyName("billingRate")]
+    [Description("The equipment type billing rate")]
+    public double BillingRate { get; init; }
+
+    [JsonPropertyName("avgOperationCostPerHour")]
+    [Description("The equipment type average operating cost per hour")]
+    public double AvgOperationCostPerHour { get; init; }
+
+    [JsonPropertyName("avgOperationgCostPerOdometer")]
+    [Description("The equipment type average operating cost per odometer")]
+    public double AvgOperationgCostPerOdometer { get; init; }
 }

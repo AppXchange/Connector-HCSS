@@ -1,78 +1,71 @@
 using Connector.Client;
-using System;
+using Connector.Connections;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
 
 namespace Connector.HeavyJob.v1.Accounting;
 
 public class AccountingDataReader : TypedAsyncDataReaderBase<AccountingDataObject>
 {
     private readonly ILogger<AccountingDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private readonly ConnectionConfig _connectionConfig;
+    private readonly int _limit = 100;
 
     public AccountingDataReader(
-        ILogger<AccountingDataReader> logger)
+        ILogger<AccountingDataReader> logger,
+        ApiClient apiClient,
+        ConnectionConfig connectionConfig)
     {
         _logger = logger;
+        _apiClient = apiClient;
+        _connectionConfig = connectionConfig;
     }
 
-    public override async IAsyncEnumerable<AccountingDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<AccountingDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        if (_connectionConfig.BusinessUnitId == default)
         {
-            var response = new ApiResponse<PaginatedResponse<AccountingDataObject>>();
-            // If the AccountingDataObject does not have the same structure as the Accounting response from the API, create a new class for it and replace AccountingDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<AccountingResponse>>();
+            throw new InvalidOperationException("BusinessUnitId must be configured in the connection settings");
+        }
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<AccountingDataObject>(
-                //    relativeUrl: "accountings",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'AccountingDataObject'");
-                throw;
-            }
+        string? cursor = null;
+        do
+        {
+            var response = await _apiClient.SearchAccountingValues(
+                _connectionConfig.BusinessUnitId,
+                entityIds: null,
+                cursor,
+                _limit,
+                entityType: AccountingEntityType.Unknown,
+                cancellationToken);
 
             if (!response.IsSuccessful)
             {
-                throw new Exception($"Failed to retrieve records for 'AccountingDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve accounting values. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve accounting values. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            if (response.Data?.Results == null)
             {
-                // If new class was created to match the API response, create a new AccountingDataObject object, map the properties and return a AccountingDataObject.
-
-                // Example:
-                //var resource = new AccountingDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
+                _logger.LogWarning("No accounting values found");
+                yield break;
             }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            foreach (var value in response.Data.Results)
             {
-                break;
+                yield return value;
             }
-        }
+
+            cursor = response.Data.Metadata?.NextCursor;
+
+        } while (!string.IsNullOrEmpty(cursor));
     }
 }

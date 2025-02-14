@@ -14,11 +14,35 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a cost category in HeavyJob")]
 public class CostCategoriesDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The unique identifier of the cost category")]
     [Required]
-    public required Guid Id { get; init; }
+    public Guid Id { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit ID this cost category belongs to")]
+    [Required]
+    public Guid BusinessUnitId { get; init; }
+
+    [JsonPropertyName("costTypeId")]
+    [Description("The cost type ID")]
+    [Required]
+    public Guid CostTypeId { get; init; }
+
+    [JsonPropertyName("isDeleted")]
+    [Description("Indicates if the cost category has been deleted")]
+    public bool IsDeleted { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The cost category code")]
+    [Required]
+    public string Code { get; init; } = string.Empty;
+
+    [JsonPropertyName("description")]
+    [Description("The description of the cost category")]
+    [Required]
+    public string Description { get; init; } = string.Empty;
 }

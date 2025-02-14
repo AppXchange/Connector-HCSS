@@ -1,78 +1,80 @@
 using Connector.Client;
-using System;
+using Connector.Connections;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
 
 namespace Connector.HeavyJob.v1.CostCodeProgress;
 
 public class CostCodeProgressDataReader : TypedAsyncDataReaderBase<CostCodeProgressDataObject>
 {
     private readonly ILogger<CostCodeProgressDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private readonly ConnectionConfig _connectionConfig;
 
     public CostCodeProgressDataReader(
-        ILogger<CostCodeProgressDataReader> logger)
+        ILogger<CostCodeProgressDataReader> logger,
+        ApiClient apiClient,
+        ConnectionConfig connectionConfig)
     {
         _logger = logger;
+        _apiClient = apiClient;
+        _connectionConfig = connectionConfig;
     }
 
-    public override async IAsyncEnumerable<CostCodeProgressDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<CostCodeProgressDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        if (dataObjectRunArguments?.RequestParameterOverrides == null || 
+            !dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("jobId", out var jobIdElement))
+        {
+            throw new InvalidOperationException("Job ID must be provided in request parameters");
+        }
+
+        var jobId = Guid.Parse(jobIdElement.GetString()!);
+        string? cursor = null;
+
         while (true)
         {
-            var response = new ApiResponse<PaginatedResponse<CostCodeProgressDataObject>>();
-            // If the CostCodeProgressDataObject does not have the same structure as the CostCodeProgress response from the API, create a new class for it and replace CostCodeProgressDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<CostCodeProgressResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<CostCodeProgressDataObject>(
-                //    relativeUrl: "costCodeProgress",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'CostCodeProgressDataObject'");
-                throw;
-            }
+            var response = await _apiClient.GetCostCodeProgress(
+                jobId,
+                cursor,
+                null, // limit
+                null, // startDate
+                null, // endDate
+                null, // costCodeIds
+                null, // costCodeTagIds
+                null, // costCodeTransactionTagIds
+                cancellationToken);
 
             if (!response.IsSuccessful)
             {
-                throw new Exception($"Failed to retrieve records for 'CostCodeProgressDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve cost code progress. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve cost code progress. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            if (response.Data?.Results == null)
             {
-                // If new class was created to match the API response, create a new CostCodeProgressDataObject object, map the properties and return a CostCodeProgressDataObject.
-
-                // Example:
-                //var resource = new CostCodeProgressDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
+                _logger.LogWarning("No cost code progress found");
+                yield break;
             }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            foreach (var progress in response.Data.Results)
+            {
+                yield return progress;
+            }
+
+            if (string.IsNullOrEmpty(response.Data.Metadata.NextCursor))
             {
                 break;
             }
+
+            cursor = response.Data.Metadata.NextCursor;
         }
     }
 }

@@ -14,11 +14,15 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateAdvancedBudgetCustomCostTypeItemAction Action description goes here")]
+[Description("Creates a new custom cost type item advanced budget")]
 public class CreateAdvancedBudgetCustomCostTypeItemAction : IStandardAction<CreateAdvancedBudgetCustomCostTypeItemActionInput, CreateAdvancedBudgetCustomCostTypeItemActionOutput>
 {
-    public CreateAdvancedBudgetCustomCostTypeItemActionInput ActionInput { get; set; } = new();
-    public CreateAdvancedBudgetCustomCostTypeItemActionOutput ActionOutput { get; set; } = new();
+    public CreateAdvancedBudgetCustomCostTypeItemActionInput ActionInput { get; set; } = new() { CostCodeId = Guid.Empty };
+    public CreateAdvancedBudgetCustomCostTypeItemActionOutput ActionOutput { get; set; } = new() 
+    { 
+        Id = Guid.Empty,
+        CostCodeId = Guid.Empty 
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +30,25 @@ public class CreateAdvancedBudgetCustomCostTypeItemAction : IStandardAction<Crea
 
 public class CreateAdvancedBudgetCustomCostTypeItemActionInput
 {
+    [JsonPropertyName("costCodeId")]
+    [Description("The cost code id")]
+    [Required]
+    public required Guid CostCodeId { get; init; }
 
+    [JsonPropertyName("purchaseOrderDetailId")]
+    [Description("The purchase order detail id")]
+    public Guid? PurchaseOrderDetailId { get; init; }
+
+    [JsonPropertyName("status")]
+    [Description("The status of the custom cost type")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public CustomCostTypeStatus Status { get; init; }
+
+    [JsonPropertyName("quantity")]
+    [Description("The quantity of the custom-cost-type item")]
+    public double Quantity { get; init; }
 }
 
-public class CreateAdvancedBudgetCustomCostTypeItemActionOutput
+public class CreateAdvancedBudgetCustomCostTypeItemActionOutput : AdvancedBudgetCustomCostTypeItemDataObject
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
 }

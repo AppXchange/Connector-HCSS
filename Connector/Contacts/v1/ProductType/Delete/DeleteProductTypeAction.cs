@@ -14,10 +14,10 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("DeleteProductTypeAction Action description goes here")]
+[Description("Deletes an existing product type")]
 public class DeleteProductTypeAction : IStandardAction<DeleteProductTypeActionInput, DeleteProductTypeActionOutput>
 {
-    public DeleteProductTypeActionInput ActionInput { get; set; } = new();
+    public DeleteProductTypeActionInput ActionInput { get; set; } = new() { ProductTypeId = Guid.Empty };
     public DeleteProductTypeActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +26,16 @@ public class DeleteProductTypeAction : IStandardAction<DeleteProductTypeActionIn
 
 public class DeleteProductTypeActionInput
 {
+    [JsonPropertyName("productTypeId")]
+    [Description("The product type guid")]
+    [Required]
+    public required Guid ProductTypeId { get; init; }
 
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit's guid")]
+    public Guid? BusinessUnitId { get; init; }
 }
 
 public class DeleteProductTypeActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
 }

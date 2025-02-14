@@ -12,13 +12,53 @@ using Xchange.Connector.SDK.CacheWriter;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[PrimaryKey("id", nameof(Id))]
-//[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[PrimaryKey("costCodeId", nameof(CostCodeId))]
+[Description("Represents cost code progress in HeavyJob")]
 public class CostCodeProgressDataObject
 {
-    [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [JsonPropertyName("costCodeId")]
+    [Description("The cost code ID")]
     [Required]
-    public required Guid Id { get; init; }
+    public Guid CostCodeId { get; init; }
+
+    [JsonPropertyName("date")]
+    [Description("The date of the progress")]
+    public DateTime Date { get; init; }
+
+    [JsonPropertyName("quantity")]
+    [Description("The quantity")]
+    public double Quantity { get; init; }
+
+    [JsonPropertyName("reworkQuantity")]
+    [Description("The rework quantity")]
+    public double ReworkQuantity { get; init; }
+
+    [JsonPropertyName("laborHours")]
+    [Description("The labor hours")]
+    public double LaborHours { get; init; }
+
+    [JsonPropertyName("toDateQuantity")]
+    [Description("The to-date quantity")]
+    public double ToDateQuantity { get; init; }
+
+    [JsonPropertyName("toDateLaborHours")]
+    [Description("The to-date labor hours")]
+    public double ToDateLaborHours { get; init; }
+}
+
+public class CostCodeProgressResponse
+{
+    [JsonPropertyName("results")]
+    [Required]
+    public CostCodeProgressDataObject[] Results { get; init; } = Array.Empty<CostCodeProgressDataObject>();
+
+    [JsonPropertyName("metadata")]
+    [Required]
+    public CostCodeProgressMetadata Metadata { get; init; } = new();
+}
+
+public class CostCodeProgressMetadata
+{
+    [JsonPropertyName("nextCursor")]
+    public string? NextCursor { get; init; }
 }

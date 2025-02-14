@@ -2,6 +2,7 @@ using Connector.Client;
 using ESR.Hosting.Action;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
@@ -16,65 +17,47 @@ namespace Connector.Equipment360.v1.MeterReading.Create;
 public class CreateMeterReadingHandler : IActionHandler<CreateMeterReadingAction>
 {
     private readonly ILogger<CreateMeterReadingHandler> _logger;
+    private readonly ApiClient _apiClient;
 
     public CreateMeterReadingHandler(
-        ILogger<CreateMeterReadingHandler> logger)
+        ILogger<CreateMeterReadingHandler> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
     
-    public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(ActionInstance actionInstance, CancellationToken cancellationToken)
+    public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(
+        ActionInstance actionInstance,
+        CancellationToken cancellationToken)
     {
-        var input = JsonSerializer.Deserialize<CreateMeterReadingActionInput>(actionInstance.InputJson);
+        var input = JsonSerializer.Deserialize<CreateMeterReadingActionInput>(actionInstance.InputJson)!;
         try
         {
-            // Given the input for the action, make a call to your API/system
-            var response = new ApiResponse<CreateMeterReadingActionOutput>();
-            // response = await _apiClient.PostMeterReadingDataObject(input, cancellationToken)
-            // .ConfigureAwait(false);
+            var response = await _apiClient.CreateMeterReading(input, cancellationToken);
 
-            // The full record is needed for SyncOperations. If the endpoint used for the action returns a partial record (such as only returning the ID) then you can either:
-            // - Make a GET call using the ID that was returned
-            // - Add the ID property to your action input (Assuming this results in the proper data object shape)
-
-            // var resource = await _apiClient.GetMeterReadingDataObject(response.Data.id, cancellationToken);
-
-            // var resource = new CreateMeterReadingActionOutput
-            // {
-            //      TODO : map
-            // };
-
-            // If the response is already the output object for the action, you can use the response directly
-
-            // Build sync operations to update the local cache as well as the Xchange cache system (if the data type is cached)
-            // For more information on SyncOperations and the KeyResolver, check: https://trimble-xchange.github.io/connector-docs/guides/creating-actions/#keyresolver-and-the-sync-cache-operations
-            var operations = new List<SyncOperation>();
-            var keyResolver = new DefaultDataObjectKey();
-            var key = keyResolver.BuildKeyResolver()(response.Data);
-            operations.Add(SyncOperation.CreateSyncOperation(UpdateOperation.Upsert.ToString(), key.UrlPart, key.PropertyNames, response.Data));
-
-            var resultList = new List<CacheSyncCollection>
+            if (!response.IsSuccessful || response.Data == null)
             {
-                new CacheSyncCollection() { DataObjectType = typeof(MeterReadingDataObject), CacheChanges = operations.ToArray() }
-            };
+                _logger.LogError("Failed to create meter reading. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to create meter reading. API StatusCode: {response.StatusCode}");
+            }
 
-            return ActionHandlerOutcome.Successful(response.Data, resultList);
+            return ActionHandlerOutcome.Successful(response.Data);
         }
         catch (HttpRequestException exception)
         {
-            // If an error occurs, we want to create a failure result for the action that matches
-            // the failure type for the action. 
-            // Common to create extension methods to map to Standard Action Failure
-
-            var errorSource = new List<string> { "CreateMeterReadingHandler" };
-            if (string.IsNullOrEmpty(exception.Source)) errorSource.Add(exception.Source!);
+            _logger.LogError(exception, "Exception while creating meter reading");
+            
+            var errorSource = new List<string> { nameof(CreateMeterReadingHandler) };
+            if (!string.IsNullOrEmpty(exception.Source)) 
+                errorSource.Add(exception.Source);
             
             return ActionHandlerOutcome.Failed(new StandardActionFailure
             {
                 Code = exception.StatusCode?.ToString() ?? "500",
-                Errors = new []
+                Errors = new[]
                 {
-                    new Xchange.Connector.SDK.Action.Error
+                    new Error
                     {
                         Source = errorSource.ToArray(),
                         Text = exception.Message
