@@ -16,67 +16,52 @@ namespace Connector.HeavyJob.v1.CustomCostTypeItems.Delete;
 public class DeleteCustomCostTypeItemsHandler : IActionHandler<DeleteCustomCostTypeItemsAction>
 {
     private readonly ILogger<DeleteCustomCostTypeItemsHandler> _logger;
+    private readonly ApiClient _apiClient;
 
     public DeleteCustomCostTypeItemsHandler(
-        ILogger<DeleteCustomCostTypeItemsHandler> logger)
+        ILogger<DeleteCustomCostTypeItemsHandler> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
     
     public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(ActionInstance actionInstance, CancellationToken cancellationToken)
     {
-        var input = JsonSerializer.Deserialize<DeleteCustomCostTypeItemsActionInput>(actionInstance.InputJson);
+        var input = JsonSerializer.Deserialize<DeleteCustomCostTypeItemsActionInput>(actionInstance.InputJson)!;
+        
         try
         {
-            // Given the input for the action, make a call to your API/system
-            var response = new ApiResponse<DeleteCustomCostTypeItemsActionOutput>();
-            // response = await _apiClient.PostCustomCostTypeItemsDataObject(input, cancellationToken)
-            // .ConfigureAwait(false);
+            var response = await _apiClient.DeleteCustomCostTypeItem(input.Id, cancellationToken);
 
-            // The full record is needed for SyncOperations. If the endpoint used for the action returns a partial record (such as only returning the ID) then you can either:
-            // - Make a GET call using the ID that was returned
-            // - Add the ID property to your action input (Assuming this results in the proper data object shape)
-
-            // var resource = await _apiClient.GetCustomCostTypeItemsDataObject(response.Data.id, cancellationToken);
-
-            // var resource = new DeleteCustomCostTypeItemsActionOutput
-            // {
-            //      TODO : map
-            // };
-
-            // If the response is already the output object for the action, you can use the response directly
-
-            // Build sync operations to update the local cache as well as the Xchange cache system (if the data type is cached)
-            // For more information on SyncOperations and the KeyResolver, check: https://trimble-xchange.github.io/connector-docs/guides/creating-actions/#keyresolver-and-the-sync-cache-operations
-            var operations = new List<SyncOperation>();
-            var keyResolver = new DefaultDataObjectKey();
-            var key = keyResolver.BuildKeyResolver()(response.Data);
-            operations.Add(SyncOperation.CreateSyncOperation(UpdateOperation.Upsert.ToString(), key.UrlPart, key.PropertyNames, response.Data));
-
-            var resultList = new List<CacheSyncCollection>
+            if (!response.IsSuccessful)
             {
-                new CacheSyncCollection() { DataObjectType = typeof(CustomCostTypeItemsDataObject), CacheChanges = operations.ToArray() }
-            };
+                return ActionHandlerOutcome.Failed(new StandardActionFailure
+                {
+                    Code = response.StatusCode.ToString(),
+                    Errors = new[]
+                    {
+                        new Error
+                        {
+                            Source = new[] { nameof(DeleteCustomCostTypeItemsHandler) },
+                            Text = $"Failed to delete custom cost type item. Status code: {response.StatusCode}"
+                        }
+                    }
+                });
+            }
 
-            return ActionHandlerOutcome.Successful(response.Data, resultList);
+            return ActionHandlerOutcome.Successful(new DeleteCustomCostTypeItemsActionOutput());
         }
-        catch (HttpRequestException exception)
+        catch (ApiException exception)
         {
-            // If an error occurs, we want to create a failure result for the action that matches
-            // the failure type for the action. 
-            // Common to create extension methods to map to Standard Action Failure
-
-            var errorSource = new List<string> { "DeleteCustomCostTypeItemsHandler" };
-            if (string.IsNullOrEmpty(exception.Source)) errorSource.Add(exception.Source!);
-            
             return ActionHandlerOutcome.Failed(new StandardActionFailure
             {
-                Code = exception.StatusCode?.ToString() ?? "500",
-                Errors = new []
+                Code = exception.StatusCode.ToString(),
+                Errors = new[]
                 {
-                    new Xchange.Connector.SDK.Action.Error
+                    new Error
                     {
-                        Source = errorSource.ToArray(),
+                        Source = new[] { nameof(DeleteCustomCostTypeItemsHandler) },
                         Text = exception.Message
                     }
                 }

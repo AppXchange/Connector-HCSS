@@ -1,78 +1,74 @@
 using Connector.Client;
-using System;
+using Connector.Connections;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
 
 namespace Connector.HeavyJob.v1.Diaries;
 
 public class DiariesDataReader : TypedAsyncDataReaderBase<DiariesDataObject>
 {
     private readonly ILogger<DiariesDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private readonly ConnectionConfig _connectionConfig;
 
     public DiariesDataReader(
-        ILogger<DiariesDataReader> logger)
+        ILogger<DiariesDataReader> logger,
+        ApiClient apiClient,
+        ConnectionConfig connectionConfig)
     {
         _logger = logger;
+        _apiClient = apiClient;
+        _connectionConfig = connectionConfig;
     }
 
-    public override async IAsyncEnumerable<DiariesDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<DiariesDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        string? cursor = null;
+
         while (true)
         {
-            var response = new ApiResponse<PaginatedResponse<DiariesDataObject>>();
-            // If the DiariesDataObject does not have the same structure as the Diaries response from the API, create a new class for it and replace DiariesDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<DiariesResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<DiariesDataObject>(
-                //    relativeUrl: "diaries",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'DiariesDataObject'");
-                throw;
-            }
+            var response = await _apiClient.GetDiaries(
+                _connectionConfig.BusinessUnitId,
+                null, // jobIds
+                null, // jobTagIds
+                null, // foremanIds
+                null, // jobStatus
+                null, // startDate
+                null, // endDate
+                cursor,
+                1000, // limit
+                cancellationToken);
 
             if (!response.IsSuccessful)
             {
-                throw new Exception($"Failed to retrieve records for 'DiariesDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve diaries. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve diaries. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            if (response.Data?.Results == null)
             {
-                // If new class was created to match the API response, create a new DiariesDataObject object, map the properties and return a DiariesDataObject.
+                _logger.LogWarning("No diaries found");
+                yield break;
+            }
 
-                // Example:
-                //var resource = new DiariesDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
+            foreach (var item in response.Data.Results)
+            {
                 yield return item;
             }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            if (string.IsNullOrEmpty(response.Data.Metadata.NextCursor))
             {
                 break;
             }
+
+            cursor = response.Data.Metadata.NextCursor;
         }
     }
 }

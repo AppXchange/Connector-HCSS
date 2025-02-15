@@ -175,6 +175,17 @@ using Connector.HeavyJob.v1.CostCodeTags.Delete;
 using Connector.HeavyJob.v1.CostCodeTags.Update;
 using Connector.HeavyJob.v1.CostCodeTransaction;
 using Connector.HeavyJob.v1.CostCodeTransactionAdjustment;
+using Connector.HeavyJob.v1.CustomCostTypeInstalled;
+using Connector.HeavyJob.v1.CustomCostTypeItemReceived;
+using Connector.HeavyJob.v1.CustomCostTypeItems;
+using Connector.HeavyJob.v1.CustomCostTypeItems.Create;
+using Connector.HeavyJob.v1.CustomCostTypeItems.Update;
+using Connector.HeavyJob.v1.Diaries;
+using Connector.HeavyJob.v1.Diary;
+using Connector.HeavyJob.v1.EmployeeHours;
+using Connector.HeavyJob.v1.Employees;
+using Connector.HeavyJob.v1.EmployeesAdvanced;
+using Connector.HeavyJob.v1.EmployeesWithDetails;  // Add this line
 
 namespace Connector.Client;
 
@@ -1169,7 +1180,7 @@ public class ApiClient
         };
     }
 
-    public async Task<ApiResponse<IEnumerable<EmployeesDataObject>>> GetEmployees(
+    public async Task<ApiResponse<IEnumerable<Connector.Equipment360.v1.Employees.EmployeesDataObject>>> GetEmployees(
         Guid? businessUnitId = null,
         int? employeeId = null,
         CancellationToken cancellationToken = default)
@@ -1188,12 +1199,12 @@ public class ApiClient
 
         var response = await _httpClient.GetAsync(url, cancellationToken);
 
-        return new ApiResponse<IEnumerable<EmployeesDataObject>>
+        return new ApiResponse<IEnumerable<Connector.Equipment360.v1.Employees.EmployeesDataObject>>
         {
             IsSuccessful = response.IsSuccessStatusCode,
             StatusCode = (int)response.StatusCode,
             Data = response.IsSuccessStatusCode 
-                ? await response.Content.ReadFromJsonAsync<IEnumerable<EmployeesDataObject>>(cancellationToken: cancellationToken) 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<Connector.Equipment360.v1.Employees.EmployeesDataObject>>(cancellationToken: cancellationToken) 
                 : null,
             RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
         };
@@ -4691,6 +4702,432 @@ public class ApiClient
             StatusCode = (int)response.StatusCode,
             Data = response.IsSuccessStatusCode 
                 ? await response.Content.ReadFromJsonAsync<CostCodeTransactionAdjustmentResponse>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<CustomCostTypeInstalledResponse>> GetCustomCostTypeInstalled(
+        Guid? businessUnitId = null,
+        Guid[]? jobIds = null,
+        Guid[]? jobTagIds = null,
+        Guid[]? foremanIds = null,
+        DateTime? startDate = null,
+        DateTime? endDate = null,
+        string? cursor = null,
+        int? limit = null,
+        Guid[]? costCodeIds = null,
+        DateTime? modifiedSince = null,
+        bool? onlyTM = null,
+        CancellationToken cancellationToken = default)
+    {
+        var request = new
+        {
+            businessUnitId,
+            jobIds,
+            jobTagIds,
+            foremanIds,
+            startDate,
+            endDate,
+            cursor,
+            limit,
+            costCodeIds,
+            modifiedSince,
+            onlyTM
+        };
+
+        var response = await _httpClient.PostAsJsonAsync(
+            "heavyjob/api/v1/costTypes/customInstalled/advancedRequest",
+            request,
+            cancellationToken);
+
+        return new ApiResponse<CustomCostTypeInstalledResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<CustomCostTypeInstalledResponse>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<CustomCostTypeItemReceivedResponse>> GetCustomCostTypeItemReceived(
+        Guid? businessUnitId = null,
+        Guid[]? jobIds = null,
+        Guid[]? jobTagIds = null,
+        Guid[]? foremanIds = null,
+        DateTime? startDate = null,
+        DateTime? endDate = null,
+        string? cursor = null,
+        int? limit = null,
+        DateTime? modifiedSince = null,
+        CancellationToken cancellationToken = default)
+    {
+        var request = new
+        {
+            businessUnitId,
+            jobIds,
+            jobTagIds,
+            foremanIds,
+            startDate,
+            endDate,
+            cursor,
+            limit,
+            modifiedSince
+        };
+
+        var response = await _httpClient.PostAsJsonAsync(
+            "heavyjob/api/v1/costTypes/customReceived/advancedRequest",
+            request,
+            cancellationToken);
+
+        return new ApiResponse<CustomCostTypeItemReceivedResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<CustomCostTypeItemReceivedResponse>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<CustomCostTypeItemsDataObject>>> GetCustomCostTypeItems(
+        Guid businessUnitId,
+        bool? isDeleted = null,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"heavyjob/api/v1/businessUnits/{businessUnitId}/costTypes/custom";
+        if (isDeleted.HasValue)
+        {
+            url += $"?isDeleted={isDeleted.Value}";
+        }
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<CustomCostTypeItemsDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<CustomCostTypeItemsDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<CreateCustomCostTypeItemsActionOutput>> CreateCustomCostTypeItem(
+        CreateCustomCostTypeItemsActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.PostAsJsonAsync(
+            $"heavyjob/api/v1/businessUnits/{input.BusinessUnitId}/costTypes/custom",
+            new
+            {
+                costCategoryId = input.CostCategoryId,
+                code = input.Code,
+                description = input.Description,
+                heavyBidCode = input.HeavyBidCode
+            },
+            cancellationToken);
+
+        return new ApiResponse<CreateCustomCostTypeItemsActionOutput>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<CreateCustomCostTypeItemsActionOutput>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse> DeleteCustomCostTypeItem(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.DeleteAsync(
+            $"heavyjob/api/v1/costTypes/custom/{id}",
+            cancellationToken);
+
+        return new ApiResponse
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse> UpdateCustomCostTypeItem(
+        UpdateCustomCostTypeItemsActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.PutAsJsonAsync(
+            $"heavyjob/api/v1/costTypes/custom/{input.Id}",
+            new
+            {
+                costCategoryId = input.CostCategoryId,
+                code = input.Code,
+                description = input.Description,
+                heavyBidCode = input.HeavyBidCode
+            },
+            cancellationToken);
+
+        return new ApiResponse
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<DiariesResponse>> GetDiaries(
+        Guid businessUnitId,
+        Guid[]? jobIds = null,
+        Guid[]? jobTagIds = null,
+        Guid[]? foremanIds = null,
+        string? jobStatus = null,
+        DateTime? startDate = null,
+        DateTime? endDate = null,
+        string? cursor = null,
+        int? limit = null,
+        CancellationToken cancellationToken = default)
+    {
+        var request = new
+        {
+            businessUnitId,
+            jobIds,
+            jobTagIds,
+            foremanIds,
+            jobStatus,
+            startDate,
+            endDate,
+            cursor,
+            limit
+        };
+
+        var response = await _httpClient.PostAsJsonAsync(
+            "heavyjob/api/v1/diaries/search",
+            request,
+            cancellationToken);
+
+        return new ApiResponse<DiariesResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<DiariesResponse>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<DiaryDataObject>> UpsertDiary(
+        DiaryDataObject diary,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.PutAsJsonAsync(
+            "heavyjob/api/v1/diaries",
+            new
+            {
+                jobId = diary.JobId,
+                foremanId = diary.ForemanId,
+                date = diary.Date,
+                lockedById = diary.LockedById,
+                lockedDateTime = diary.LockedDateTime,
+                revision = diary.Revision,
+                tags = diary.Tags,
+                note = diary.Note,
+                workingConditions = diary.WorkingConditions
+            },
+            cancellationToken);
+
+        return new ApiResponse<DiaryDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<DiaryDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<EmployeeHoursResponse>> GetEmployeeHours(
+        Guid businessUnitId,
+        Guid[]? jobIds = null,
+        Guid[]? jobTagIds = null,
+        Guid[]? foremanIds = null,
+        DateTime? startDate = null,
+        DateTime? endDate = null,
+        string? cursor = null,
+        int? limit = null,
+        bool includeAllJobs = false,
+        bool includeInactiveEmployees = false,
+        DateTime? modifiedSince = null,
+        Guid[]? employeeIds = null,
+        CancellationToken cancellationToken = default)
+    {
+        var request = new
+        {
+            businessUnitId,
+            jobIds,
+            jobTagIds,
+            foremanIds,
+            startDate,
+            endDate,
+            cursor,
+            limit,
+            includeAllJobs,
+            includeInactiveEmployees,
+            modifiedSince,
+            employeeIds
+        };
+
+        var response = await _httpClient.PostAsJsonAsync(
+            "heavyjob/api/v1/hours/employees",
+            request,
+            cancellationToken);
+
+        return new ApiResponse<EmployeeHoursResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<EmployeeHoursResponse>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<HeavyJob.v1.Employees.EmployeesDataObject>>> GetEmployees(
+        Guid businessUnitId,
+        string? accountingTemplateName = null,
+        bool? isActive = null,
+        bool? isDeleted = null,
+        bool? isForeman = null,
+        bool? includeHistoricalForeman = null,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"heavyjob/api/v1/businessUnits/{businessUnitId}/employees";
+        var queryParams = new List<string>();
+
+        if (!string.IsNullOrEmpty(accountingTemplateName))
+            queryParams.Add($"accountingTemplateName={accountingTemplateName}");
+        if (isActive.HasValue)
+            queryParams.Add($"isActive={isActive.Value}");
+        if (isDeleted.HasValue)
+            queryParams.Add($"isDeleted={isDeleted.Value}");
+        if (isForeman.HasValue)
+            queryParams.Add($"isForeman={isForeman.Value}");
+        if (includeHistoricalForeman.HasValue)
+            queryParams.Add($"includeHistoricalForeman={includeHistoricalForeman.Value}");
+
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<HeavyJob.v1.Employees.EmployeesDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<HeavyJob.v1.Employees.EmployeesDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse> DeleteEmployees(
+        Guid[] employeeIds,
+        CancellationToken cancellationToken = default)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Delete, "heavyjob/api/v1/employees")
+        {
+            Content = JsonContent.Create(employeeIds)
+        };
+        var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        return new ApiResponse
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<EmployeesAdvancedResponse>> GetEmployeesAdvanced(
+        Guid businessUnitId,
+        string[]? employeeCodes = null,
+        Guid[]? employeeIds = null,
+        string? accountingTemplateName = null,
+        bool? isActive = null,
+        bool? isForeman = null,
+        bool? includeHistoricalForeman = null,
+        bool? isDeleted = null,
+        string? cursor = null,
+        int? limit = null,
+        CancellationToken cancellationToken = default)
+    {
+        var request = new
+        {
+            businessUnitId,
+            employeeCodes,
+            employeeIds,
+            accountingTemplateName,
+            isActive,
+            isForeman,
+            includeHistoricalForeman,
+            isDeleted,
+            cursor,
+            limit
+        };
+
+        var response = await _httpClient.PostAsJsonAsync(
+            "heavyjob/api/v1/employees/advancedRequest",
+            request,
+            cancellationToken);
+
+        return new ApiResponse<EmployeesAdvancedResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<EmployeesAdvancedResponse>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<EmployeesWithDetailsResponse>> GetEmployeesWithDetails(
+        bool? isDeleted = null,
+        int? limit = 1000,
+        string? cursor = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+
+        if (isDeleted.HasValue)
+            queryParams.Add($"isDeleted={isDeleted.Value}");
+        if (limit.HasValue)
+            queryParams.Add($"limit={limit.Value}");
+        if (!string.IsNullOrEmpty(cursor))
+            queryParams.Add($"cursor={cursor}");
+
+        var url = "heavyjob/api/v1/employees";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<EmployeesWithDetailsResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<EmployeesWithDetailsResponse>(cancellationToken: cancellationToken)
                 : null,
             RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
         };

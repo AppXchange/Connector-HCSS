@@ -1,78 +1,77 @@
 using Connector.Client;
-using System;
+using Connector.Connections;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
 
 namespace Connector.HeavyJob.v1.EmployeeHours;
 
 public class EmployeeHoursDataReader : TypedAsyncDataReaderBase<EmployeeHoursDataObject>
 {
     private readonly ILogger<EmployeeHoursDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private readonly ConnectionConfig _connectionConfig;
 
     public EmployeeHoursDataReader(
-        ILogger<EmployeeHoursDataReader> logger)
+        ILogger<EmployeeHoursDataReader> logger,
+        ApiClient apiClient,
+        ConnectionConfig connectionConfig)
     {
         _logger = logger;
+        _apiClient = apiClient;
+        _connectionConfig = connectionConfig;
     }
 
-    public override async IAsyncEnumerable<EmployeeHoursDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<EmployeeHoursDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        string? cursor = null;
+
         while (true)
         {
-            var response = new ApiResponse<PaginatedResponse<EmployeeHoursDataObject>>();
-            // If the EmployeeHoursDataObject does not have the same structure as the EmployeeHours response from the API, create a new class for it and replace EmployeeHoursDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<EmployeeHoursResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<EmployeeHoursDataObject>(
-                //    relativeUrl: "employeeHours",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'EmployeeHoursDataObject'");
-                throw;
-            }
+            var response = await _apiClient.GetEmployeeHours(
+                _connectionConfig.BusinessUnitId,
+                null, // jobIds
+                null, // jobTagIds
+                null, // foremanIds
+                null, // startDate
+                null, // endDate
+                cursor,
+                1000, // limit
+                false, // includeAllJobs
+                false, // includeInactiveEmployees
+                null, // modifiedSince
+                null, // employeeIds
+                cancellationToken);
 
             if (!response.IsSuccessful)
             {
-                throw new Exception($"Failed to retrieve records for 'EmployeeHoursDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve employee hours. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve employee hours. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            if (response.Data?.Results == null)
             {
-                // If new class was created to match the API response, create a new EmployeeHoursDataObject object, map the properties and return a EmployeeHoursDataObject.
+                _logger.LogWarning("No employee hours found");
+                yield break;
+            }
 
-                // Example:
-                //var resource = new EmployeeHoursDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
+            foreach (var item in response.Data.Results)
+            {
                 yield return item;
             }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            if (string.IsNullOrEmpty(response.Data.Metadata.NextCursor))
             {
                 break;
             }
+
+            cursor = response.Data.Metadata.NextCursor;
         }
     }
 }

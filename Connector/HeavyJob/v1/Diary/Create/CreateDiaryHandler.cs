@@ -16,67 +16,66 @@ namespace Connector.HeavyJob.v1.Diary.Create;
 public class CreateDiaryHandler : IActionHandler<CreateDiaryAction>
 {
     private readonly ILogger<CreateDiaryHandler> _logger;
+    private readonly ApiClient _apiClient;
 
     public CreateDiaryHandler(
-        ILogger<CreateDiaryHandler> logger)
+        ILogger<CreateDiaryHandler> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
     
     public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(ActionInstance actionInstance, CancellationToken cancellationToken)
     {
-        var input = JsonSerializer.Deserialize<CreateDiaryActionInput>(actionInstance.InputJson);
+        var input = JsonSerializer.Deserialize<CreateDiaryActionInput>(actionInstance.InputJson)!;
+        
         try
         {
-            // Given the input for the action, make a call to your API/system
-            var response = new ApiResponse<CreateDiaryActionOutput>();
-            // response = await _apiClient.PostDiaryDataObject(input, cancellationToken)
-            // .ConfigureAwait(false);
-
-            // The full record is needed for SyncOperations. If the endpoint used for the action returns a partial record (such as only returning the ID) then you can either:
-            // - Make a GET call using the ID that was returned
-            // - Add the ID property to your action input (Assuming this results in the proper data object shape)
-
-            // var resource = await _apiClient.GetDiaryDataObject(response.Data.id, cancellationToken);
-
-            // var resource = new CreateDiaryActionOutput
-            // {
-            //      TODO : map
-            // };
-
-            // If the response is already the output object for the action, you can use the response directly
-
-            // Build sync operations to update the local cache as well as the Xchange cache system (if the data type is cached)
-            // For more information on SyncOperations and the KeyResolver, check: https://trimble-xchange.github.io/connector-docs/guides/creating-actions/#keyresolver-and-the-sync-cache-operations
-            var operations = new List<SyncOperation>();
-            var keyResolver = new DefaultDataObjectKey();
-            var key = keyResolver.BuildKeyResolver()(response.Data);
-            operations.Add(SyncOperation.CreateSyncOperation(UpdateOperation.Upsert.ToString(), key.UrlPart, key.PropertyNames, response.Data));
-
-            var resultList = new List<CacheSyncCollection>
+            var response = await _apiClient.UpsertDiary(new DiaryDataObject
             {
-                new CacheSyncCollection() { DataObjectType = typeof(DiaryDataObject), CacheChanges = operations.ToArray() }
-            };
+                JobId = input.JobId,
+                ForemanId = input.ForemanId,
+                Date = input.Date,
+                LockedById = input.LockedById,
+                LockedDateTime = input.LockedDateTime,
+                Revision = input.Revision,
+                Tags = input.Tags,
+                Note = input.Note,
+                WorkingConditions = input.WorkingConditions
+            }, cancellationToken);
 
-            return ActionHandlerOutcome.Successful(response.Data, resultList);
+            if (!response.IsSuccessful)
+            {
+                return ActionHandlerOutcome.Failed(new StandardActionFailure
+                {
+                    Code = response.StatusCode.ToString(),
+                    Errors = new[]
+                    {
+                        new Error
+                        {
+                            Source = new[] { nameof(CreateDiaryHandler) },
+                            Text = $"Failed to create/update diary. Status code: {response.StatusCode}"
+                        }
+                    }
+                });
+            }
+
+            return ActionHandlerOutcome.Successful(new CreateDiaryActionOutput 
+            { 
+                Id = response.Data!.Id 
+            });
         }
-        catch (HttpRequestException exception)
+        catch (ApiException exception)
         {
-            // If an error occurs, we want to create a failure result for the action that matches
-            // the failure type for the action. 
-            // Common to create extension methods to map to Standard Action Failure
-
-            var errorSource = new List<string> { "CreateDiaryHandler" };
-            if (string.IsNullOrEmpty(exception.Source)) errorSource.Add(exception.Source!);
-            
             return ActionHandlerOutcome.Failed(new StandardActionFailure
             {
-                Code = exception.StatusCode?.ToString() ?? "500",
-                Errors = new []
+                Code = exception.StatusCode.ToString(),
+                Errors = new[]
                 {
-                    new Xchange.Connector.SDK.Action.Error
+                    new Error
                     {
-                        Source = errorSource.ToArray(),
+                        Source = new[] { nameof(CreateDiaryHandler) },
                         Text = exception.Message
                     }
                 }

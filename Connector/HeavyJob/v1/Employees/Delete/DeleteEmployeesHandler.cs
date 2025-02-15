@@ -11,28 +11,30 @@ using Xchange.Connector.SDK.Action;
 using Xchange.Connector.SDK.CacheWriter;
 using Xchange.Connector.SDK.Client.AppNetwork;
 
-namespace Connector.HeavyJob.v1.CustomCostTypeItems.Update;
+namespace Connector.HeavyJob.v1.Employees.Delete;
 
-public class UpdateCustomCostTypeItemsHandler : IActionHandler<UpdateCustomCostTypeItemsAction>
+public class DeleteEmployeesHandler : IActionHandler<DeleteEmployeesAction>
 {
-    private readonly ILogger<UpdateCustomCostTypeItemsHandler> _logger;
+    private readonly ILogger<DeleteEmployeesHandler> _logger;
     private readonly ApiClient _apiClient;
 
-    public UpdateCustomCostTypeItemsHandler(
-        ILogger<UpdateCustomCostTypeItemsHandler> logger,
+    public DeleteEmployeesHandler(
+        ILogger<DeleteEmployeesHandler> logger,
         ApiClient apiClient)
     {
         _logger = logger;
         _apiClient = apiClient;
     }
     
-    public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(ActionInstance actionInstance, CancellationToken cancellationToken)
+    public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(
+        ActionInstance actionInstance, 
+        CancellationToken cancellationToken)
     {
-        var input = JsonSerializer.Deserialize<UpdateCustomCostTypeItemsActionInput>(actionInstance.InputJson)!;
+        var input = JsonSerializer.Deserialize<DeleteEmployeesActionInput>(actionInstance.InputJson)!;
         
         try
         {
-            var response = await _apiClient.UpdateCustomCostTypeItem(input, cancellationToken);
+            var response = await _apiClient.DeleteEmployees(input.EmployeeIds, cancellationToken);
 
             if (!response.IsSuccessful)
             {
@@ -43,14 +45,17 @@ public class UpdateCustomCostTypeItemsHandler : IActionHandler<UpdateCustomCostT
                     {
                         new Error
                         {
-                            Source = new[] { nameof(UpdateCustomCostTypeItemsHandler) },
-                            Text = $"Failed to update custom cost type item. Status code: {response.StatusCode}"
+                            Source = new[] { nameof(DeleteEmployeesHandler) },
+                            Text = $"Failed to delete employees. Status code: {response.StatusCode}"
                         }
                     }
                 });
             }
 
-            return ActionHandlerOutcome.Successful(new UpdateCustomCostTypeItemsActionOutput());
+            return ActionHandlerOutcome.Successful(new DeleteEmployeesActionOutput 
+            { 
+                Success = true 
+            });
         }
         catch (ApiException exception)
         {
@@ -61,7 +66,7 @@ public class UpdateCustomCostTypeItemsHandler : IActionHandler<UpdateCustomCostT
                 {
                     new Error
                     {
-                        Source = new[] { nameof(UpdateCustomCostTypeItemsHandler) },
+                        Source = new[] { nameof(DeleteEmployeesHandler) },
                         Text = exception.Message
                     }
                 }

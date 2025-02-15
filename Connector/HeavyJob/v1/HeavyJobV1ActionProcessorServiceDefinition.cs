@@ -7,10 +7,10 @@ using Connector.HeavyJob.v1.AdvancedBudgetSubcontract;
 using Connector.HeavyJob.v1.AdvancedBudgetSubcontract.Create;
 using Connector.HeavyJob.v1.Attachment;
 using Connector.HeavyJob.v1.Attachment.Create;
-using Connector.HeavyJob.v1.BulkCreateJobsRequest;
-using Connector.HeavyJob.v1.BulkCreateJobsRequest.Create;
-using Connector.HeavyJob.v1.BulkCreateJobsRequests;
-using Connector.HeavyJob.v1.BulkCreateJobsRequests.Create;
+// using Connector.HeavyJob.v1.BulkCreateJobsRequest;
+// using Connector.HeavyJob.v1.BulkCreateJobsRequest.Create;
+// using Connector.HeavyJob.v1.BulkCreateJobsRequests;
+// using Connector.HeavyJob.v1.BulkCreateJobsRequests.Create;
 using Connector.HeavyJob.v1.BusinessUnitPreference;
 using Connector.HeavyJob.v1.BusinessUnitPreference.Update;
 using Connector.HeavyJob.v1.ChangeOrder;
@@ -41,23 +41,21 @@ using Connector.HeavyJob.v1.CostCodeTransactionAdjustment.Create;
 using Connector.HeavyJob.v1.CustomCostTypeInstalled;
 using Connector.HeavyJob.v1.CustomCostTypeInstalled.Create;
 using Connector.HeavyJob.v1.CustomCostTypeItemReceived;
-using Connector.HeavyJob.v1.CustomCostTypeItemReceived.Update;
+// using Connector.HeavyJob.v1.CustomCostTypeItemReceived.Update;
 using Connector.HeavyJob.v1.CustomCostTypeItems;
 using Connector.HeavyJob.v1.CustomCostTypeItems.Create;
 using Connector.HeavyJob.v1.CustomCostTypeItems.Delete;
 using Connector.HeavyJob.v1.CustomCostTypeItems.Update;
-using Connector.HeavyJob.v1.CustomCostTypeReceived;
-using Connector.HeavyJob.v1.CustomCostTypeReceived.Create;
+// using Connector.HeavyJob.v1.CustomCostTypeReceived;
+// using Connector.HeavyJob.v1.CustomCostTypeReceived.Create;
 using Connector.HeavyJob.v1.Diaries;
-using Connector.HeavyJob.v1.Diaries.Create;
+// using Connector.HeavyJob.v1.Diaries.Create;
 using Connector.HeavyJob.v1.Diary;
 using Connector.HeavyJob.v1.Diary.Create;
-using Connector.HeavyJob.v1.Employee;
-using Connector.HeavyJob.v1.Employee.Delete;
 using Connector.HeavyJob.v1.EmployeeHours;
-using Connector.HeavyJob.v1.EmployeeHours.Create;
 using Connector.HeavyJob.v1.Employees;
 using Connector.HeavyJob.v1.Employees.Create;
+using Connector.HeavyJob.v1.Employees.Delete;
 using Connector.HeavyJob.v1.Equipment;
 using Connector.HeavyJob.v1.Equipment.Create;
 using Connector.HeavyJob.v1.Equipment.Update;
@@ -168,8 +166,8 @@ public class HeavyJobV1ActionProcessorServiceDefinition : BaseActionHandlerServi
         serviceCollection.AddScoped<CreateAdvancedBudgetSubcontractHandler>();
         serviceCollection.AddScoped<CreateAdvancedBudgetCustomCostTypeItemHandler>();
         serviceCollection.AddScoped<CreateAttachmentHandler>();
-        serviceCollection.AddScoped<CreateBulkCreateJobsRequestsHandler>();
-        serviceCollection.AddScoped<CreateBulkCreateJobsRequestHandler>();
+        // serviceCollection.AddScoped<CreateBulkCreateJobsRequestsHandler>();
+        // serviceCollection.AddScoped<CreateBulkCreateJobsRequestHandler>();
         serviceCollection.AddScoped<UpdateBusinessUnitPreferenceHandler>();
         serviceCollection.AddScoped<DeleteChangeOrderHandler>();
         serviceCollection.AddScoped<CreateChangeOrderHandler>();
@@ -189,7 +187,7 @@ public class HeavyJobV1ActionProcessorServiceDefinition : BaseActionHandlerServi
         serviceCollection.AddScoped<CreateCostCodeTagsHandler>();
         serviceCollection.AddScoped<CreateCostCodeTransactionHandler>();
         serviceCollection.AddScoped<CreateCostCodeTransactionAdjustmentHandler>();
-        serviceCollection.AddScoped<UpdateCustomCostTypeItemReceivedHandler>();
+        // serviceCollection.AddScoped<UpdateCustomCostTypeItemReceivedHandler>();
         serviceCollection.AddScoped<CreateCostCategoriesHandler>();
         serviceCollection.AddScoped<CreateCustomCostTypeItemsHandler>();
         serviceCollection.AddScoped<UpdateCustomCostTypeItemsHandler>();
@@ -198,15 +196,13 @@ public class HeavyJobV1ActionProcessorServiceDefinition : BaseActionHandlerServi
         serviceCollection.AddScoped<UpdateJobCustomCostTypeItemHandler>();
         serviceCollection.AddScoped<DeleteJobCustomCostTypeItemHandler>();
         serviceCollection.AddScoped<CreateCustomCostTypeInstalledHandler>();
-        serviceCollection.AddScoped<CreateCustomCostTypeReceivedHandler>();
+        // serviceCollection.AddScoped<CreateCustomCostTypeReceivedHandler>();
         serviceCollection.AddScoped<CreateDiaryHandler>();
-        serviceCollection.AddScoped<CreateDiariesHandler>();
+        // serviceCollection.AddScoped<CreateDiariesHandler>();
         serviceCollection.AddScoped<CreateEmployeesHandler>();
-        serviceCollection.AddScoped<DeleteEmployeeHandler>();
         serviceCollection.AddScoped<CreateEquipmentHandler>();
         serviceCollection.AddScoped<UpdateEquipmentHandler>();
         serviceCollection.AddScoped<CreateEquipmentTypeHandler>();
-        serviceCollection.AddScoped<CreateEmployeeHoursHandler>();
         serviceCollection.AddScoped<CreateEquipmentHoursHandler>();
         serviceCollection.AddScoped<UpdateJobsHandler>();
         serviceCollection.AddScoped<CreateJobsHandler>();
@@ -249,6 +245,7 @@ public class HeavyJobV1ActionProcessorServiceDefinition : BaseActionHandlerServi
         serviceCollection.AddScoped<UpdateVendorContractsHandler>();
         serviceCollection.AddScoped<CreateVendorContractDetailsHandler>();
         serviceCollection.AddScoped<UpdateVendorContractDetailsHandler>();
+        serviceCollection.AddScoped<DeleteEmployeesHandler>();
     }
 
     public override void ConfigureService(IActionHandlerService service, HeavyJobV1ActionProcessorConfig config)
@@ -258,8 +255,8 @@ public class HeavyJobV1ActionProcessorServiceDefinition : BaseActionHandlerServi
         service.RegisterHandlerForDataObjectAction<CreateAdvancedBudgetSubcontractHandler, AdvancedBudgetSubcontractDataObject>(ModuleId, "advanced-budget-subcontract", "create", config.CreateAdvancedBudgetSubcontractConfig);
         service.RegisterHandlerForDataObjectAction<CreateAdvancedBudgetCustomCostTypeItemHandler, AdvancedBudgetCustomCostTypeItemDataObject>(ModuleId, "advanced-budget-custom-cost-type-item", "create", config.CreateAdvancedBudgetCustomCostTypeItemConfig);
         service.RegisterHandlerForDataObjectAction<CreateAttachmentHandler, AttachmentDataObject>(ModuleId, "attachment", "create", config.CreateAttachmentConfig);
-        service.RegisterHandlerForDataObjectAction<CreateBulkCreateJobsRequestsHandler, BulkCreateJobsRequestsDataObject>(ModuleId, "bulk-create-jobs-requests", "create", config.CreateBulkCreateJobsRequestsConfig);
-        service.RegisterHandlerForDataObjectAction<CreateBulkCreateJobsRequestHandler, BulkCreateJobsRequestDataObject>(ModuleId, "bulk-create-jobs-request", "create", config.CreateBulkCreateJobsRequestConfig);
+        // service.RegisterHandlerForDataObjectAction<CreateBulkCreateJobsRequestsHandler, BulkCreateJobsRequestsDataObject>(ModuleId, "bulk-create-jobs-requests", "create", config.CreateBulkCreateJobsRequestsConfig);
+        // service.RegisterHandlerForDataObjectAction<CreateBulkCreateJobsRequestHandler, BulkCreateJobsRequestDataObject>(ModuleId, "bulk-create-jobs-request", "create", config.CreateBulkCreateJobsRequestConfig);
         service.RegisterHandlerForDataObjectAction<UpdateBusinessUnitPreferenceHandler, BusinessUnitPreferenceDataObject>(ModuleId, "business-unit-preference", "update", config.UpdateBusinessUnitPreferenceConfig);
         service.RegisterHandlerForDataObjectAction<DeleteChangeOrderHandler, ChangeOrderDataObject>(ModuleId, "change-order", "delete", config.DeleteChangeOrderConfig);
         service.RegisterHandlerForDataObjectAction<CreateChangeOrderHandler, ChangeOrderDataObject>(ModuleId, "change-order", "create", config.CreateChangeOrderConfig);
@@ -279,7 +276,7 @@ public class HeavyJobV1ActionProcessorServiceDefinition : BaseActionHandlerServi
         service.RegisterHandlerForDataObjectAction<CreateCostCodeTagsHandler, CostCodeTagsDataObject>(ModuleId, "cost-code-tags", "create", config.CreateCostCodeTagsConfig);
         service.RegisterHandlerForDataObjectAction<CreateCostCodeTransactionHandler, CostCodeTransactionDataObject>(ModuleId, "cost-code-transaction", "create", config.CreateCostCodeTransactionConfig);
         service.RegisterHandlerForDataObjectAction<CreateCostCodeTransactionAdjustmentHandler, CostCodeTransactionAdjustmentDataObject>(ModuleId, "cost-code-transaction-adjustment", "create", config.CreateCostCodeTransactionAdjustmentConfig);
-        service.RegisterHandlerForDataObjectAction<UpdateCustomCostTypeItemReceivedHandler, CustomCostTypeItemReceivedDataObject>(ModuleId, "custom-cost-type-item-received", "update", config.UpdateCustomCostTypeItemReceivedConfig);
+        // service.RegisterHandlerForDataObjectAction<UpdateCustomCostTypeItemReceivedHandler, CustomCostTypeItemReceivedDataObject>(ModuleId, "custom-cost-type-item-received", "update", config.UpdateCustomCostTypeItemReceivedConfig);
         service.RegisterHandlerForDataObjectAction<CreateCostCategoriesHandler, CostCategoriesDataObject>(ModuleId, "cost-categories", "create", config.CreateCostCategoriesConfig);
         service.RegisterHandlerForDataObjectAction<CreateCustomCostTypeItemsHandler, CustomCostTypeItemsDataObject>(ModuleId, "custom-cost-type-items", "create", config.CreateCustomCostTypeItemsConfig);
         service.RegisterHandlerForDataObjectAction<UpdateCustomCostTypeItemsHandler, CustomCostTypeItemsDataObject>(ModuleId, "custom-cost-type-items", "update", config.UpdateCustomCostTypeItemsConfig);
@@ -288,15 +285,13 @@ public class HeavyJobV1ActionProcessorServiceDefinition : BaseActionHandlerServi
         service.RegisterHandlerForDataObjectAction<UpdateJobCustomCostTypeItemHandler, JobCustomCostTypeItemDataObject>(ModuleId, "job-custom-cost-type-item", "update", config.UpdateJobCustomCostTypeItemConfig);
         service.RegisterHandlerForDataObjectAction<DeleteJobCustomCostTypeItemHandler, JobCustomCostTypeItemDataObject>(ModuleId, "job-custom-cost-type-item", "delete", config.DeleteJobCustomCostTypeItemConfig);
         service.RegisterHandlerForDataObjectAction<CreateCustomCostTypeInstalledHandler, CustomCostTypeInstalledDataObject>(ModuleId, "custom-cost-type-installed", "create", config.CreateCustomCostTypeInstalledConfig);
-        service.RegisterHandlerForDataObjectAction<CreateCustomCostTypeReceivedHandler, CustomCostTypeReceivedDataObject>(ModuleId, "custom-cost-type-received", "create", config.CreateCustomCostTypeReceivedConfig);
+        // service.RegisterHandlerForDataObjectAction<CreateCustomCostTypeReceivedHandler, CustomCostTypeReceivedDataObject>(ModuleId, "custom-cost-type-received", "create", config.CreateCustomCostTypeReceivedConfig);
         service.RegisterHandlerForDataObjectAction<CreateDiaryHandler, DiaryDataObject>(ModuleId, "diary", "create", config.CreateDiaryConfig);
-        service.RegisterHandlerForDataObjectAction<CreateDiariesHandler, DiariesDataObject>(ModuleId, "diaries", "create", config.CreateDiariesConfig);
+        // service.RegisterHandlerForDataObjectAction<CreateDiariesHandler, DiariesDataObject>(ModuleId, "diaries", "create", config.CreateDiariesConfig);
         service.RegisterHandlerForDataObjectAction<CreateEmployeesHandler, EmployeesDataObject>(ModuleId, "employees", "create", config.CreateEmployeesConfig);
-        service.RegisterHandlerForDataObjectAction<DeleteEmployeeHandler, EmployeeDataObject>(ModuleId, "employee", "delete", config.DeleteEmployeeConfig);
         service.RegisterHandlerForDataObjectAction<CreateEquipmentHandler, EquipmentDataObject>(ModuleId, "equipment", "create", config.CreateEquipmentConfig);
         service.RegisterHandlerForDataObjectAction<UpdateEquipmentHandler, EquipmentDataObject>(ModuleId, "equipment", "update", config.UpdateEquipmentConfig);
         service.RegisterHandlerForDataObjectAction<CreateEquipmentTypeHandler, EquipmentTypeDataObject>(ModuleId, "equipment-type", "create", config.CreateEquipmentTypeConfig);
-        service.RegisterHandlerForDataObjectAction<CreateEmployeeHoursHandler, EmployeeHoursDataObject>(ModuleId, "employee-hours", "create", config.CreateEmployeeHoursConfig);
         service.RegisterHandlerForDataObjectAction<CreateEquipmentHoursHandler, EquipmentHoursDataObject>(ModuleId, "equipment-hours", "create", config.CreateEquipmentHoursConfig);
         service.RegisterHandlerForDataObjectAction<UpdateJobsHandler, JobsDataObject>(ModuleId, "jobs", "update", config.UpdateJobsConfig);
         service.RegisterHandlerForDataObjectAction<CreateJobsHandler, JobsDataObject>(ModuleId, "jobs", "create", config.CreateJobsConfig);
@@ -339,5 +334,6 @@ public class HeavyJobV1ActionProcessorServiceDefinition : BaseActionHandlerServi
         service.RegisterHandlerForDataObjectAction<UpdateVendorContractsHandler, VendorContractsDataObject>(ModuleId, "vendor-contracts", "update", config.UpdateVendorContractsConfig);
         service.RegisterHandlerForDataObjectAction<CreateVendorContractDetailsHandler, VendorContractDetailsDataObject>(ModuleId, "vendor-contract-details", "create", config.CreateVendorContractDetailsConfig);
         service.RegisterHandlerForDataObjectAction<UpdateVendorContractDetailsHandler, VendorContractDetailsDataObject>(ModuleId, "vendor-contract-details", "update", config.UpdateVendorContractDetailsConfig);
+        service.RegisterHandlerForDataObjectAction<DeleteEmployeesHandler, EmployeesDataObject>(ModuleId, "employees", "delete", config.DeleteEmployeesConfig);
     }
 }

@@ -14,7 +14,7 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateCustomCostTypeItemsAction Action description goes here")]
+[Description("Creates a cost type item for the specified business unit")]
 public class CreateCustomCostTypeItemsAction : IStandardAction<CreateCustomCostTypeItemsActionInput, CreateCustomCostTypeItemsActionOutput>
 {
     public CreateCustomCostTypeItemsActionInput ActionInput { get; set; } = new();
@@ -26,11 +26,61 @@ public class CreateCustomCostTypeItemsAction : IStandardAction<CreateCustomCostT
 
 public class CreateCustomCostTypeItemsActionInput
 {
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit id")]
+    [Required]
+    public Guid BusinessUnitId { get; init; }
 
+    [JsonPropertyName("costCategoryId")]
+    [Description("The cost category (custom cost type) id")]
+    [Required]
+    public Guid CostCategoryId { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The code")]
+    [Required]
+    public string Code { get; init; } = string.Empty;
+
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("heavyBidCode")]
+    [Description("The HeavyBid code")]
+    public string? HeavyBidCode { get; init; }
 }
 
 public class CreateCustomCostTypeItemsActionOutput
 {
     [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [Description("The custom cost type item id")]
+    [Required]
+    public Guid Id { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit id")]
+    [Required]
+    public Guid BusinessUnitId { get; init; }
+
+    [JsonPropertyName("isDeleted")]
+    [Description("Flags a deleted record")]
+    public bool IsDeleted { get; init; }
+
+    [JsonPropertyName("costCategoryId")]
+    [Description("The cost category (custom cost type) id")]
+    [Required]
+    public Guid CostCategoryId { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The code")]
+    [Required]
+    public string Code { get; init; } = string.Empty;
+
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("heavyBidCode")]
+    [Description("The HeavyBid code")]
+    public string? HeavyBidCode { get; init; }
 }

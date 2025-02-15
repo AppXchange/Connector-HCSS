@@ -1,4 +1,4 @@
-namespace Connector.HeavyJob.v1.Employees;
+namespace Connector.HeavyJob.v1.EmployeesAdvanced;
 
 using Json.Schema.Generation;
 using System;
@@ -14,8 +14,8 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Employee in HeavyJob")]
-public class EmployeesDataObject
+[Description("Advanced employee details in HeavyJob")]
+public class EmployeesAdvancedDataObject
 {
     [JsonPropertyName("id")]
     [Description("The id of the employee")]
@@ -58,30 +58,6 @@ public class EmployeesDataObject
     [Description("The active status of the employee")]
     public bool IsActive { get; init; }
 
-    [JsonPropertyName("assignedEquipmentId")]
-    [Description("The id of the default equipment assigned to the employee")]
-    public Guid? AssignedEquipmentId { get; init; }
-
-    [JsonPropertyName("assignedEquipmentCode")]
-    [Description("The code of the default equipment assigned to the employee")]
-    public string? AssignedEquipmentCode { get; init; }
-
-    [JsonPropertyName("assignedEquipmentDescription")]
-    [Description("The description of the default equipment assigned to the employee")]
-    public string? AssignedEquipmentDescription { get; init; }
-
-    [JsonPropertyName("defaultPayClassId")]
-    [Description("The id of the default payclass assigned to the employee")]
-    public Guid? DefaultPayClassId { get; init; }
-
-    [JsonPropertyName("defaultPayClassCode")]
-    [Description("The code of the default payclass assigned to the employee")]
-    public string? DefaultPayClassCode { get; init; }
-
-    [JsonPropertyName("defaultPayClassDescription")]
-    [Description("The description of the default payclass assigned to the employee")]
-    public string? DefaultPayClassDescription { get; init; }
-
     [JsonPropertyName("isForeman")]
     [Description("Whether the employee is an active foreman")]
     public bool IsForeman { get; init; }
@@ -93,4 +69,21 @@ public class EmployeesDataObject
     [JsonPropertyName("isHistoricalForeman")]
     [Description("Whether the employee is or ever has been a foreman")]
     public bool IsHistoricalForeman { get; init; }
+}
+
+public class EmployeesAdvancedResponse
+{
+    [JsonPropertyName("results")]
+    [Required]
+    public EmployeesAdvancedDataObject[] Results { get; init; } = Array.Empty<EmployeesAdvancedDataObject>();
+
+    [JsonPropertyName("metadata")]
+    [Required]
+    public EmployeesAdvancedMetadata Metadata { get; init; } = new();
+}
+
+public class EmployeesAdvancedMetadata
+{
+    [JsonPropertyName("nextCursor")]
+    public string? NextCursor { get; init; }
 }

@@ -638,15 +638,14 @@ https://developer.hcssapps.com/products/heavyjob/spec/tag/Diary/#tag/Diary/opera
 xchange action new --module-id heavyjob-1 --object-name Diaries --name Create
 
 ## Employee
-xchange data-object new --module-id heavyjob-1 --name Employee
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Employee/#tag/Employee/operation/EmployeeController_GetEmployeesAsync
 xchange data-object new --module-id heavyjob-1 --name Employees
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Employee/#tag/Employee/operation/EmployeeController_GetEmployeesAdvancedAsync
-xchange action new --module-id heavyjob-1 --object-name Employees --name Create
+xchange data-object new --module-id heavyjob-1 --name EmployeesAdvanced
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Employee/#tag/Employee/operation/EmployeeController_GetEmployeesWithDetailsAsync
 xchange data-object new --module-id heavyjob-1 --name EmployeesWithDetails
 http://developer.hcssapps.com/products/heavyjob/spec/tag/Employee/#tag/Employee/operation/EmployeeController_DeleteEmployeeAsync
-xchange action new --module-id heavyjob-1 --object-name Employee --name Delete
+xchange action new --module-id heavyjob-1 --object-name Employees --name Delete
 
 ## Equipment
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Equipment/#tag/Equipment/operation/EquipmentController_GetEquipmentAsync

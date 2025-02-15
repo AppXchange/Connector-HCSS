@@ -14,11 +14,127 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a diary entry in HeavyJob")]
 public class DiariesDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The diary ID")]
     [Required]
-    public required Guid Id { get; init; }
+    public Guid Id { get; init; }
+
+    [JsonPropertyName("job")]
+    [Description("The job details")]
+    public JobInfo Job { get; init; } = new();
+
+    [JsonPropertyName("foreman")]
+    [Description("The foreman details")]
+    public ForemanInfo Foreman { get; init; } = new();
+
+    [JsonPropertyName("workingConditionNote")]
+    [Description("The working condition note")]
+    public string? WorkingConditionNote { get; init; }
+
+    [JsonPropertyName("note")]
+    [Description("The diary note")]
+    public string? Note { get; init; }
+
+    [JsonPropertyName("tags")]
+    [Description("The diary tags")]
+    public DiaryTag[] Tags { get; init; } = Array.Empty<DiaryTag>();
+
+    [JsonPropertyName("date")]
+    [Description("The diary date")]
+    public DateTime Date { get; init; }
+
+    [JsonPropertyName("revision")]
+    [Description("The revision number")]
+    public int Revision { get; init; }
+
+    [JsonPropertyName("lastChangedDateTime")]
+    [Description("When the diary was last changed")]
+    public DateTime LastChangedDateTime { get; init; }
+
+    [JsonPropertyName("lastChangedBy")]
+    [Description("Who last changed the diary")]
+    public UserInfo LastChangedBy { get; init; } = new();
+}
+
+public class JobInfo
+{
+    [JsonPropertyName("id")]
+    public Guid Id { get; init; }
+
+    [JsonPropertyName("code")]
+    public string Code { get; init; } = string.Empty;
+
+    [JsonPropertyName("description")]
+    public string Description { get; init; } = string.Empty;
+}
+
+public class ForemanInfo
+{
+    [JsonPropertyName("id")]
+    public Guid Id { get; init; }
+
+    [JsonPropertyName("code")]
+    public string Code { get; init; } = string.Empty;
+
+    [JsonPropertyName("firstName")]
+    public string FirstName { get; init; } = string.Empty;
+
+    [JsonPropertyName("lastName")]
+    public string LastName { get; init; } = string.Empty;
+}
+
+public class DiaryTag
+{
+    [JsonPropertyName("id")]
+    public Guid Id { get; init; }
+
+    [JsonPropertyName("code")]
+    public string Code { get; init; } = string.Empty;
+
+    [JsonPropertyName("description")]
+    public string Description { get; init; } = string.Empty;
+
+    [JsonPropertyName("note")]
+    public string Note { get; init; } = string.Empty;
+
+    [JsonPropertyName("groupId")]
+    public Guid GroupId { get; init; }
+
+    [JsonPropertyName("groupCode")]
+    public string GroupCode { get; init; } = string.Empty;
+}
+
+public class UserInfo
+{
+    [JsonPropertyName("id")]
+    public Guid Id { get; init; }
+
+    [JsonPropertyName("firstName")]
+    public string FirstName { get; init; } = string.Empty;
+
+    [JsonPropertyName("lastName")]
+    public string LastName { get; init; } = string.Empty;
+
+    [JsonPropertyName("email")]
+    public string Email { get; init; } = string.Empty;
+}
+
+public class DiariesResponse
+{
+    [JsonPropertyName("results")]
+    [Required]
+    public DiariesDataObject[] Results { get; init; } = Array.Empty<DiariesDataObject>();
+
+    [JsonPropertyName("metadata")]
+    [Required]
+    public DiariesMetadata Metadata { get; init; } = new();
+}
+
+public class DiariesMetadata
+{
+    [JsonPropertyName("nextCursor")]
+    public string? NextCursor { get; init; }
 }

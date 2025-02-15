@@ -1,4 +1,4 @@
-namespace Connector.HeavyJob.v1.Diaries.Create;
+namespace Connector.HeavyJob.v1.Employees.Delete;
 
 using Json.Schema.Generation;
 using System;
@@ -14,23 +14,27 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateDiariesAction Action description goes here")]
-public class CreateDiariesAction : IStandardAction<CreateDiariesActionInput, CreateDiariesActionOutput>
+[Description("Delete an employee and all related business unit/job relationships")]
+public class DeleteEmployeesAction : IStandardAction<DeleteEmployeesActionInput, DeleteEmployeesActionOutput>
 {
-    public CreateDiariesActionInput ActionInput { get; set; } = new();
-    public CreateDiariesActionOutput ActionOutput { get; set; } = new();
+    public DeleteEmployeesActionInput ActionInput { get; set; } = new();
+    public DeleteEmployeesActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
 }
 
-public class CreateDiariesActionInput
+public class DeleteEmployeesActionInput
 {
-
+    [JsonPropertyName("employeeIds")]
+    [Description("Array of employee IDs to delete")]
+    [Required]
+    public Guid[] EmployeeIds { get; init; } = Array.Empty<Guid>();
 }
 
-public class CreateDiariesActionOutput
+public class DeleteEmployeesActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("success")]
+    [Description("Whether the delete operation was successful")]
+    public bool Success { get; init; }
 }

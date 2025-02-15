@@ -8,16 +8,16 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
 
-namespace Connector.HeavyJob.v1.CustomCostTypeInstalled;
+namespace Connector.HeavyJob.v1.EmployeesAdvanced;
 
-public class CustomCostTypeInstalledDataReader : TypedAsyncDataReaderBase<CustomCostTypeInstalledDataObject>
+public class EmployeesAdvancedDataReader : TypedAsyncDataReaderBase<EmployeesAdvancedDataObject>
 {
-    private readonly ILogger<CustomCostTypeInstalledDataReader> _logger;
+    private readonly ILogger<EmployeesAdvancedDataReader> _logger;
     private readonly ApiClient _apiClient;
     private readonly ConnectionConfig _connectionConfig;
 
-    public CustomCostTypeInstalledDataReader(
-        ILogger<CustomCostTypeInstalledDataReader> logger,
+    public EmployeesAdvancedDataReader(
+        ILogger<EmployeesAdvancedDataReader> logger,
         ApiClient apiClient,
         ConnectionConfig connectionConfig)
     {
@@ -26,7 +26,7 @@ public class CustomCostTypeInstalledDataReader : TypedAsyncDataReaderBase<Custom
         _connectionConfig = connectionConfig;
     }
 
-    public override async IAsyncEnumerable<CustomCostTypeInstalledDataObject> GetTypedDataAsync(
+    public override async IAsyncEnumerable<EmployeesAdvancedDataObject> GetTypedDataAsync(
         DataObjectCacheWriteArguments? dataObjectRunArguments,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
@@ -34,35 +34,34 @@ public class CustomCostTypeInstalledDataReader : TypedAsyncDataReaderBase<Custom
 
         while (true)
         {
-            var response = await _apiClient.GetCustomCostTypeInstalled(
+            var response = await _apiClient.GetEmployeesAdvanced(
                 _connectionConfig.BusinessUnitId,
-                null, // jobIds
-                null, // jobTagIds
-                null, // foremanIds
-                null, // startDate
-                null, // endDate
+                null, // employeeCodes
+                null, // employeeIds
+                null, // accountingTemplateName
+                null, // isActive
+                null, // isForeman
+                null, // includeHistoricalForeman
+                null, // isDeleted
                 cursor,
                 1000, // limit
-                null, // costCodeIds
-                null, // modifiedSince
-                null, // onlyTM
                 cancellationToken);
 
             if (!response.IsSuccessful)
             {
-                _logger.LogError("Failed to retrieve custom cost type installed items. Status code: {StatusCode}", response.StatusCode);
-                throw new Exception($"Failed to retrieve custom cost type installed items. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve employees. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve employees. API StatusCode: {response.StatusCode}");
             }
 
             if (response.Data?.Results == null)
             {
-                _logger.LogWarning("No custom cost type installed items found");
+                _logger.LogWarning("No employees found");
                 yield break;
             }
 
-            foreach (var item in response.Data.Results)
+            foreach (var employee in response.Data.Results)
             {
-                yield return item;
+                yield return employee;
             }
 
             if (string.IsNullOrEmpty(response.Data.Metadata.NextCursor))

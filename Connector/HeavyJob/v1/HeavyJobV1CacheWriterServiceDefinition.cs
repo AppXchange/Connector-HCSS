@@ -4,13 +4,13 @@ using Connector.HeavyJob.v1.Accounting;
 using Connector.HeavyJob.v1.AdvancedBudgetCustomCostTypeItem;
 using Connector.HeavyJob.v1.AdvancedBudgetCustomCostTypes;
 using Connector.HeavyJob.v1.AdvancedBudgetMaterial;
-using Connector.HeavyJob.v1.AdvancedBudgetMaterials;
+// using Connector.HeavyJob.v1.AdvancedBudgetMaterials;
 using Connector.HeavyJob.v1.AdvancedBudgetSubcontract;
-using Connector.HeavyJob.v1.AdvancedBudgetSubcontracts;
+// using Connector.HeavyJob.v1.AdvancedBudgetSubcontracts;
 using Connector.HeavyJob.v1.Attachment;
 using Connector.HeavyJob.v1.AttendanceHourTags;
-using Connector.HeavyJob.v1.BulkCreateJobsRequest;
-using Connector.HeavyJob.v1.BulkCreateJobsRequests;
+// using Connector.HeavyJob.v1.BulkCreateJobsRequest;
+// using Connector.HeavyJob.v1.BulkCreateJobsRequests;
 using Connector.HeavyJob.v1.BusinessUnit;
 using Connector.HeavyJob.v1.BusinessUnitPreference;
 using Connector.HeavyJob.v1.ChangeOrder;
@@ -28,12 +28,12 @@ using Connector.HeavyJob.v1.CostCodeTransactionAdjustment;
 using Connector.HeavyJob.v1.CustomCostTypeInstalled;
 using Connector.HeavyJob.v1.CustomCostTypeItemReceived;
 using Connector.HeavyJob.v1.CustomCostTypeItems;
-using Connector.HeavyJob.v1.CustomCostTypeReceived;
+// using Connector.HeavyJob.v1.CustomCostTypeReceived;
 using Connector.HeavyJob.v1.Diaries;
 using Connector.HeavyJob.v1.Diary;
-using Connector.HeavyJob.v1.Employee;
 using Connector.HeavyJob.v1.EmployeeHours;
 using Connector.HeavyJob.v1.Employees;
+using Connector.HeavyJob.v1.EmployeesAdvanced;
 using Connector.HeavyJob.v1.EmployeesWithDetails;
 using Connector.HeavyJob.v1.Equipment;
 using Connector.HeavyJob.v1.EquipmentHours;
@@ -109,14 +109,14 @@ public class HeavyJobV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefi
         serviceCollection.AddSingleton<AccountingDataReader>();
         serviceCollection.AddSingleton<RateSetGroupAccountingDataReader>();
         serviceCollection.AddSingleton<AdvancedBudgetMaterialDataReader>();
-        serviceCollection.AddSingleton<AdvancedBudgetMaterialsDataReader>();
+        // serviceCollection.AddSingleton<AdvancedBudgetMaterialsDataReader>();
         serviceCollection.AddSingleton<AdvancedBudgetSubcontractDataReader>();
-        serviceCollection.AddSingleton<AdvancedBudgetSubcontractsDataReader>();
+        // serviceCollection.AddSingleton<AdvancedBudgetSubcontractsDataReader>();
         serviceCollection.AddSingleton<AdvancedBudgetCustomCostTypeItemDataReader>();
         serviceCollection.AddSingleton<AdvancedBudgetCustomCostTypesDataReader>();
         serviceCollection.AddSingleton<AttachmentDataReader>();
-        serviceCollection.AddSingleton<BulkCreateJobsRequestsDataReader>();
-        serviceCollection.AddSingleton<BulkCreateJobsRequestDataReader>();
+        // serviceCollection.AddSingleton<BulkCreateJobsRequestsDataReader>();
+        // serviceCollection.AddSingleton<BulkCreateJobsRequestDataReader>();
         serviceCollection.AddSingleton<BusinessUnitDataReader>();
         serviceCollection.AddSingleton<BusinessUnitPreferenceDataReader>();
         serviceCollection.AddSingleton<ChangeOrderDataReader>();
@@ -145,10 +145,9 @@ public class HeavyJobV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefi
         serviceCollection.AddSingleton<JobCustomCostTypeItemsDataReader>();
         serviceCollection.AddSingleton<JobCustomCostTypeItemDataReader>();
         serviceCollection.AddSingleton<CustomCostTypeInstalledDataReader>();
-        serviceCollection.AddSingleton<CustomCostTypeReceivedDataReader>();
+        // serviceCollection.AddSingleton<CustomCostTypeReceivedDataReader>();
         serviceCollection.AddSingleton<DiaryDataReader>();
         serviceCollection.AddSingleton<DiariesDataReader>();
-        serviceCollection.AddSingleton<EmployeeDataReader>();
         serviceCollection.AddSingleton<EmployeesDataReader>();
         serviceCollection.AddSingleton<EmployeesWithDetailsDataReader>();
         serviceCollection.AddSingleton<EquipmentDataReader>();
@@ -190,6 +189,7 @@ public class HeavyJobV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefi
         serviceCollection.AddSingleton<VendorContractsDataReader>();
         serviceCollection.AddSingleton<VendorContractDetailsDataReader>();
         serviceCollection.AddSingleton<VendorContractItemsDataReader>();
+        serviceCollection.AddSingleton<EmployeesAdvancedDataReader>();
     }
 
     public override IDataObjectChangeDetectorProvider ConfigureChangeDetectorProvider(IChangeDetectorFactory factory, ConnectorDefinition connectorDefinition)
@@ -200,14 +200,14 @@ public class HeavyJobV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefi
         this.RegisterKeysForObject<AccountingDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<RateSetGroupAccountingDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<AdvancedBudgetMaterialDataObject>(options, connectorDefinition);
-        this.RegisterKeysForObject<AdvancedBudgetMaterialsDataObject>(options, connectorDefinition);
+        // this.RegisterKeysForObject<AdvancedBudgetMaterialsDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<AdvancedBudgetSubcontractDataObject>(options, connectorDefinition);
-        this.RegisterKeysForObject<AdvancedBudgetSubcontractsDataObject>(options, connectorDefinition);
+        // this.RegisterKeysForObject<AdvancedBudgetSubcontractsDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<AdvancedBudgetCustomCostTypeItemDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<AdvancedBudgetCustomCostTypesDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<AttachmentDataObject>(options, connectorDefinition);
-        this.RegisterKeysForObject<BulkCreateJobsRequestsDataObject>(options, connectorDefinition);
-        this.RegisterKeysForObject<BulkCreateJobsRequestDataObject>(options, connectorDefinition);
+        // this.RegisterKeysForObject<BulkCreateJobsRequestsDataObject>(options, connectorDefinition);
+        // this.RegisterKeysForObject<BulkCreateJobsRequestDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<BusinessUnitDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<BusinessUnitPreferenceDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<ChangeOrderDataObject>(options, connectorDefinition);
@@ -236,10 +236,9 @@ public class HeavyJobV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefi
         this.RegisterKeysForObject<JobCustomCostTypeItemsDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<JobCustomCostTypeItemDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<CustomCostTypeInstalledDataObject>(options, connectorDefinition);
-        this.RegisterKeysForObject<CustomCostTypeReceivedDataObject>(options, connectorDefinition);
+        // this.RegisterKeysForObject<CustomCostTypeReceivedDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<DiaryDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<DiariesDataObject>(options, connectorDefinition);
-        this.RegisterKeysForObject<EmployeeDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<EmployeesDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<EmployeesWithDetailsDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<EquipmentDataObject>(options, connectorDefinition);
@@ -281,6 +280,7 @@ public class HeavyJobV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefi
         this.RegisterKeysForObject<VendorContractsDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<VendorContractDetailsDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<VendorContractItemsDataObject>(options, connectorDefinition);
+        this.RegisterKeysForObject<EmployeesAdvancedDataObject>(options, connectorDefinition);
         return factory.CreateProvider(options);
     }
 
@@ -296,14 +296,14 @@ public class HeavyJobV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefi
         service.RegisterDataReader<AccountingDataReader, AccountingDataObject>(ModuleId, config.AccountingConfig, dataReaderSettings);
         service.RegisterDataReader<RateSetGroupAccountingDataReader, RateSetGroupAccountingDataObject>(ModuleId, config.RateSetGroupAccountingConfig, dataReaderSettings);
         service.RegisterDataReader<AdvancedBudgetMaterialDataReader, AdvancedBudgetMaterialDataObject>(ModuleId, config.AdvancedBudgetMaterialConfig, dataReaderSettings);
-        service.RegisterDataReader<AdvancedBudgetMaterialsDataReader, AdvancedBudgetMaterialsDataObject>(ModuleId, config.AdvancedBudgetMaterialsConfig, dataReaderSettings);
+        // service.RegisterDataReader<AdvancedBudgetMaterialsDataReader, AdvancedBudgetMaterialsDataObject>(ModuleId, config.AdvancedBudgetMaterialsConfig, dataReaderSettings);
         service.RegisterDataReader<AdvancedBudgetSubcontractDataReader, AdvancedBudgetSubcontractDataObject>(ModuleId, config.AdvancedBudgetSubcontractConfig, dataReaderSettings);
-        service.RegisterDataReader<AdvancedBudgetSubcontractsDataReader, AdvancedBudgetSubcontractsDataObject>(ModuleId, config.AdvancedBudgetSubcontractsConfig, dataReaderSettings);
+        // service.RegisterDataReader<AdvancedBudgetSubcontractsDataReader, AdvancedBudgetSubcontractsDataObject>(ModuleId, config.AdvancedBudgetSubcontractsConfig, dataReaderSettings);
         service.RegisterDataReader<AdvancedBudgetCustomCostTypeItemDataReader, AdvancedBudgetCustomCostTypeItemDataObject>(ModuleId, config.AdvancedBudgetCustomCostTypeItemConfig, dataReaderSettings);
         service.RegisterDataReader<AdvancedBudgetCustomCostTypesDataReader, AdvancedBudgetCustomCostTypesDataObject>(ModuleId, config.AdvancedBudgetCustomCostTypesConfig, dataReaderSettings);
         service.RegisterDataReader<AttachmentDataReader, AttachmentDataObject>(ModuleId, config.AttachmentConfig, dataReaderSettings);
-        service.RegisterDataReader<BulkCreateJobsRequestsDataReader, BulkCreateJobsRequestsDataObject>(ModuleId, config.BulkCreateJobsRequestsConfig, dataReaderSettings);
-        service.RegisterDataReader<BulkCreateJobsRequestDataReader, BulkCreateJobsRequestDataObject>(ModuleId, config.BulkCreateJobsRequestConfig, dataReaderSettings);
+        // service.RegisterDataReader<BulkCreateJobsRequestsDataReader, BulkCreateJobsRequestsDataObject>(ModuleId, config.BulkCreateJobsRequestsConfig, dataReaderSettings);
+        // service.RegisterDataReader<BulkCreateJobsRequestDataReader, BulkCreateJobsRequestDataObject>(ModuleId, config.BulkCreateJobsRequestConfig, dataReaderSettings);
         service.RegisterDataReader<BusinessUnitDataReader, BusinessUnitDataObject>(ModuleId, config.BusinessUnitConfig, dataReaderSettings);
         service.RegisterDataReader<BusinessUnitPreferenceDataReader, BusinessUnitPreferenceDataObject>(ModuleId, config.BusinessUnitPreferenceConfig, dataReaderSettings);
         service.RegisterDataReader<ChangeOrderDataReader, ChangeOrderDataObject>(ModuleId, config.ChangeOrderConfig, dataReaderSettings);
@@ -332,10 +332,9 @@ public class HeavyJobV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefi
         service.RegisterDataReader<JobCustomCostTypeItemsDataReader, JobCustomCostTypeItemsDataObject>(ModuleId, config.JobCustomCostTypeItemsConfig, dataReaderSettings);
         service.RegisterDataReader<JobCustomCostTypeItemDataReader, JobCustomCostTypeItemDataObject>(ModuleId, config.JobCustomCostTypeItemConfig, dataReaderSettings);
         service.RegisterDataReader<CustomCostTypeInstalledDataReader, CustomCostTypeInstalledDataObject>(ModuleId, config.CustomCostTypeInstalledConfig, dataReaderSettings);
-        service.RegisterDataReader<CustomCostTypeReceivedDataReader, CustomCostTypeReceivedDataObject>(ModuleId, config.CustomCostTypeReceivedConfig, dataReaderSettings);
+        // service.RegisterDataReader<CustomCostTypeReceivedDataReader, CustomCostTypeReceivedDataObject>(ModuleId, config.CustomCostTypeReceivedConfig, dataReaderSettings);
         service.RegisterDataReader<DiaryDataReader, DiaryDataObject>(ModuleId, config.DiaryConfig, dataReaderSettings);
         service.RegisterDataReader<DiariesDataReader, DiariesDataObject>(ModuleId, config.DiariesConfig, dataReaderSettings);
-        service.RegisterDataReader<EmployeeDataReader, EmployeeDataObject>(ModuleId, config.EmployeeConfig, dataReaderSettings);
         service.RegisterDataReader<EmployeesDataReader, EmployeesDataObject>(ModuleId, config.EmployeesConfig, dataReaderSettings);
         service.RegisterDataReader<EmployeesWithDetailsDataReader, EmployeesWithDetailsDataObject>(ModuleId, config.EmployeesWithDetailsConfig, dataReaderSettings);
         service.RegisterDataReader<EquipmentDataReader, EquipmentDataObject>(ModuleId, config.EquipmentConfig, dataReaderSettings);
@@ -377,5 +376,6 @@ public class HeavyJobV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefi
         service.RegisterDataReader<VendorContractsDataReader, VendorContractsDataObject>(ModuleId, config.VendorContractsConfig, dataReaderSettings);
         service.RegisterDataReader<VendorContractDetailsDataReader, VendorContractDetailsDataObject>(ModuleId, config.VendorContractDetailsConfig, dataReaderSettings);
         service.RegisterDataReader<VendorContractItemsDataReader, VendorContractItemsDataObject>(ModuleId, config.VendorContractItemsConfig, dataReaderSettings);
+        service.RegisterDataReader<EmployeesAdvancedDataReader, EmployeesAdvancedDataObject>(ModuleId, config.EmployeesAdvancedConfig, dataReaderSettings);
     }
 }

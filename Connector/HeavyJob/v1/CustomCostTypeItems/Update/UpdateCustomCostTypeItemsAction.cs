@@ -14,7 +14,7 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateCustomCostTypeItemsAction Action description goes here")]
+[Description("Updates an existing custom cost type item")]
 public class UpdateCustomCostTypeItemsAction : IStandardAction<UpdateCustomCostTypeItemsActionInput, UpdateCustomCostTypeItemsActionOutput>
 {
     public UpdateCustomCostTypeItemsActionInput ActionInput { get; set; } = new();
@@ -26,11 +26,31 @@ public class UpdateCustomCostTypeItemsAction : IStandardAction<UpdateCustomCostT
 
 public class UpdateCustomCostTypeItemsActionInput
 {
+    [JsonPropertyName("id")]
+    [Description("The custom cost type item id")]
+    [Required]
+    public Guid Id { get; init; }
 
+    [JsonPropertyName("costCategoryId")]
+    [Description("The cost category (custom cost type) id")]
+    [Required]
+    public Guid CostCategoryId { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The code")]
+    [Required]
+    public string Code { get; init; } = string.Empty;
+
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("heavyBidCode")]
+    [Description("The HeavyBid code")]
+    public string? HeavyBidCode { get; init; }
 }
 
 public class UpdateCustomCostTypeItemsActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    // No output properties needed since API returns 204 No Content
 }
