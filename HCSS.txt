@@ -529,10 +529,9 @@ xchange data-object new --module-id heavyjob-1 --name JobCosts
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Cost/#tag/Cost/operation/CostController_GetJobCostByCostCodeAsync
 xchange data-object new --module-id heavyjob-1 --name JobCostByCostCode
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Cost/#tag/Cost/operation/CostController_QueryJobCostsV2Async
-xchange action new --module-id heavyjob-1 --object-name JobCosts --name Create
-xchange data-object new --module-id heavyjob-1 --name JobCostsToDate
+xchange data-object new --module-id heavyjob-1 --name JobCostsQuery
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Cost/#tag/Cost/operation/CostController_QueryJobCostsToDateAsync
-xchange action new --module-id heavyjob-1 --object-name JobCostsToDate --name Create
+xchange data-object new --module-id heavyjob-1 --name JobCostsToDate
 xchange data-object new --module-id heavyjob-1 --name JobCostCustomCost
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Cost/#tag/Cost/operation/CostController_QueryJobCostCustomCostsAsync
 xchange action new --module-id heavyjob-1 --object-name JobCostCustomCost --name Create
@@ -647,6 +646,8 @@ xchange data-object new --module-id heavyjob-1 --name EmployeesWithDetails
 http://developer.hcssapps.com/products/heavyjob/spec/tag/Employee/#tag/Employee/operation/EmployeeController_DeleteEmployeeAsync
 xchange action new --module-id heavyjob-1 --object-name Employees --name Delete
 
+<<< NOT Full Data Object </> FULL Data Object >>>
+
 ## Equipment
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Equipment/#tag/Equipment/operation/EquipmentController_GetEquipmentAsync
 xchange data-object new --module-id heavyjob-1 --name Equipment
@@ -668,12 +669,10 @@ https://developer.hcssapps.com/products/heavyjob/spec/tag/Forecast/#tag/Forecast
 xchange data-object new --module-id heavyjob-1 --name Forecast
 
 ## Hours
-xchange data-object new --module-id heavyjob-1 --name EmployeeHours
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Hours/#tag/Hours/operation/HoursController_GetEmployeeHoursAsync
-xchange action new --module-id heavyjob-1 --object-name EmployeeHours --name Create
-xchange data-object new --module-id heavyjob-1 --name EquipmentHours
+xchange data-object new --module-id heavyjob-1 --name EmployeeHours
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Hours/#tag/Hours/operation/HoursController_GetEquipmentHoursAsync
-xchange action new --module-id heavyjob-1 --object-name EquipmentHours --name Create
+xchange data-object new --module-id heavyjob-1 --name EquipmentHours
 
 ## HourTag
 https://developer.hcssapps.com/products/heavyjob/spec/tag/HourTag/#tag/HourTag/operation/HourTagController_GetAttendanceHourTagsAsync

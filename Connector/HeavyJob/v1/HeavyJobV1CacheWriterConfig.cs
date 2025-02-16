@@ -43,6 +43,7 @@ using Connector.HeavyJob.v1.ForecastInfo;
 using Connector.HeavyJob.v1.JobCostByCostCode;
 using Connector.HeavyJob.v1.JobCostCustomCost;
 using Connector.HeavyJob.v1.JobCosts;
+using Connector.HeavyJob.v1.JobCostsQuery;
 using Connector.HeavyJob.v1.JobCostsToDate;
 using Connector.HeavyJob.v1.JobCustomCostTypeItem;
 using Connector.HeavyJob.v1.JobCustomCostTypeItems;
@@ -184,4 +185,5 @@ public class HeavyJobV1CacheWriterConfig
     public CacheWriterObjectConfig VendorContractDetailsConfig { get; set; } = new();
     public CacheWriterObjectConfig VendorContractItemsConfig { get; set; } = new();
     public CacheWriterObjectConfig EmployeesAdvancedConfig { get; set; } = new();
+    public CacheWriterObjectConfig JobCostsQueryConfig { get; set; } = new();
 }

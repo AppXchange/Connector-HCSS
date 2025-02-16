@@ -43,6 +43,7 @@ using Connector.HeavyJob.v1.ForecastInfo;
 using Connector.HeavyJob.v1.JobCostByCostCode;
 using Connector.HeavyJob.v1.JobCostCustomCost;
 using Connector.HeavyJob.v1.JobCosts;
+using Connector.HeavyJob.v1.JobCostsQuery;
 using Connector.HeavyJob.v1.JobCostsToDate;
 using Connector.HeavyJob.v1.JobCustomCostTypeItem;
 using Connector.HeavyJob.v1.JobCustomCostTypeItems;
@@ -190,6 +191,7 @@ public class HeavyJobV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefi
         serviceCollection.AddSingleton<VendorContractDetailsDataReader>();
         serviceCollection.AddSingleton<VendorContractItemsDataReader>();
         serviceCollection.AddSingleton<EmployeesAdvancedDataReader>();
+        serviceCollection.AddSingleton<JobCostsQueryDataReader>();
     }
 
     public override IDataObjectChangeDetectorProvider ConfigureChangeDetectorProvider(IChangeDetectorFactory factory, ConnectorDefinition connectorDefinition)
@@ -281,6 +283,7 @@ public class HeavyJobV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefi
         this.RegisterKeysForObject<VendorContractDetailsDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<VendorContractItemsDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<EmployeesAdvancedDataObject>(options, connectorDefinition);
+        this.RegisterKeysForObject<JobCostsQueryDataObject>(options, connectorDefinition);
         return factory.CreateProvider(options);
     }
 
@@ -377,5 +380,6 @@ public class HeavyJobV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefi
         service.RegisterDataReader<VendorContractDetailsDataReader, VendorContractDetailsDataObject>(ModuleId, config.VendorContractDetailsConfig, dataReaderSettings);
         service.RegisterDataReader<VendorContractItemsDataReader, VendorContractItemsDataObject>(ModuleId, config.VendorContractItemsConfig, dataReaderSettings);
         service.RegisterDataReader<EmployeesAdvancedDataReader, EmployeesAdvancedDataObject>(ModuleId, config.EmployeesAdvancedConfig, dataReaderSettings);
+        service.RegisterDataReader<JobCostsQueryDataReader, JobCostsQueryDataObject>(ModuleId, config.JobCostsQueryConfig, dataReaderSettings);
     }
 }

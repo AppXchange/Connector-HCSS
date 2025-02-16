@@ -1,4 +1,4 @@
-namespace Connector.HeavyJob.v1.JobCostsToDate;
+namespace Connector.HeavyJob.v1.JobCostsQuery;
 
 using Json.Schema.Generation;
 using System;
@@ -13,8 +13,8 @@ using Xchange.Connector.SDK.CacheWriter;
 /// are intended to be.
 /// </summary>
 [PrimaryKey("jobId", nameof(Job.JobId))]
-[Description("Job costs to date in HeavyJob")]
-public class JobCostsToDateDataObject
+[Description("Job costs query in HeavyJob")]
+public class JobCostsQueryDataObject
 {
     [JsonPropertyName("job")]
     [Description("The job information")]
@@ -31,41 +31,45 @@ public class JobCostsToDateDataObject
     [Required]
     public required ForemanInfo Foreman { get; init; }
 
-    [JsonPropertyName("totalQuantity")]
-    [Description("The total production quantity")]
-    public double TotalQuantity { get; init; }
+    [JsonPropertyName("entryType")]
+    [Description("The entry type")]
+    public string? EntryType { get; init; }
 
-    [JsonPropertyName("reworkQuantity")]
-    [Description("The rework quantity")]
-    public double ReworkQuantity { get; init; }
+    [JsonPropertyName("date")]
+    [Description("The entry date")]
+    public DateTime Date { get; init; }
 
-    [JsonPropertyName("totalEquipmentCost")]
-    [Description("The total equipment cost recorded")]
-    public double TotalEquipmentCost { get; init; }
+    [JsonPropertyName("quantity")]
+    [Description("The production quantity")]
+    public double Quantity { get; init; }
 
-    [JsonPropertyName("totalEquipmentHours")]
-    [Description("The total equipment hours recorded")]
-    public double TotalEquipmentHours { get; init; }
+    [JsonPropertyName("equipmentCost")]
+    [Description("The equipment cost recorded")]
+    public double EquipmentCost { get; init; }
 
-    [JsonPropertyName("totalLaborCost")]
-    [Description("The total labor cost recorded")]
-    public double TotalLaborCost { get; init; }
+    [JsonPropertyName("equipmentHours")]
+    [Description("The equipment hours recorded")]
+    public double EquipmentHours { get; init; }
 
-    [JsonPropertyName("totalLaborHours")]
-    [Description("The total labor hours recorded")]
-    public double TotalLaborHours { get; init; }
+    [JsonPropertyName("laborCost")]
+    [Description("The labor cost recorded")]
+    public double LaborCost { get; init; }
 
-    [JsonPropertyName("totalMaterialCost")]
-    [Description("The total material cost recorded")]
-    public double TotalMaterialCost { get; init; }
+    [JsonPropertyName("laborHours")]
+    [Description("The labor hours recorded")]
+    public double LaborHours { get; init; }
 
-    [JsonPropertyName("totalSubcontractCost")]
-    [Description("The total subcontract cost recorded")]
-    public double TotalSubcontractCost { get; init; }
+    [JsonPropertyName("materialCost")]
+    [Description("The material cost recorded")]
+    public double MaterialCost { get; init; }
 
-    [JsonPropertyName("totalTruckingCost")]
-    [Description("The total trucking cost recorded")]
-    public double TotalTruckingCost { get; init; }
+    [JsonPropertyName("subcontractCost")]
+    [Description("The subcontract cost recorded")]
+    public double SubcontractCost { get; init; }
+
+    [JsonPropertyName("truckingCost")]
+    [Description("The trucking cost recorded")]
+    public double TruckingCost { get; init; }
 }
 
 public class JobInfo
@@ -117,18 +121,18 @@ public class ForemanInfo
     public required string EmployeeLastName { get; init; }
 }
 
-public class JobCostsToDateResponse
+public class JobCostsQueryResponse
 {
     [JsonPropertyName("results")]
     [Required]
-    public required JobCostsToDateDataObject[] Results { get; init; }
+    public required JobCostsQueryDataObject[] Results { get; init; }
 
     [JsonPropertyName("metadata")]
     [Required]
-    public required JobCostsToDateMetadata Metadata { get; init; }
+    public required JobCostsQueryMetadata Metadata { get; init; }
 }
 
-public class JobCostsToDateMetadata
+public class JobCostsQueryMetadata
 {
     [JsonPropertyName("nextCursor")]
     public string? NextCursor { get; init; }

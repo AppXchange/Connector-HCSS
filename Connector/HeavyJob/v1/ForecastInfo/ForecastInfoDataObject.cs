@@ -14,11 +14,42 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Forecast summary information in HeavyJob")]
 public class ForecastInfoDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The forecast guid")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("jobId")]
+    [Description("The job guid")]
+    [Required]
+    public required Guid JobId { get; init; }
+
+    [JsonPropertyName("forecastDate")]
+    [Description("The forecast date")]
+    [Required]
+    public required DateTime ForecastDate { get; init; }
+
+    [JsonPropertyName("finalizedDateTime")]
+    [Description("The forecast finalized date")]
+    public DateTime? FinalizedDateTime { get; init; }
+}
+
+public class ForecastInfoResponse
+{
+    [JsonPropertyName("results")]
+    [Required]
+    public required ForecastInfoDataObject[] Results { get; init; }
+
+    [JsonPropertyName("metadata")]
+    [Required]
+    public required ForecastInfoMetadata Metadata { get; init; }
+}
+
+public class ForecastInfoMetadata
+{
+    [JsonPropertyName("nextCursor")]
+    public string? NextCursor { get; init; }
 }

@@ -2,52 +2,61 @@ using Connector.Client;
 using ESR.Hosting.Action;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Xchange.Connector.SDK.Action;
 using Xchange.Connector.SDK.CacheWriter;
-using Xchange.Connector.SDK.Client.AppNetwork;
 
 namespace Connector.HeavyJob.v1.EquipmentType.Create;
+
+public enum UpdateOperation
+{
+    Upsert,
+    Delete
+}
 
 public class CreateEquipmentTypeHandler : IActionHandler<CreateEquipmentTypeAction>
 {
     private readonly ILogger<CreateEquipmentTypeHandler> _logger;
+    private readonly ApiClient _apiClient;
 
     public CreateEquipmentTypeHandler(
-        ILogger<CreateEquipmentTypeHandler> logger)
+        ILogger<CreateEquipmentTypeHandler> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
     
-    public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(ActionInstance actionInstance, CancellationToken cancellationToken)
+    public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(
+        ActionInstance actionInstance, 
+        CancellationToken cancellationToken)
     {
-        var input = JsonSerializer.Deserialize<CreateEquipmentTypeActionInput>(actionInstance.InputJson);
+        var input = JsonSerializer.Deserialize<CreateEquipmentTypeActionInput>(actionInstance.InputJson)!;
+        
         try
         {
-            // Given the input for the action, make a call to your API/system
-            var response = new ApiResponse<CreateEquipmentTypeActionOutput>();
-            // response = await _apiClient.PostEquipmentTypeDataObject(input, cancellationToken)
-            // .ConfigureAwait(false);
+            var response = await _apiClient.CreateEquipmentType(input, cancellationToken);
 
-            // The full record is needed for SyncOperations. If the endpoint used for the action returns a partial record (such as only returning the ID) then you can either:
-            // - Make a GET call using the ID that was returned
-            // - Add the ID property to your action input (Assuming this results in the proper data object shape)
+            if (!response.IsSuccessful || response.Data == null)
+            {
+                return ActionHandlerOutcome.Failed(new StandardActionFailure
+                {
+                    Code = response.StatusCode.ToString(),
+                    Errors = new[]
+                    {
+                        new Error
+                        {
+                            Source = new[] { nameof(CreateEquipmentTypeHandler) },
+                            Text = $"Failed to create equipment type. Status code: {response.StatusCode}"
+                        }
+                    }
+                });
+            }
 
-            // var resource = await _apiClient.GetEquipmentTypeDataObject(response.Data.id, cancellationToken);
-
-            // var resource = new CreateEquipmentTypeActionOutput
-            // {
-            //      TODO : map
-            // };
-
-            // If the response is already the output object for the action, you can use the response directly
-
-            // Build sync operations to update the local cache as well as the Xchange cache system (if the data type is cached)
-            // For more information on SyncOperations and the KeyResolver, check: https://trimble-xchange.github.io/connector-docs/guides/creating-actions/#keyresolver-and-the-sync-cache-operations
             var operations = new List<SyncOperation>();
             var keyResolver = new DefaultDataObjectKey();
             var key = keyResolver.BuildKeyResolver()(response.Data);
@@ -55,29 +64,22 @@ public class CreateEquipmentTypeHandler : IActionHandler<CreateEquipmentTypeActi
 
             var resultList = new List<CacheSyncCollection>
             {
-                new CacheSyncCollection() { DataObjectType = typeof(EquipmentTypeDataObject), CacheChanges = operations.ToArray() }
+                new CacheSyncCollection { DataObjectType = typeof(EquipmentTypeDataObject), CacheChanges = operations.ToArray() }
             };
 
             return ActionHandlerOutcome.Successful(response.Data, resultList);
         }
-        catch (HttpRequestException exception)
+        catch (Exception ex)
         {
-            // If an error occurs, we want to create a failure result for the action that matches
-            // the failure type for the action. 
-            // Common to create extension methods to map to Standard Action Failure
-
-            var errorSource = new List<string> { "CreateEquipmentTypeHandler" };
-            if (string.IsNullOrEmpty(exception.Source)) errorSource.Add(exception.Source!);
-            
             return ActionHandlerOutcome.Failed(new StandardActionFailure
             {
-                Code = exception.StatusCode?.ToString() ?? "500",
-                Errors = new []
+                Code = "500",
+                Errors = new[]
                 {
-                    new Xchange.Connector.SDK.Action.Error
+                    new Error
                     {
-                        Source = errorSource.ToArray(),
-                        Text = exception.Message
+                        Source = new[] { nameof(CreateEquipmentTypeHandler) },
+                        Text = ex.Message
                     }
                 }
             });

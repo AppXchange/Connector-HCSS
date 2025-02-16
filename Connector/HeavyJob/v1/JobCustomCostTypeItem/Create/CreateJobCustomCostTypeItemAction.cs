@@ -14,11 +14,41 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateJobCustomCostTypeItemAction Action description goes here")]
-public class CreateJobCustomCostTypeItemAction : IStandardAction<CreateJobCustomCostTypeItemActionInput, CreateJobCustomCostTypeItemActionOutput>
+[Description("Creates a job custom cost type item on the specified job")]
+public class CreateJobCustomCostTypeItemAction : IStandardAction<CreateJobCustomCostTypeItemActionInput, JobCustomCostTypeItemDataObject>
 {
-    public CreateJobCustomCostTypeItemActionInput ActionInput { get; set; } = new();
-    public CreateJobCustomCostTypeItemActionOutput ActionOutput { get; set; } = new();
+    public CreateJobCustomCostTypeItemActionInput ActionInput { get; set; } = new()
+    {
+        JobId = Guid.Empty,
+        CustomCostTypeItemId = Guid.Empty
+    };
+
+    public JobCustomCostTypeItemDataObject ActionOutput { get; set; } = new()
+    {
+        Id = Guid.Empty,
+        Code = string.Empty,
+        CustomCostTypeItemId = Guid.Empty,
+        JobId = Guid.Empty,
+        BusinessUnitCostType = new BusinessUnitCostTypeInfo
+        {
+            Id = Guid.Empty,
+            Code = string.Empty,
+            BusinessUnitId = Guid.Empty,
+            Description = string.Empty,
+            IsDeleted = false
+        },
+        BusinessUnitCostTypeItem = new BusinessUnitCostTypeItemInfo
+        {
+            Id = Guid.Empty,
+            Type = string.Empty,
+            Code = string.Empty,
+            Description = string.Empty,
+            IsDeleted = false
+        },
+        IsDiscontinued = false,
+        IsDeleted = false
+    };
+
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +56,33 @@ public class CreateJobCustomCostTypeItemAction : IStandardAction<CreateJobCustom
 
 public class CreateJobCustomCostTypeItemActionInput
 {
+    [JsonPropertyName("jobId")]
+    [Description("The job id")]
+    [Required]
+    public required Guid JobId { get; init; }
 
-}
+    [JsonPropertyName("customCostTypeItemId")]
+    [Description("The custom cost type item id")]
+    [Required]
+    public required Guid CustomCostTypeItemId { get; init; }
 
-public class CreateJobCustomCostTypeItemActionOutput
-{
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("salesTaxPercent")]
+    [Description("The sales tax, expressed as a percent (e.g., 8 means 8% sales tax)")]
+    public double? SalesTaxPercent { get; init; }
+
+    [JsonPropertyName("unitCost")]
+    [Description("The cost per unit of measure, in dollars")]
+    public double? UnitCost { get; init; }
+
+    [JsonPropertyName("unitOfMeasure")]
+    [Description("The unit of measure")]
+    public string? UnitOfMeasure { get; init; }
+
+    [JsonPropertyName("accountingCode")]
+    [Description("The accounting code")]
+    public string? AccountingCode { get; init; }
 }

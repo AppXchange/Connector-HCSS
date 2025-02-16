@@ -14,7 +14,7 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateEquipmentAction Action description goes here")]
+[Description("Get equipment with advanced filtering options")]
 public class CreateEquipmentAction : IStandardAction<CreateEquipmentActionInput, CreateEquipmentActionOutput>
 {
     public CreateEquipmentActionInput ActionInput { get; set; } = new();
@@ -26,11 +26,65 @@ public class CreateEquipmentAction : IStandardAction<CreateEquipmentActionInput,
 
 public class CreateEquipmentActionInput
 {
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit id")]
+    [Required]
+    public Guid BusinessUnitId { get; init; }
 
+    [JsonPropertyName("equipmentCodes")]
+    [Description("List of equipment codes")]
+    public string[]? EquipmentCodes { get; init; }
+
+    [JsonPropertyName("equipmentIds")]
+    [Description("List of equipment ids")]
+    public Guid[]? EquipmentIds { get; init; }
+
+    [JsonPropertyName("jobIds")]
+    [Description("List of job ids")]
+    public Guid[]? JobIds { get; init; }
+
+    [JsonPropertyName("jobTagIds")]
+    [Description("List of job tag ids")]
+    public Guid[]? JobTagIds { get; init; }
+
+    [JsonPropertyName("accountingTemplateName")]
+    [Description("The accounting template name")]
+    public string? AccountingTemplateName { get; init; }
+
+    [JsonPropertyName("isActive")]
+    [Description("The active flag")]
+    public bool? IsActive { get; init; }
+
+    [JsonPropertyName("isActiveInAnyActiveJobs")]
+    [Description("The flag to filter equipment to the active status in any of the active jobs")]
+    public bool? IsActiveInAnyActiveJobs { get; init; }
+
+    [JsonPropertyName("isDeleted")]
+    [Description("The soft-deleted flag")]
+    public bool? IsDeleted { get; init; }
+
+    [JsonPropertyName("cursor")]
+    [Description("When there are additional results, the metadata nextCursor field should be passed to retrieve the next page of results")]
+    public string? Cursor { get; init; }
+
+    [JsonPropertyName("limit")]
+    [Description("The maximum number of results that should be returned")]
+    public int? Limit { get; init; }
 }
 
 public class CreateEquipmentActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("results")]
+    [Required]
+    public EquipmentDataObject[] Results { get; init; } = Array.Empty<EquipmentDataObject>();
+
+    [JsonPropertyName("metadata")]
+    [Required]
+    public EquipmentMetadata Metadata { get; init; } = new();
+}
+
+public class EquipmentMetadata
+{
+    [JsonPropertyName("nextCursor")]
+    public string? NextCursor { get; init; }
 }

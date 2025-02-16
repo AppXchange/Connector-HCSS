@@ -14,7 +14,7 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateEquipmentTypeAction Action description goes here")]
+[Description("Creates a new equipment type")]
 public class CreateEquipmentTypeAction : IStandardAction<CreateEquipmentTypeActionInput, CreateEquipmentTypeActionOutput>
 {
     public CreateEquipmentTypeActionInput ActionInput { get; set; } = new();
@@ -26,11 +26,28 @@ public class CreateEquipmentTypeAction : IStandardAction<CreateEquipmentTypeActi
 
 public class CreateEquipmentTypeActionInput
 {
+    [JsonPropertyName("code")]
+    [Description("The code")]
+    [Required]
+    [MinLength(1)]
+    public string Code { get; init; } = string.Empty;
 
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
 }
 
 public class CreateEquipmentTypeActionOutput
 {
     [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [Description("The id")]
+    public Guid Id { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The code")]
+    public string? Code { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
 }

@@ -1,78 +1,49 @@
 using Connector.Client;
-using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
 
 namespace Connector.HeavyJob.v1.JobCosts;
 
 public class JobCostsDataReader : TypedAsyncDataReaderBase<JobCostsDataObject>
 {
     private readonly ILogger<JobCostsDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public JobCostsDataReader(
-        ILogger<JobCostsDataReader> logger)
+        ILogger<JobCostsDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<JobCostsDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<JobCostsDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        // Get jobId from arguments
+        var jobIdElement = dataObjectRunArguments?.RequestParameterOverrides?.RootElement.GetProperty("jobId");
+        if (jobIdElement == null || !Guid.TryParse(jobIdElement.Value.GetString(), out var jobId))
         {
-            var response = new ApiResponse<PaginatedResponse<JobCostsDataObject>>();
-            // If the JobCostsDataObject does not have the same structure as the JobCosts response from the API, create a new class for it and replace JobCostsDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<JobCostsResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<JobCostsDataObject>(
-                //    relativeUrl: "jobCosts",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'JobCostsDataObject'");
-                throw;
-            }
-
-            if (!response.IsSuccessful)
-            {
-                throw new Exception($"Failed to retrieve records for 'JobCostsDataObject'. API StatusCode: {response.StatusCode}");
-            }
-
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new JobCostsDataObject object, map the properties and return a JobCostsDataObject.
-
-                // Example:
-                //var resource = new JobCostsDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
-                break;
-            }
+            _logger.LogError("Required parameter 'jobId' is missing or invalid");
+            throw new ArgumentException("Required parameter 'jobId' is missing or invalid");
         }
+
+        var response = await _apiClient.GetJobCosts(
+            jobId: jobId,
+            cancellationToken: cancellationToken);
+
+        if (!response.IsSuccessful || response.Data == null)
+        {
+            _logger.LogError("Failed to retrieve job costs. Status code: {StatusCode}", response.StatusCode);
+            throw new Exception($"Failed to retrieve job costs. API StatusCode: {response.StatusCode}");
+        }
+
+        yield return response.Data;
     }
 }

@@ -7,41 +7,41 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
 
-namespace Connector.HeavyJob.v1.ForecastInfo;
+namespace Connector.HeavyJob.v1.JobCostsQuery;
 
-public class ForecastInfoDataReader : TypedAsyncDataReaderBase<ForecastInfoDataObject>
+public class JobCostsQueryDataReader : TypedAsyncDataReaderBase<JobCostsQueryDataObject>
 {
-    private readonly ILogger<ForecastInfoDataReader> _logger;
+    private readonly ILogger<JobCostsQueryDataReader> _logger;
     private readonly ApiClient _apiClient;
     private string? _cursor;
 
-    public ForecastInfoDataReader(
-        ILogger<ForecastInfoDataReader> logger,
+    public JobCostsQueryDataReader(
+        ILogger<JobCostsQueryDataReader> logger,
         ApiClient apiClient)
     {
         _logger = logger;
         _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<ForecastInfoDataObject> GetTypedDataAsync(
+    public override async IAsyncEnumerable<JobCostsQueryDataObject> GetTypedDataAsync(
         DataObjectCacheWriteArguments? dataObjectRunArguments,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         while (true)
         {
-            var response = await _apiClient.GetForecastInfo(
+            var response = await _apiClient.GetJobCostsQuery(
                 cursor: _cursor,
                 cancellationToken: cancellationToken);
 
             if (!response.IsSuccessful || response.Data == null)
             {
-                _logger.LogError("Failed to retrieve forecast info. Status code: {StatusCode}", response.StatusCode);
-                throw new Exception($"Failed to retrieve forecast info. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve job costs query. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve job costs query. API StatusCode: {response.StatusCode}");
             }
 
-            foreach (var forecast in response.Data.Results)
+            foreach (var cost in response.Data.Results)
             {
-                yield return forecast;
+                yield return cost;
             }
 
             // Check if we have more pages to fetch

@@ -14,10 +14,14 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateJobCustomCostTypeItemAction Action description goes here")]
+[Description("Updates an existing job custom cost type item")]
 public class UpdateJobCustomCostTypeItemAction : IStandardAction<UpdateJobCustomCostTypeItemActionInput, UpdateJobCustomCostTypeItemActionOutput>
 {
-    public UpdateJobCustomCostTypeItemActionInput ActionInput { get; set; } = new();
+    public UpdateJobCustomCostTypeItemActionInput ActionInput { get; set; } = new()
+    {
+        Id = Guid.Empty,
+        CustomCostTypeItemId = Guid.Empty
+    };
     public UpdateJobCustomCostTypeItemActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +30,40 @@ public class UpdateJobCustomCostTypeItemAction : IStandardAction<UpdateJobCustom
 
 public class UpdateJobCustomCostTypeItemActionInput
 {
+    [JsonPropertyName("id")]
+    [Description("The job custom cost type item id")]
+    [Required]
+    public required Guid Id { get; init; }
 
+    [JsonPropertyName("customCostTypeItemId")]
+    [Description("The custom cost type item id")]
+    [Required]
+    public required Guid CustomCostTypeItemId { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("salesTaxPercent")]
+    [Description("The sales tax, expressed as a percent (e.g., 8 means 8% sales tax)")]
+    public double? SalesTaxPercent { get; init; }
+
+    [JsonPropertyName("unitCost")]
+    [Description("The cost per unit of measure, in dollars")]
+    public double? UnitCost { get; init; }
+
+    [JsonPropertyName("unitOfMeasure")]
+    [Description("The unit of measure")]
+    public string? UnitOfMeasure { get; init; }
+
+    [JsonPropertyName("accountingCode")]
+    [Description("The accounting code")]
+    public string? AccountingCode { get; init; }
 }
 
 public class UpdateJobCustomCostTypeItemActionOutput
 {
     [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [Description("The updated job custom cost type item id")]
+    public Guid Id { get; init; }
 }
