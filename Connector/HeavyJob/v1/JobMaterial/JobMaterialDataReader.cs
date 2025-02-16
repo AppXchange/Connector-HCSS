@@ -1,78 +1,60 @@
 using Connector.Client;
-using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
 
 namespace Connector.HeavyJob.v1.JobMaterial;
 
 public class JobMaterialDataReader : TypedAsyncDataReaderBase<JobMaterialDataObject>
 {
     private readonly ILogger<JobMaterialDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private string? _cursor;
 
     public JobMaterialDataReader(
-        ILogger<JobMaterialDataReader> logger)
+        ILogger<JobMaterialDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<JobMaterialDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<JobMaterialDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         while (true)
         {
-            var response = new ApiResponse<PaginatedResponse<JobMaterialDataObject>>();
-            // If the JobMaterialDataObject does not have the same structure as the JobMaterial response from the API, create a new class for it and replace JobMaterialDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<JobMaterialResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<JobMaterialDataObject>(
-                //    relativeUrl: "jobMaterials",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'JobMaterialDataObject'");
-                throw;
-            }
+            var response = await _apiClient.GetJobMaterial(
+                cursor: _cursor,
+                cancellationToken: cancellationToken);
 
             if (!response.IsSuccessful)
             {
-                throw new Exception($"Failed to retrieve records for 'JobMaterialDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve job material. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve job material. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new JobMaterialDataObject object, map the properties and return a JobMaterialDataObject.
-
-                // Example:
-                //var resource = new JobMaterialDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            if (response.Data?.Results == null || response.Data.Results.Length == 0)
             {
                 break;
             }
+
+            foreach (var jobMaterial in response.Data.Results)
+            {
+                yield return jobMaterial;
+            }
+
+            if (string.IsNullOrEmpty(response.Data.Metadata?.NextCursor))
+            {
+                break;
+            }
+
+            _cursor = response.Data.Metadata.NextCursor;
         }
     }
 }

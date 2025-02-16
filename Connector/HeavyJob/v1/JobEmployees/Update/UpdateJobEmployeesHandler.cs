@@ -16,67 +16,57 @@ namespace Connector.HeavyJob.v1.JobEmployees.Update;
 public class UpdateJobEmployeesHandler : IActionHandler<UpdateJobEmployeesAction>
 {
     private readonly ILogger<UpdateJobEmployeesHandler> _logger;
+    private readonly ApiClient _apiClient;
 
     public UpdateJobEmployeesHandler(
-        ILogger<UpdateJobEmployeesHandler> logger)
+        ILogger<UpdateJobEmployeesHandler> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
     
-    public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(ActionInstance actionInstance, CancellationToken cancellationToken)
+    public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(
+        ActionInstance actionInstance, 
+        CancellationToken cancellationToken)
     {
-        var input = JsonSerializer.Deserialize<UpdateJobEmployeesActionInput>(actionInstance.InputJson);
+        var input = JsonSerializer.Deserialize<UpdateJobEmployeesActionInput>(actionInstance.InputJson)!;
+        
         try
         {
-            // Given the input for the action, make a call to your API/system
-            var response = new ApiResponse<UpdateJobEmployeesActionOutput>();
-            // response = await _apiClient.PostJobEmployeesDataObject(input, cancellationToken)
-            // .ConfigureAwait(false);
+            var response = await _apiClient.UpdateJobEmployees(
+                input.BusinessUnitId,
+                input.Relations,
+                cancellationToken);
 
-            // The full record is needed for SyncOperations. If the endpoint used for the action returns a partial record (such as only returning the ID) then you can either:
-            // - Make a GET call using the ID that was returned
-            // - Add the ID property to your action input (Assuming this results in the proper data object shape)
-
-            // var resource = await _apiClient.GetJobEmployeesDataObject(response.Data.id, cancellationToken);
-
-            // var resource = new UpdateJobEmployeesActionOutput
-            // {
-            //      TODO : map
-            // };
-
-            // If the response is already the output object for the action, you can use the response directly
-
-            // Build sync operations to update the local cache as well as the Xchange cache system (if the data type is cached)
-            // For more information on SyncOperations and the KeyResolver, check: https://trimble-xchange.github.io/connector-docs/guides/creating-actions/#keyresolver-and-the-sync-cache-operations
-            var operations = new List<SyncOperation>();
-            var keyResolver = new DefaultDataObjectKey();
-            var key = keyResolver.BuildKeyResolver()(response.Data);
-            operations.Add(SyncOperation.CreateSyncOperation(UpdateOperation.Upsert.ToString(), key.UrlPart, key.PropertyNames, response.Data));
-
-            var resultList = new List<CacheSyncCollection>
+            if (!response.IsSuccessful)
             {
-                new CacheSyncCollection() { DataObjectType = typeof(JobEmployeesDataObject), CacheChanges = operations.ToArray() }
-            };
+                return ActionHandlerOutcome.Failed(new StandardActionFailure
+                {
+                    Code = response.StatusCode.ToString(),
+                    Errors = new[]
+                    {
+                        new Error
+                        {
+                            Source = new[] { nameof(UpdateJobEmployeesHandler) },
+                            Text = $"Failed to update job employees. Status code: {response.StatusCode}"
+                        }
+                    }
+                });
+            }
 
-            return ActionHandlerOutcome.Successful(response.Data, resultList);
+            return ActionHandlerOutcome.Successful(new UpdateJobEmployeesActionOutput { Success = true });
         }
-        catch (HttpRequestException exception)
+        catch (ApiException exception)
         {
-            // If an error occurs, we want to create a failure result for the action that matches
-            // the failure type for the action. 
-            // Common to create extension methods to map to Standard Action Failure
-
-            var errorSource = new List<string> { "UpdateJobEmployeesHandler" };
-            if (string.IsNullOrEmpty(exception.Source)) errorSource.Add(exception.Source!);
-            
             return ActionHandlerOutcome.Failed(new StandardActionFailure
             {
-                Code = exception.StatusCode?.ToString() ?? "500",
-                Errors = new []
+                Code = exception.StatusCode.ToString(),
+                Errors = new[]
                 {
-                    new Xchange.Connector.SDK.Action.Error
+                    new Error
                     {
-                        Source = errorSource.ToArray(),
+                        Source = new[] { nameof(UpdateJobEmployeesHandler) },
                         Text = exception.Message
                     }
                 }

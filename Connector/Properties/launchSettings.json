@@ -1571,6 +1571,94 @@
           "ASPNETCORE_ENVIRONMENT": "Development",
           "ESR__QueueName": "localrun"
       }
+    },
+    "JobCustomCostTypeItems Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl jobCustomCostTypeItems --arguments jobId=ad07638c-518f-4138-b3a2-39889ae5091d",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "JobEmployees Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl jobEmployees",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "JobEmployees Delete Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl jobEmployees --actionUrl delete",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "JobEmployees Update Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl jobEmployees --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "JobEquipment Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl jobEquipment",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "JobEquipment Delete Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl jobEquipment --actionUrl delete",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "JobMaterial Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl jobMaterial",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "JobMaterial Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl jobMaterial --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "JobMaterial Delete Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl jobMaterial --actionUrl delete",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "JobMaterial Update Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl jobMaterial --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "JobMaterials Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl jobMaterials --arguments jobId=77de8c55-1b14-4f43-afc2-9f2edb6d64fb",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
     }
   }
 }

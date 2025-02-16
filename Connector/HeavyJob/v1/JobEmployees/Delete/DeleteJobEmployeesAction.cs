@@ -14,10 +14,10 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("DeleteJobEmployeesAction Action description goes here")]
+[Description("Deletes job-employee relationships")]
 public class DeleteJobEmployeesAction : IStandardAction<DeleteJobEmployeesActionInput, DeleteJobEmployeesActionOutput>
 {
-    public DeleteJobEmployeesActionInput ActionInput { get; set; } = new();
+    public DeleteJobEmployeesActionInput ActionInput { get; set; } = new() { BusinessUnitId = Guid.Empty };
     public DeleteJobEmployeesActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +26,23 @@ public class DeleteJobEmployeesAction : IStandardAction<DeleteJobEmployeesAction
 
 public class DeleteJobEmployeesActionInput
 {
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit ID")]
+    [Required]
+    public required Guid BusinessUnitId { get; init; }
 
+    [JsonPropertyName("jobId")]
+    [Description("The job ID")]
+    public Guid? JobId { get; init; }
+
+    [JsonPropertyName("employeeId")] 
+    [Description("The employee ID")]
+    public Guid? EmployeeId { get; init; }
 }
 
 public class DeleteJobEmployeesActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("success")]
+    [Description("Whether the delete was successful")]
+    public bool Success { get; init; }
 }

@@ -14,10 +14,13 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateJobMaterialAction Action description goes here")]
+[Description("Updates an existing job material with the specified id")]
 public class UpdateJobMaterialAction : IStandardAction<UpdateJobMaterialActionInput, UpdateJobMaterialActionOutput>
 {
-    public UpdateJobMaterialActionInput ActionInput { get; set; } = new();
+    public UpdateJobMaterialActionInput ActionInput { get; set; } = new() { 
+        Id = Guid.Empty,
+        MaterialId = Guid.Empty 
+    };
     public UpdateJobMaterialActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +29,52 @@ public class UpdateJobMaterialAction : IStandardAction<UpdateJobMaterialActionIn
 
 public class UpdateJobMaterialActionInput
 {
+    [JsonPropertyName("id")]
+    [Description("The job material id")]
+    [Required]
+    public required Guid Id { get; init; }
 
+    [JsonPropertyName("materialId")]
+    [Description("The material guid")]
+    [Required]
+    public required Guid MaterialId { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("salesTaxPercent")]
+    [Description("The sales tax, expressed as a percent (e.g., 8 means 8% sales tax)")]
+    public double SalesTaxPercent { get; init; }
+
+    [JsonPropertyName("tmRate")]
+    [Description("The T&M rate, in dollars per unit of measure")]
+    public double TmRate { get; init; }
+
+    [JsonPropertyName("unitCost")]
+    [Description("The cost per unit of measure, in dollars")]
+    public double UnitCost { get; init; }
+
+    [JsonPropertyName("unitOfMeasure")]
+    [Description("The unit of measure")]
+    public string? UnitOfMeasure { get; init; }
+
+    [JsonPropertyName("accountingCode")]
+    [Description("The accounting code")]
+    public string? AccountingCode { get; init; }
+
+    [JsonPropertyName("isDiscontinued")]
+    [Description("The IsDiscontinued flag")]
+    public bool IsDiscontinued { get; init; }
 }
 
 public class UpdateJobMaterialActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("success")]
+    [Description("Whether the update was successful")]
+    public bool Success { get; init; }
+
+    [JsonPropertyName("jobMaterial")]
+    [Description("The updated job material")]
+    public JobMaterialDataObject? JobMaterial { get; init; }
 }

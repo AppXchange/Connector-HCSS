@@ -14,23 +14,54 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateJobEquipmentAction Action description goes here")]
+[Description("Creates and updates job-equipment relationships")]
 public class UpdateJobEquipmentAction : IStandardAction<UpdateJobEquipmentActionInput, UpdateJobEquipmentActionOutput>
 {
-    public UpdateJobEquipmentActionInput ActionInput { get; set; } = new();
+    public UpdateJobEquipmentActionInput ActionInput { get; set; } = new() { 
+        BusinessUnitId = Guid.Empty,
+        Relations = Array.Empty<JobEquipmentRelation>()
+        };
     public UpdateJobEquipmentActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
 }
 
+public class JobEquipmentRelation
+{
+    [JsonPropertyName("jobId")]
+    [Description("The job id")]
+    [Required]
+    public required Guid JobId { get; init; }
+
+    [JsonPropertyName("equipmentId")]
+    [Description("The equipment id")]
+    [Required]
+    public required Guid EquipmentId { get; init; }
+
+    [JsonPropertyName("operatorPayClassId")]
+    [Description("The equipment operator pay class id")]
+    public Guid? OperatorPayClassId { get; init; }
+}
+
 public class UpdateJobEquipmentActionInput
 {
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit ID")]
+    [Required]
+    public required Guid BusinessUnitId { get; init; }
 
+    [JsonPropertyName("relations")]
+    [Description("The list of job-equipment relations to be created or updated")]
+    [Required]
+    [MinLength(1)]
+    [MaxLength(100)]
+    public required JobEquipmentRelation[] Relations { get; init; } = Array.Empty<JobEquipmentRelation>();
 }
 
 public class UpdateJobEquipmentActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("success")]
+    [Description("Whether the update was successful")]
+    public bool Success { get; init; }
 }

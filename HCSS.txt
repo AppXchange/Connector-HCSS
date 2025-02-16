@@ -713,6 +713,7 @@ https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material
 xchange action new --module-id heavyjob-1 --object-name Materials --name Update
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_DeleteMaterialAsync
 xchange action new --module-id heavyjob-1 --object-name Materials --name Delete
+
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_GetJobMaterialAsync
 xchange data-object new --module-id heavyjob-1 --name JobMaterial
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_GetJobMaterialsAsync
@@ -723,6 +724,7 @@ https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material
 xchange action new --module-id heavyjob-1 --object-name JobMaterial --name Update
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_DeleteJobMaterialAsync
 xchange action new --module-id heavyjob-1 --object-name JobMaterial --name Delete
+
 xchange data-object new --module-id heavyjob-1 --name MaterialsInstalled
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_GetMaterialsInstalledPaginatedAdvancedAsync
 xchange action new --module-id heavyjob-1 --object-name MaterialsInstalled --name Create

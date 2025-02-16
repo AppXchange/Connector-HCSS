@@ -14,23 +14,59 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateJobEmployeesAction Action description goes here")]
+[Description("Creates and updates job-employee relationships")]
 public class UpdateJobEmployeesAction : IStandardAction<UpdateJobEmployeesActionInput, UpdateJobEmployeesActionOutput>
 {
-    public UpdateJobEmployeesActionInput ActionInput { get; set; } = new();
+    public UpdateJobEmployeesActionInput ActionInput { get; set; } = new() 
+    { 
+        BusinessUnitId = Guid.Empty,
+        Relations = Array.Empty<JobEmployeeRelation>()
+    };
     public UpdateJobEmployeesActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
 }
 
+public class JobEmployeeRelation
+{
+    [JsonPropertyName("jobId")]
+    [Description("The job id")]
+    [Required]
+    public required Guid JobId { get; init; }
+
+    [JsonPropertyName("employeeId")]
+    [Description("The employee id")]
+    [Required]
+    public required Guid EmployeeId { get; init; }
+
+    [JsonPropertyName("defaultPayClassId")]
+    [Description("The pay class id for the employee on the job")]
+    public Guid? DefaultPayClassId { get; init; }
+
+    [JsonPropertyName("assignedEquipmentId")]
+    [Description("The assigned equipment id")]
+    public Guid? AssignedEquipmentId { get; init; }
+}
+
 public class UpdateJobEmployeesActionInput
 {
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit ID")]
+    [Required]
+    public required Guid BusinessUnitId { get; init; }
 
+    [JsonPropertyName("relations")]
+    [Description("The list of job-employee relations to be created or updated")]
+    [Required]
+    [MinLength(1)]
+    [MaxLength(100)]
+    public required JobEmployeeRelation[] Relations { get; init; }
 }
 
 public class UpdateJobEmployeesActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("success")]
+    [Description("Whether the update was successful")]
+    public bool Success { get; init; }
 }
