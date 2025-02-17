@@ -1,78 +1,114 @@
 using Connector.Client;
-using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
+using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace Connector.HeavyJob.v1.MaterialsInstalled;
 
 public class MaterialsInstalledDataReader : TypedAsyncDataReaderBase<MaterialsInstalledDataObject>
 {
     private readonly ILogger<MaterialsInstalledDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public MaterialsInstalledDataReader(
-        ILogger<MaterialsInstalledDataReader> logger)
+        ILogger<MaterialsInstalledDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<MaterialsInstalledDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<MaterialsInstalledDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
-        {
-            var response = new ApiResponse<PaginatedResponse<MaterialsInstalledDataObject>>();
-            // If the MaterialsInstalledDataObject does not have the same structure as the MaterialsInstalled response from the API, create a new class for it and replace MaterialsInstalledDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<MaterialsInstalledResponse>>();
+        var request = new MaterialsInstalledRequest();
+        string? cursor = null;
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<MaterialsInstalledDataObject>(
-                //    relativeUrl: "materialsInstalleds",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'MaterialsInstalledDataObject'");
-                throw;
-            }
+        do
+        {
+            var response = await _apiClient.GetMaterialsInstalled(
+                request with { Cursor = cursor },
+                cancellationToken);
 
             if (!response.IsSuccessful)
             {
-                throw new Exception($"Failed to retrieve records for 'MaterialsInstalledDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve materials installed. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve materials installed. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            if (response.Data?.Results == null)
             {
-                // If new class was created to match the API response, create a new MaterialsInstalledDataObject object, map the properties and return a MaterialsInstalledDataObject.
-
-                // Example:
-                //var resource = new MaterialsInstalledDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
+                _logger.LogWarning("No materials installed found");
+                yield break;
             }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            foreach (var material in response.Data.Results)
             {
-                break;
+                yield return material;
             }
+
+            cursor = response.Data.Metadata?.NextCursor;
         }
+        while (!string.IsNullOrEmpty(cursor));
     }
+}
+
+public record MaterialsInstalledRequest
+{
+    [JsonPropertyName("jobIds")]
+    public Guid[]? JobIds { get; init; }
+
+    [JsonPropertyName("jobTagIds")]
+    public Guid[]? JobTagIds { get; init; }
+
+    [JsonPropertyName("foremanIds")]
+    public Guid[]? ForemanIds { get; init; }
+
+    [JsonPropertyName("startDate")]
+    public DateTime? StartDate { get; init; }
+
+    [JsonPropertyName("endDate")]
+    public DateTime? EndDate { get; init; }
+
+    [JsonPropertyName("cursor")]
+    public string? Cursor { get; init; }
+
+    [JsonPropertyName("limit")]
+    public int? Limit { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    public Guid? BusinessUnitId { get; init; }
+
+    [JsonPropertyName("costCodeIds")]
+    public Guid[]? CostCodeIds { get; init; }
+
+    [JsonPropertyName("modifiedSince")]
+    public DateTime? ModifiedSince { get; init; }
+
+    [JsonPropertyName("onlyTM")]
+    public bool? OnlyTM { get; init; }
+}
+
+public record MaterialsInstalledResponse
+{
+    [JsonPropertyName("results")]
+    [Required]
+    public required MaterialsInstalledDataObject[] Results { get; init; }
+
+    [JsonPropertyName("metadata")]
+    [Required]
+    public required MaterialsInstalledResponseMetadata Metadata { get; init; }
+}
+
+public record MaterialsInstalledResponseMetadata
+{
+    [JsonPropertyName("nextCursor")]
+    public string? NextCursor { get; init; }
 }

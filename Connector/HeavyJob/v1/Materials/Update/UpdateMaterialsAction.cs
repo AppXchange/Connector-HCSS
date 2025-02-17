@@ -14,10 +14,14 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateMaterialsAction Action description goes here")]
+[Description("Updates an existing material with the specified id")]
 public class UpdateMaterialsAction : IStandardAction<UpdateMaterialsActionInput, UpdateMaterialsActionOutput>
 {
-    public UpdateMaterialsActionInput ActionInput { get; set; } = new();
+    public UpdateMaterialsActionInput ActionInput { get; set; } = new() { 
+        Id = Guid.Empty,
+        Code = string.Empty,
+        IsStockpiled = false
+    };
     public UpdateMaterialsActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +30,37 @@ public class UpdateMaterialsAction : IStandardAction<UpdateMaterialsActionInput,
 
 public class UpdateMaterialsActionInput
 {
+    [JsonPropertyName("id")]
+    [Description("The material id")]
+    [Required]
+    public required Guid Id { get; init; }
 
+    [JsonPropertyName("code")]
+    [Description("The code")]
+    [Required]
+    public required string Code { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("isStockpiled")]
+    [Description("Flag indicating whether the material is used immediately (e.g., installed), or added to the stockpile for later")]
+    [Required]
+    public required bool IsStockpiled { get; init; }
+
+    [JsonPropertyName("heavyBidCode")]
+    [Description("The HeavyBid code")]
+    public string? HeavyBidCode { get; init; }
 }
 
 public class UpdateMaterialsActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("success")]
+    [Description("Whether the update was successful")]
+    public bool Success { get; init; }
+
+    [JsonPropertyName("material")]
+    [Description("The updated material")]
+    public MaterialsDataObject? Material { get; init; }
 }

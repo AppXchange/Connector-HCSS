@@ -686,7 +686,8 @@ xchange data-object new --module-id heavyjob-1 --name Jobs
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Job/#tag/Job/operation/JobController_BulkProcessJobsAsync
 xchange action new --module-id heavyjob-1 --object-name Jobs --name Update
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Job/#tag/Job/operation/JobController_GetJobsAdvancedAsync
-xchange action new --module-id heavyjob-1 --object-name Jobs --name Create
+xchange data-object new --module-id heavyjob-1 --name JobsAdvanced
+
 
 ## JobEmployee
 https://developer.hcssapps.com/products/heavyjob/spec/tag/JobEmployee/#tag/JobEmployee/operation/JobEmployeeController_GetJobEmployeesAsync
@@ -725,12 +726,10 @@ xchange action new --module-id heavyjob-1 --object-name JobMaterial --name Updat
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_DeleteJobMaterialAsync
 xchange action new --module-id heavyjob-1 --object-name JobMaterial --name Delete
 
-xchange data-object new --module-id heavyjob-1 --name MaterialsInstalled
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_GetMaterialsInstalledPaginatedAdvancedAsync
-xchange action new --module-id heavyjob-1 --object-name MaterialsInstalled --name Create
-xchange data-object new --module-id heavyjob-1 --name MaterialsReceived
+xchange data-object new --module-id heavyjob-1 --name MaterialsInstalled
 https://developer.hcssapps.com/products/heavyjob/spec/tag/Material/#tag/Material/operation/MaterialController_GetMaterialsReceivedPaginatedAdvancedAsync
-xchange action new --module-id heavyjob-1 --object-name MaterialsReceived --name Create
+xchange data-object new --module-id heavyjob-1 --name MaterialsReceived
 
 ## MaterialSubsAndCustomCosts
 xchange data-object new --module-id heavyjob-1 --name MaterialSubsAndCustomCosts
@@ -760,6 +759,7 @@ https://developer.hcssapps.com/products/heavyjob/spec/tag/PurchaseOrder/#tag/Pur
 xchange action new --module-id heavyjob-1 --object-name PurchaseOrders --name Create
 https://developer.hcssapps.com/products/heavyjob/spec/tag/PurchaseOrder/#tag/PurchaseOrder/operation/PurchaseOrderController_UpdatePurchaseOrderAsync
 xchange action new --module-id heavyjob-1 --object-name PurchaseOrders --name Update
+
 https://developer.hcssapps.com/products/heavyjob/spec/tag/PurchaseOrder/#tag/PurchaseOrder/operation/PurchaseOrderController_GetMaterialPurchaseOrderDetailsAsync
 xchange data-object new --module-id heavyjob-1 --name MaterialPurchaseOrderDetails
 https://developer.hcssapps.com/products/heavyjob/spec/tag/PurchaseOrder/#tag/PurchaseOrder/operation/PurchaseOrderController_CreateMaterialPurchaseOrderDetailAsync

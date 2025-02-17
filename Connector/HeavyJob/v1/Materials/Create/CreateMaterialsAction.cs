@@ -14,10 +14,14 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateMaterialsAction Action description goes here")]
+[Description("Creates a material for the specified business unit")]
 public class CreateMaterialsAction : IStandardAction<CreateMaterialsActionInput, CreateMaterialsActionOutput>
 {
-    public CreateMaterialsActionInput ActionInput { get; set; } = new();
+    public CreateMaterialsActionInput ActionInput { get; set; } = new() { 
+        BusinessUnitId = Guid.Empty,
+        Code = string.Empty,
+        IsStockpiled = false
+    };
     public CreateMaterialsActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +30,37 @@ public class CreateMaterialsAction : IStandardAction<CreateMaterialsActionInput,
 
 public class CreateMaterialsActionInput
 {
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit id")]
+    [Required]
+    public required Guid BusinessUnitId { get; init; }
 
+    [JsonPropertyName("code")]
+    [Description("The code")]
+    [Required]
+    public required string Code { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("isStockpiled")]
+    [Description("Flag indicating whether the material is used immediately (e.g., installed), or added to the stockpile for later")]
+    [Required]
+    public required bool IsStockpiled { get; init; }
+
+    [JsonPropertyName("heavyBidCode")]
+    [Description("The HeavyBid code")]
+    public string? HeavyBidCode { get; init; }
 }
 
 public class CreateMaterialsActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("success")]
+    [Description("Whether the create was successful")]
+    public bool Success { get; init; }
+
+    [JsonPropertyName("material")]
+    [Description("The created material")]
+    public MaterialsDataObject? Material { get; init; }
 }

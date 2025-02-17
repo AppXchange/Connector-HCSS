@@ -14,10 +14,10 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateMaterialPurchaseOrderDetailsAction Action description goes here")]
+[Description("Updates an existing material purchase order detail by its id")]
 public class UpdateMaterialPurchaseOrderDetailsAction : IStandardAction<UpdateMaterialPurchaseOrderDetailsActionInput, UpdateMaterialPurchaseOrderDetailsActionOutput>
 {
-    public UpdateMaterialPurchaseOrderDetailsActionInput ActionInput { get; set; } = new();
+    public UpdateMaterialPurchaseOrderDetailsActionInput ActionInput { get; set; } = new() { Id = Guid.Empty };
     public UpdateMaterialPurchaseOrderDetailsActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +26,23 @@ public class UpdateMaterialPurchaseOrderDetailsAction : IStandardAction<UpdateMa
 
 public class UpdateMaterialPurchaseOrderDetailsActionInput
 {
+    [JsonPropertyName("id")]
+    [Description("The purchase order detail id")]
+    [Required]
+    public required Guid Id { get; init; }
 
+    [JsonPropertyName("isFullyReceived")]
+    [Description("Whether the item is fully received. Default is false")]
+    public bool? IsFullyReceived { get; init; }
+
+    [JsonPropertyName("isFullyInstalled")]
+    [Description("Whether the item is fully installed. Default is false")]
+    public bool? IsFullyInstalled { get; init; }
 }
 
 public class UpdateMaterialPurchaseOrderDetailsActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("success")]
+    [Description("Whether the update was successful")]
+    public bool Success { get; init; }
 }

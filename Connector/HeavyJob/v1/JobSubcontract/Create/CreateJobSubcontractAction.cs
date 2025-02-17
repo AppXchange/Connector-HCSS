@@ -14,10 +14,13 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateJobSubcontractAction Action description goes here")]
+[Description("Creates a job subcontract item on the specified job")]
 public class CreateJobSubcontractAction : IStandardAction<CreateJobSubcontractActionInput, CreateJobSubcontractActionOutput>
 {
-    public CreateJobSubcontractActionInput ActionInput { get; set; } = new();
+    public CreateJobSubcontractActionInput ActionInput { get; set; } = new() { 
+        JobId = Guid.Empty,
+        SubcontractId = Guid.Empty 
+    };
     public CreateJobSubcontractActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +29,48 @@ public class CreateJobSubcontractAction : IStandardAction<CreateJobSubcontractAc
 
 public class CreateJobSubcontractActionInput
 {
+    [JsonPropertyName("jobId")]
+    [Description("The job id")]
+    [Required]
+    public required Guid JobId { get; init; }
 
+    [JsonPropertyName("subcontractId")]
+    [Description("The subcontract guid")]
+    [Required]
+    public required Guid SubcontractId { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("salesTaxPercent")]
+    [Description("The sales tax, expressed as a percent (e.g., 8 means 8% sales tax)")]
+    public double SalesTaxPercent { get; init; }
+
+    [JsonPropertyName("tmRate")]
+    [Description("The T&M rate, in dollars per unit of measure")]
+    public double TmRate { get; init; }
+
+    [JsonPropertyName("unitCost")]
+    [Description("The cost per unit of measure, in dollars")]
+    public double UnitCost { get; init; }
+
+    [JsonPropertyName("unitOfMeasure")]
+    [Description("The unit of measure")]
+    public string? UnitOfMeasure { get; init; }
+
+    [JsonPropertyName("accountingCode")]
+    [Description("The accounting code")]
+    public string? AccountingCode { get; init; }
 }
 
 public class CreateJobSubcontractActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("success")]
+    [Description("Whether the create was successful")]
+    public bool Success { get; init; }
+
+    [JsonPropertyName("jobSubcontract")]
+    [Description("The created job subcontract")]
+    public JobSubcontractDataObject? JobSubcontract { get; init; }
 }

@@ -52,6 +52,7 @@ using Connector.HeavyJob.v1.JobEquipment;
 using Connector.HeavyJob.v1.JobMaterial;
 using Connector.HeavyJob.v1.JobMaterials;
 using Connector.HeavyJob.v1.Jobs;
+using Connector.HeavyJob.v1.JobsAdvanced;
 using Connector.HeavyJob.v1.JobSubcontract;
 using Connector.HeavyJob.v1.JobSubcontracts;
 using Connector.HeavyJob.v1.MaterialPurchaseOrderDetails;
@@ -192,6 +193,7 @@ public class HeavyJobV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefi
         serviceCollection.AddSingleton<VendorContractItemsDataReader>();
         serviceCollection.AddSingleton<EmployeesAdvancedDataReader>();
         serviceCollection.AddSingleton<JobCostsQueryDataReader>();
+        serviceCollection.AddSingleton<JobsAdvancedDataReader>();
     }
 
     public override IDataObjectChangeDetectorProvider ConfigureChangeDetectorProvider(IChangeDetectorFactory factory, ConnectorDefinition connectorDefinition)
@@ -284,6 +286,7 @@ public class HeavyJobV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefi
         this.RegisterKeysForObject<VendorContractItemsDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<EmployeesAdvancedDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<JobCostsQueryDataObject>(options, connectorDefinition);
+        this.RegisterKeysForObject<JobsAdvancedDataObject>(options, connectorDefinition);
         return factory.CreateProvider(options);
     }
 
@@ -381,5 +384,6 @@ public class HeavyJobV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefi
         service.RegisterDataReader<VendorContractItemsDataReader, VendorContractItemsDataObject>(ModuleId, config.VendorContractItemsConfig, dataReaderSettings);
         service.RegisterDataReader<EmployeesAdvancedDataReader, EmployeesAdvancedDataObject>(ModuleId, config.EmployeesAdvancedConfig, dataReaderSettings);
         service.RegisterDataReader<JobCostsQueryDataReader, JobCostsQueryDataObject>(ModuleId, config.JobCostsQueryConfig, dataReaderSettings);
+        service.RegisterDataReader<JobsAdvancedDataReader, JobsAdvancedDataObject>(ModuleId, config.JobsAdvancedConfig, dataReaderSettings);
     }
 }

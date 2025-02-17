@@ -7,28 +7,26 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
 
-namespace Connector.HeavyJob.v1.Jobs;
+namespace Connector.HeavyJob.v1.JobsAdvanced;
 
-public class JobsDataReader : TypedAsyncDataReaderBase<JobsDataObject>
+public class JobsAdvancedDataReader : TypedAsyncDataReaderBase<JobsAdvancedDataObject>
 {
-    private readonly ILogger<JobsDataReader> _logger;
+    private readonly ILogger<JobsAdvancedDataReader> _logger;
     private readonly ApiClient _apiClient;
 
-    public JobsDataReader(
-        ILogger<JobsDataReader> logger,
+    public JobsAdvancedDataReader(
+        ILogger<JobsAdvancedDataReader> logger,
         ApiClient apiClient)
     {
         _logger = logger;
         _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<JobsDataObject> GetTypedDataAsync(
+    public override async IAsyncEnumerable<JobsAdvancedDataObject> GetTypedDataAsync(
         DataObjectCacheWriteArguments? dataObjectRunArguments,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var response = await _apiClient.GetJobs(
-            businessUnitId: null,
-            jobStatus: null,
+        var response = await _apiClient.GetJobsAdvanced(
             cancellationToken: cancellationToken);
 
         if (!response.IsSuccessful)

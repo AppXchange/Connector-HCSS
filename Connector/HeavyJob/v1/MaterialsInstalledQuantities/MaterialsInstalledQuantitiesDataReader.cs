@@ -1,78 +1,102 @@
 using Connector.Client;
-using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
+using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace Connector.HeavyJob.v1.MaterialsInstalledQuantities;
 
 public class MaterialsInstalledQuantitiesDataReader : TypedAsyncDataReaderBase<MaterialsInstalledQuantitiesDataObject>
 {
     private readonly ILogger<MaterialsInstalledQuantitiesDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public MaterialsInstalledQuantitiesDataReader(
-        ILogger<MaterialsInstalledQuantitiesDataReader> logger)
+        ILogger<MaterialsInstalledQuantitiesDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<MaterialsInstalledQuantitiesDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<MaterialsInstalledQuantitiesDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
-        {
-            var response = new ApiResponse<PaginatedResponse<MaterialsInstalledQuantitiesDataObject>>();
-            // If the MaterialsInstalledQuantitiesDataObject does not have the same structure as the MaterialsInstalledQuantities response from the API, create a new class for it and replace MaterialsInstalledQuantitiesDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<MaterialsInstalledQuantitiesResponse>>();
+        var request = new MaterialsInstalledQuantitiesRequest();
+        string? cursor = null;
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<MaterialsInstalledQuantitiesDataObject>(
-                //    relativeUrl: "materialsInstalledQuantities",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'MaterialsInstalledQuantitiesDataObject'");
-                throw;
-            }
+        do
+        {
+            var response = await _apiClient.GetMaterialsInstalledQuantities(
+                request with { Cursor = cursor },
+                cancellationToken);
 
             if (!response.IsSuccessful)
             {
-                throw new Exception($"Failed to retrieve records for 'MaterialsInstalledQuantitiesDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve materials installed quantities. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve materials installed quantities. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            if (response.Data?.Results == null)
             {
-                // If new class was created to match the API response, create a new MaterialsInstalledQuantitiesDataObject object, map the properties and return a MaterialsInstalledQuantitiesDataObject.
-
-                // Example:
-                //var resource = new MaterialsInstalledQuantitiesDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
+                _logger.LogWarning("No materials installed quantities found");
+                yield break;
             }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            foreach (var quantity in response.Data.Results)
             {
-                break;
+                yield return quantity;
             }
+
+            cursor = response.Data.Metadata?.NextCursor;
         }
+        while (!string.IsNullOrEmpty(cursor));
     }
+}
+
+public record MaterialsInstalledQuantitiesRequest
+{
+    [JsonPropertyName("jobId")]
+    public Guid? JobId { get; init; }
+
+    [JsonPropertyName("foremanId")]
+    public Guid? ForemanId { get; init; }
+
+    [JsonPropertyName("startDate")]
+    public DateTime? StartDate { get; init; }
+
+    [JsonPropertyName("endDate")]
+    public DateTime? EndDate { get; init; }
+
+    [JsonPropertyName("modifiedSince")]
+    public DateTime? ModifiedSince { get; init; }
+
+    [JsonPropertyName("limit")]
+    public int? Limit { get; init; }
+
+    [JsonPropertyName("cursor")]
+    public string? Cursor { get; init; }
+}
+
+public record MaterialsInstalledQuantitiesResponse
+{
+    [JsonPropertyName("results")]
+    [Required]
+    public required MaterialsInstalledQuantitiesDataObject[] Results { get; init; }
+
+    [JsonPropertyName("metadata")]
+    [Required]
+    public required MaterialsInstalledQuantitiesResponseMetadata Metadata { get; init; }
+}
+
+public record MaterialsInstalledQuantitiesResponseMetadata
+{
+    [JsonPropertyName("nextCursor")]
+    public string? NextCursor { get; init; }
 }

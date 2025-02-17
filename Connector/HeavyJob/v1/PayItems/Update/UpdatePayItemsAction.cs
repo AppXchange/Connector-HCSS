@@ -14,11 +14,13 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdatePayItemsAction Action description goes here")]
+[Description("Bulk upsert pay items by code and job id")]
 public class UpdatePayItemsAction : IStandardAction<UpdatePayItemsActionInput, UpdatePayItemsActionOutput>
 {
     public UpdatePayItemsActionInput ActionInput { get; set; } = new();
-    public UpdatePayItemsActionOutput ActionOutput { get; set; } = new();
+    public UpdatePayItemsActionOutput ActionOutput { get; set; } = new() {
+        Success = false
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +28,76 @@ public class UpdatePayItemsAction : IStandardAction<UpdatePayItemsActionInput, U
 
 public class UpdatePayItemsActionInput
 {
+    [JsonPropertyName("payItems")]
+    [Description("The pay items to update")]
+    [Required]
+    [MaxItems(10000)]
+    public required PayItemUpdate[] PayItems { get; init; }
 
+    [JsonPropertyName("createOnly")]
+    [Description("If true, no updates will be performed, and existing records will be kept as-is")]
+    public bool CreateOnly { get; init; }
+
+    [JsonPropertyName("addToExisting")]
+    [Description("If true, the passed quantity will be added to the existing quantity")]
+    public bool AddToExisting { get; init; }
+}
+
+public class PayItemUpdate
+{
+    [JsonPropertyName("jobId")]
+    [Description("The job that this pay item is associated with")]
+    [Required]
+    public required Guid JobId { get; init; }
+
+    [JsonPropertyName("payItem")]
+    [Description("A unique code that describes this pay item")]
+    [Required]
+    [MaxLength(50)]
+    [MinLength(1)]
+    public required string PayItem { get; init; }
+
+    [JsonPropertyName("status")]
+    [Description("The pay item status")]
+    [Required]
+    public required string Status { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("A description for this pay item")]
+    [MaxLength(200)]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("ownerCode")]
+    [Description("The associated pay item code in the owner's system")]
+    [MaxLength(50)]
+    public string? OwnerCode { get; init; }
+
+    [JsonPropertyName("contractQuantity")]
+    [Description("The agreed-to quantity between the owner and the company")]
+    public double? ContractQuantity { get; init; }
+
+    [JsonPropertyName("unitOfMeasure")]
+    [Description("The unit of measure used to bill the owner for this pay item")]
+    [MaxLength(50)]
+    public string? UnitOfMeasure { get; init; }
+
+    [JsonPropertyName("unitPrice")]
+    [Description("The unit price used to bill the owner for this pay item")]
+    public double? UnitPrice { get; init; }
+
+    [JsonPropertyName("stopOverruns")]
+    [Description("Whether to cap the billable quantity at the ContractQuantity")]
+    public bool? StopOverruns { get; init; }
+
+    [JsonPropertyName("notes")]
+    [Description("Notes associated with this pay item")]
+    [MaxLength(500)]
+    public string? Notes { get; init; }
 }
 
 public class UpdatePayItemsActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("success")]
+    [Description("Whether the update was successful")]
+    public bool Success { get; init; }
 }

@@ -1,4 +1,4 @@
-namespace Connector.HeavyJob.v1.Jobs;
+namespace Connector.HeavyJob.v1.JobsAdvanced;
 
 using Json.Schema.Generation;
 using System;
@@ -14,8 +14,8 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Represents a job in HeavyJob")]
-public class JobsDataObject
+[Description("Represents a job in HeavyJob with advanced filtering")]
+public class JobsAdvancedDataObject
 {
     [JsonPropertyName("id")]
     [Description("The master id")]

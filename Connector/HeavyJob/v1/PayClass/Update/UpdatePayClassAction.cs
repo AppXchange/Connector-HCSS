@@ -14,10 +14,13 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdatePayClassAction Action description goes here")]
+[Description("Updates a pay class in a business unit")]
 public class UpdatePayClassAction : IStandardAction<UpdatePayClassActionInput, UpdatePayClassActionOutput>
 {
-    public UpdatePayClassActionInput ActionInput { get; set; } = new();
+    public UpdatePayClassActionInput ActionInput { get; set; } = new() { 
+        BusinessUnitId = Guid.Empty,
+        Id = Guid.Empty
+    };
     public UpdatePayClassActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +29,36 @@ public class UpdatePayClassAction : IStandardAction<UpdatePayClassActionInput, U
 
 public class UpdatePayClassActionInput
 {
+    [JsonPropertyName("id")]
+    [Description("The Id of the pay class to be updated")]
+    [Required]
+    public required Guid Id { get; init; }
 
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit Id")]
+    [Required]
+    public required Guid BusinessUnitId { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The pay class code")]
+    public string? Code { get; init; }
+
+    [JsonPropertyName("hbEstimateCode")]
+    [Description("The pay class HeavyBid code")]
+    public string? HbEstimateCode { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The pay class description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("isActive")]
+    [Description("The active status")]
+    public bool? IsActive { get; init; }
 }
 
 public class UpdatePayClassActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("success")]
+    [Description("Whether the update was successful")]
+    public bool Success { get; init; }
 }

@@ -52,6 +52,7 @@ using Connector.HeavyJob.v1.JobEquipment;
 using Connector.HeavyJob.v1.JobMaterial;
 using Connector.HeavyJob.v1.JobMaterials;
 using Connector.HeavyJob.v1.Jobs;
+using Connector.HeavyJob.v1.JobsAdvanced;
 using Connector.HeavyJob.v1.JobSubcontract;
 using Connector.HeavyJob.v1.JobSubcontracts;
 using Connector.HeavyJob.v1.MaterialPurchaseOrderDetails;
@@ -186,4 +187,5 @@ public class HeavyJobV1CacheWriterConfig
     public CacheWriterObjectConfig VendorContractItemsConfig { get; set; } = new();
     public CacheWriterObjectConfig EmployeesAdvancedConfig { get; set; } = new();
     public CacheWriterObjectConfig JobCostsQueryConfig { get; set; } = new();
+    public CacheWriterObjectConfig JobsAdvancedConfig { get; set; } = new();
 }

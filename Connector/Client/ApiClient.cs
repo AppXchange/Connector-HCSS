@@ -214,6 +214,29 @@ using Connector.HeavyJob.v1.JobMaterial;
 using Connector.HeavyJob.v1.JobMaterial.Create;
 using Connector.HeavyJob.v1.JobMaterial.Update;
 using Connector.HeavyJob.v1.JobMaterials;
+using Connector.HeavyJob.v1.JobsAdvanced;
+using Connector.HeavyJob.v1.JobSubcontract;
+using Connector.HeavyJob.v1.JobSubcontract.Create;
+using Connector.HeavyJob.v1.JobSubcontract.Update;
+using Connector.HeavyJob.v1.JobSubcontracts;
+using Connector.HeavyJob.v1.MaterialPurchaseOrderDetails;
+using Connector.HeavyJob.v1.MaterialPurchaseOrderDetails.Create;
+using Connector.HeavyJob.v1.MaterialPurchaseOrderDetails.Update;
+using Connector.HeavyJob.v1.Materials;
+using Connector.HeavyJob.v1.Materials.Create;
+using Connector.HeavyJob.v1.Materials.Update;
+using Connector.HeavyJob.v1.MaterialsInstalled;
+using Connector.HeavyJob.v1.MaterialsInstalledQuantities;
+using Connector.HeavyJob.v1.MaterialsReceived;
+using Connector.HeavyJob.v1.MaterialSubsAndCustomCosts.Update;
+using Connector.HeavyJob.v1.MissingTimeCardForemen;
+using Connector.HeavyJob.v1.MobileChangeOrdersByBusinessUnit;
+using Connector.HeavyJob.v1.NonuseHourTags;
+using Connector.HeavyJob.v1.PayClass;
+using Connector.HeavyJob.v1.PayClass.Update;
+using Connector.HeavyJob.v1.PayItems;
+using Connector.HeavyJob.v1.PayItems.Create;
+using Connector.HeavyJob.v1.PayItems.Update;
 
 namespace Connector.Client;
 
@@ -3141,7 +3164,7 @@ public class ApiClient
         };
     }
 
-    public async Task<ApiResponse<HeavyBidResponse<MaterialsDataObject>>> GetMaterials(
+    public async Task<ApiResponse<HeavyBidResponse<HeavyBidEstimate.v1.Materials.MaterialsDataObject>>> GetMaterials(
         Guid businessUnitId,
         Guid estimateId,
         string materialType,
@@ -3167,12 +3190,12 @@ public class ApiClient
 
         var response = await _httpClient.GetAsync(url, cancellationToken);
 
-        return new ApiResponse<HeavyBidResponse<MaterialsDataObject>>
+        return new ApiResponse<HeavyBidResponse<HeavyBidEstimate.v1.Materials.MaterialsDataObject>>
         {
             IsSuccessful = response.IsSuccessStatusCode,
             StatusCode = (int)response.StatusCode,
             Data = response.IsSuccessStatusCode 
-                ? await response.Content.ReadFromJsonAsync<HeavyBidResponse<MaterialsDataObject>>(cancellationToken: cancellationToken) 
+                ? await response.Content.ReadFromJsonAsync<HeavyBidResponse<HeavyBidEstimate.v1.Materials.MaterialsDataObject>>(cancellationToken: cancellationToken) 
                 : null,
             RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
         };
@@ -6159,6 +6182,669 @@ public class ApiClient
             Data = response.IsSuccessStatusCode 
                 ? await response.Content.ReadFromJsonAsync<IEnumerable<JobMaterialsDataObject>>(cancellationToken: cancellationToken)
                 : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<HeavyJob.v1.Jobs.JobsDataObject>>> GetJobs(
+        Guid? businessUnitId = null,
+        string? jobStatus = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (businessUnitId.HasValue)
+            queryParams.Add($"businessUnitId={businessUnitId}");
+        if (!string.IsNullOrEmpty(jobStatus))
+            queryParams.Add($"jobStatus={jobStatus}");
+
+        var url = "heavyjob/api/v1/jobs";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<HeavyJob.v1.Jobs.JobsDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<HeavyJob.v1.Jobs.JobsDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+        public async Task<ApiResponse<Guid>> UpdateJobs(
+            HeavyJob.v1.Jobs.Update.UpdateJobsActionInput input,
+            CancellationToken cancellationToken = default)
+        {
+            var url = "heavyjob/api/v1/jobs";
+            var response = await _httpClient.PatchAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<Guid>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<Guid>(cancellationToken: cancellationToken)
+                : Guid.Empty,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<JobsAdvancedDataObject>>> GetJobsAdvanced(
+        Guid[]? jobIds = null,
+        Guid[]? jobTagIds = null,
+        bool? isDeleted = null,
+        bool? isIncludeHBCodeList = null,
+        string[]? jobStatuses = null,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "heavyjob/api/v1/jobs/advanced";
+        var request = new
+        {
+            jobIds,
+            jobTagIds,
+            isDeleted,
+            isIncludeHBCodeList,
+            jobStatuses
+        };
+
+        var response = await _httpClient.PostAsJsonAsync(url, request, cancellationToken);
+
+        return new ApiResponse<IEnumerable<JobsAdvancedDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<JobsAdvancedDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<JobSubcontractDataObject>> GetJobSubcontract(
+        Guid id,
+        bool? isDeleted = null,
+        bool? isDiscontinued = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (isDeleted.HasValue)
+            queryParams.Add($"isDeleted={isDeleted}");
+        if (isDiscontinued.HasValue)
+            queryParams.Add($"isDiscontinued={isDiscontinued}");
+
+        var url = $"heavyjob/api/v1/costTypes/jobSubcontract/{id}";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<JobSubcontractDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<JobSubcontractDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<JobSubcontractDataObject>> CreateJobSubcontract(
+        Guid jobId,
+        CreateJobSubcontractActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"heavyjob/api/v1/jobs/{jobId}/costTypes/jobSubcontract";
+
+        var response = await _httpClient.PostAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<JobSubcontractDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<JobSubcontractDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse> DeleteJobSubcontract(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"heavyjob/api/v1/costTypes/jobSubcontract/{id}";
+
+        var response = await _httpClient.DeleteAsync(url, cancellationToken);
+
+        return new ApiResponse
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<JobSubcontractDataObject>> UpdateJobSubcontract(
+        Guid id,
+        UpdateJobSubcontractActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"heavyjob/api/v1/costTypes/jobSubcontract/{id}";
+
+        var response = await _httpClient.PutAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<JobSubcontractDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<JobSubcontractDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<JobSubcontractsDataObject>>> GetJobSubcontracts(
+        Guid jobId,
+        bool? isDeleted = null,
+        bool? isDiscontinued = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (isDeleted.HasValue)
+            queryParams.Add($"isDeleted={isDeleted}");
+        if (isDiscontinued.HasValue)
+            queryParams.Add($"isDiscontinued={isDiscontinued}");
+
+        var url = $"heavyjob/api/v1/jobs/{jobId}/costTypes/jobSubcontract";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<JobSubcontractsDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<JobSubcontractsDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<MaterialPurchaseOrderDetailsDataObject>>> GetMaterialPurchaseOrderDetails(
+        Guid purchaseOrderId,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"heavyjob/api/v1/purchaseOrders/{purchaseOrderId}/details/material";
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<MaterialPurchaseOrderDetailsDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<MaterialPurchaseOrderDetailsDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<MaterialPurchaseOrderDetailsDataObject>> CreateMaterialPurchaseOrderDetail(
+        Guid purchaseOrderId,
+        CreateMaterialPurchaseOrderDetailsActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"heavyjob/api/v1/purchaseOrders/{purchaseOrderId}/details/material";
+
+        var response = await _httpClient.PostAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<MaterialPurchaseOrderDetailsDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<MaterialPurchaseOrderDetailsDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    // Add this method to the ApiClient class
+    public async Task<ApiResponse> UpdateMaterialPurchaseOrderDetail(
+        Guid id,
+        UpdateMaterialPurchaseOrderDetailsActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"heavyjob/api/v1/purchaseOrders/details/material/{id}";
+
+        var response = await _httpClient.PutAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<HeavyJob.v1.Materials.MaterialsDataObject>>> GetMaterials(
+        Guid businessUnitId,
+        bool? isDeleted = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (isDeleted.HasValue)
+            queryParams.Add($"isDeleted={isDeleted}");
+
+        var url = $"heavyjob/api/v1/businessUnits/{businessUnitId}/costTypes/material";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<HeavyJob.v1.Materials.MaterialsDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<HeavyJob.v1.Materials.MaterialsDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<HeavyJob.v1.Materials.MaterialsDataObject>> CreateMaterial(
+        Guid businessUnitId,
+        CreateMaterialsActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"heavyjob/api/v1/businessUnits/{businessUnitId}/costTypes/material";
+
+        var response = await _httpClient.PostAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<HeavyJob.v1.Materials.MaterialsDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<HeavyJob.v1.Materials.MaterialsDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse> DeleteMaterial(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"heavyjob/api/v1/costTypes/material/{id}";
+
+        var response = await _httpClient.DeleteAsync(url, cancellationToken);
+
+        return new ApiResponse
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    // Add this method to the ApiClient class
+    public async Task<ApiResponse<HeavyJob.v1.Materials.MaterialsDataObject>> UpdateMaterial(
+        Guid id,
+        UpdateMaterialsActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"heavyjob/api/v1/costTypes/material/{id}";
+
+        var response = await _httpClient.PutAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<HeavyJob.v1.Materials.MaterialsDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<HeavyJob.v1.Materials.MaterialsDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<MaterialsInstalledResponse>> GetMaterialsInstalled(
+        MaterialsInstalledRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "heavyjob/api/v1/costTypes/materialInstalled/advancedRequest";
+
+        var response = await _httpClient.PostAsJsonAsync(url, request, cancellationToken);
+
+        return new ApiResponse<MaterialsInstalledResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<MaterialsInstalledResponse>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<MaterialsInstalledQuantitiesResponse>> GetMaterialsInstalledQuantities(
+        MaterialsInstalledQuantitiesRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (request.JobId.HasValue)
+            queryParams.Add($"jobId={request.JobId}");
+        if (request.ForemanId.HasValue)
+            queryParams.Add($"foremanId={request.ForemanId}");
+        if (request.StartDate.HasValue)
+            queryParams.Add($"startDate={request.StartDate:yyyy-MM-ddTHH:mm:ssZ}");
+        if (request.EndDate.HasValue)
+            queryParams.Add($"endDate={request.EndDate:yyyy-MM-ddTHH:mm:ssZ}");
+        if (request.ModifiedSince.HasValue)
+            queryParams.Add($"modifiedSince={request.ModifiedSince:yyyy-MM-ddTHH:mm:ssZ}");
+        if (request.Limit.HasValue)
+            queryParams.Add($"limit={request.Limit}");
+        if (!string.IsNullOrEmpty(request.Cursor))
+            queryParams.Add($"cursor={request.Cursor}");
+
+        var url = "heavyjob/api/v1/costTypeQuantities/materialInstalled";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<MaterialsInstalledQuantitiesResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<MaterialsInstalledQuantitiesResponse>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<MaterialsReceivedResponse>> GetMaterialsReceived(
+        MaterialsReceivedRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "heavyjob/api/v1/costTypes/materialReceived/advancedRequest";
+
+        var response = await _httpClient.PostAsJsonAsync(url, request, cancellationToken);
+
+        return new ApiResponse<MaterialsReceivedResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<MaterialsReceivedResponse>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse> UpdateMaterialSubsAndCustomCosts(
+        UpdateMaterialSubsAndCustomCostsActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "heavyjob/api/v1/costTypeItems";
+
+        var request = new HttpRequestMessage(HttpMethod.Patch, url)
+        {
+            Content = JsonContent.Create(input)
+        };
+
+        var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        return new ApiResponse
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<MissingTimeCardForemenDataObject>>> GetMissingTimeCardForemen(
+        Guid businessUnitId,
+        DateTime startDate,
+        DateTime endDate,
+        DateTime targetDate,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>
+        {
+            $"startDate={startDate:yyyy-MM-dd}",
+            $"endDate={endDate:yyyy-MM-dd}",
+            $"targetDate={targetDate:yyyy-MM-dd}"
+        };
+
+        var url = $"heavyjob/api/v1/businessUnits/{businessUnitId}/missingTimeCards";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<MissingTimeCardForemenDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<MissingTimeCardForemenDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<MobileChangeOrdersByBusinessUnitDataObject>>> GetMobileChangeOrdersByBusinessUnit(
+        Guid businessUnitId,
+        DateTime? lastSyncTime = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>
+        {
+            $"id={businessUnitId}"
+        };
+
+        if (lastSyncTime.HasValue)
+            queryParams.Add($"lastSyncTime={lastSyncTime.Value:yyyy-MM-ddTHH:mm:ssZ}");
+
+        var url = "heavyjob/api/v1/changeOrderChangesByBU";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<MobileChangeOrdersByBusinessUnitDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<MobileChangeOrdersByBusinessUnitDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<NonuseHourTagsDataObject>>> GetNonuseHourTags(
+        Guid businessUnitId,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"heavyjob/api/v1/businessUnits/{businessUnitId}/nonuseHourTags";
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<NonuseHourTagsDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<NonuseHourTagsDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<PayClassDataObject>>> GetPayClasses(
+        Guid businessUnitId,
+        bool? isActive = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (isActive.HasValue)
+            queryParams.Add($"isActive={isActive.Value}");
+
+        var url = $"heavyjob/api/v1/businessUnits/{businessUnitId}/payclass";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<PayClassDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<PayClassDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse> UpdatePayClass(
+        Guid id,
+        UpdatePayClassActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"heavyjob/api/v1/payClasses/{id}";
+
+        var request = new HttpRequestMessage(HttpMethod.Patch, url)
+        {
+            Content = JsonContent.Create(input)
+        };
+
+        var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        return new ApiResponse
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<PayItemsResponse>> GetPayItems(
+        Guid? jobId = null,
+        bool? isDeleted = null,
+        int? limit = null,
+        string? cursor = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (jobId.HasValue)
+            queryParams.Add($"jobId={jobId}");
+        if (isDeleted.HasValue)
+            queryParams.Add($"isDeleted={isDeleted.Value}");
+        if (limit.HasValue)
+            queryParams.Add($"limit={limit}");
+        if (!string.IsNullOrEmpty(cursor))
+            queryParams.Add($"cursor={cursor}");
+
+        var url = "heavyjob/api/v1/payItems";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<PayItemsResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<PayItemsResponse>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public record PayItemsResponse
+    {
+        [JsonPropertyName("results")]
+        [Required]
+        public required PayItemsDataObject[] Results { get; init; }
+
+        [JsonPropertyName("metadata")]
+        [Required]
+        public required PayItemsResponseMetadata Metadata { get; init; }
+    }
+
+    public record PayItemsResponseMetadata
+    {
+        [JsonPropertyName("nextCursor")]
+        public string? NextCursor { get; init; }
+    }
+
+    // Add this method to the ApiClient class
+    public async Task<ApiResponse<CreatePayItemsActionOutput>> CreatePayItem(
+        CreatePayItemsActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "heavyjob/api/v1/payItems";
+
+        var response = await _httpClient.PostAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<CreatePayItemsActionOutput>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<CreatePayItemsActionOutput>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse> UpdatePayItems(
+        UpdatePayItemsActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (input.CreateOnly)
+            queryParams.Add("createOnly=true");
+        if (input.AddToExisting)
+            queryParams.Add("addToExisting=true");
+
+        var url = "heavyjob/api/v1/payItems";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+
+        var request = new HttpRequestMessage(HttpMethod.Patch, url)
+        {
+            Content = JsonContent.Create(input.PayItems)
+        };
+
+        var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        return new ApiResponse
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
             RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
         };
     }

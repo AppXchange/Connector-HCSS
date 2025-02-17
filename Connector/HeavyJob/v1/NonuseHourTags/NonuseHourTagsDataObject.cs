@@ -14,11 +14,36 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents an equipment non-use hour tag in HeavyJob")]
 public class NonuseHourTagsDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The nonuse hour tag id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The code")]
+    [Required]
+    public required string Code { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("totalTimeDescription")]
+    [Description("The total-time description")]
+    public string? TotalTimeDescription { get; init; }
+
+    [JsonPropertyName("ownershipTimeDescription")]
+    [Description("The ownership-time description")]
+    public string? OwnershipTimeDescription { get; init; }
+
+    [JsonPropertyName("operatingTimeDescription")]
+    [Description("The operating-time description")]
+    public string? OperatingTimeDescription { get; init; }
+
+    [JsonPropertyName("includeInHourTotal")]
+    [Description("Returns whether hours with this tag should be included in the total time card hours calculation")]
+    public bool IncludeInHourTotal { get; init; }
 }

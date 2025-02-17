@@ -1,78 +1,59 @@
 using Connector.Client;
-using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
 
 namespace Connector.HeavyJob.v1.MissingTimeCardForemen;
 
 public class MissingTimeCardForemenDataReader : TypedAsyncDataReaderBase<MissingTimeCardForemenDataObject>
 {
     private readonly ILogger<MissingTimeCardForemenDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public MissingTimeCardForemenDataReader(
-        ILogger<MissingTimeCardForemenDataReader> logger)
+        ILogger<MissingTimeCardForemenDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<MissingTimeCardForemenDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<MissingTimeCardForemenDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        if (dataObjectRunArguments?.RequestParameterOverrides?.RootElement.TryGetProperty("businessUnitId", out var businessUnitIdElement) != true 
+            || !businessUnitIdElement.TryGetGuid(out var businessUnitId))
         {
-            var response = new ApiResponse<PaginatedResponse<MissingTimeCardForemenDataObject>>();
-            // If the MissingTimeCardForemenDataObject does not have the same structure as the MissingTimeCardForemen response from the API, create a new class for it and replace MissingTimeCardForemenDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<MissingTimeCardForemenResponse>>();
+            throw new Exception("BusinessUnitId is required but was not provided in the arguments");
+        }
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<MissingTimeCardForemenDataObject>(
-                //    relativeUrl: "missingTimeCardForemens",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'MissingTimeCardForemenDataObject'");
-                throw;
-            }
+        var response = await _apiClient.GetMissingTimeCardForemen(
+            businessUnitId,
+            DateTime.UtcNow.AddDays(-30), // Example: Look back 30 days
+            DateTime.UtcNow,
+            DateTime.UtcNow.Date,
+            cancellationToken);
 
-            if (!response.IsSuccessful)
-            {
-                throw new Exception($"Failed to retrieve records for 'MissingTimeCardForemenDataObject'. API StatusCode: {response.StatusCode}");
-            }
+        if (!response.IsSuccessful)
+        {
+            _logger.LogError("Failed to retrieve missing time card foremen. Status code: {StatusCode}", response.StatusCode);
+            throw new Exception($"Failed to retrieve missing time card foremen. API StatusCode: {response.StatusCode}");
+        }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
+        if (response.Data == null)
+        {
+            _logger.LogWarning("No missing time card foremen found");
+            yield break;
+        }
 
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new MissingTimeCardForemenDataObject object, map the properties and return a MissingTimeCardForemenDataObject.
-
-                // Example:
-                //var resource = new MissingTimeCardForemenDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
-                break;
-            }
+        foreach (var foreman in response.Data)
+        {
+            yield return foreman;
         }
     }
 }

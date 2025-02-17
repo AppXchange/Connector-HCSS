@@ -1,78 +1,108 @@
 using Connector.Client;
-using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
+using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace Connector.HeavyJob.v1.MaterialsReceived;
 
 public class MaterialsReceivedDataReader : TypedAsyncDataReaderBase<MaterialsReceivedDataObject>
 {
     private readonly ILogger<MaterialsReceivedDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public MaterialsReceivedDataReader(
-        ILogger<MaterialsReceivedDataReader> logger)
+        ILogger<MaterialsReceivedDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<MaterialsReceivedDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<MaterialsReceivedDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
-        {
-            var response = new ApiResponse<PaginatedResponse<MaterialsReceivedDataObject>>();
-            // If the MaterialsReceivedDataObject does not have the same structure as the MaterialsReceived response from the API, create a new class for it and replace MaterialsReceivedDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<MaterialsReceivedResponse>>();
+        var request = new MaterialsReceivedRequest();
+        string? cursor = null;
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<MaterialsReceivedDataObject>(
-                //    relativeUrl: "materialsReceiveds",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'MaterialsReceivedDataObject'");
-                throw;
-            }
+        do
+        {
+            var response = await _apiClient.GetMaterialsReceived(
+                request with { Cursor = cursor },
+                cancellationToken);
 
             if (!response.IsSuccessful)
             {
-                throw new Exception($"Failed to retrieve records for 'MaterialsReceivedDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve materials received. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve materials received. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            if (response.Data?.Results == null)
             {
-                // If new class was created to match the API response, create a new MaterialsReceivedDataObject object, map the properties and return a MaterialsReceivedDataObject.
-
-                // Example:
-                //var resource = new MaterialsReceivedDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
+                _logger.LogWarning("No materials received found");
+                yield break;
             }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            foreach (var material in response.Data.Results)
             {
-                break;
+                yield return material;
             }
+
+            cursor = response.Data.Metadata?.NextCursor;
         }
+        while (!string.IsNullOrEmpty(cursor));
     }
+}
+
+public record MaterialsReceivedRequest
+{
+    [JsonPropertyName("jobIds")]
+    public Guid[]? JobIds { get; init; }
+
+    [JsonPropertyName("jobTagIds")]
+    public Guid[]? JobTagIds { get; init; }
+
+    [JsonPropertyName("foremanIds")]
+    public Guid[]? ForemanIds { get; init; }
+
+    [JsonPropertyName("startDate")]
+    public DateTime? StartDate { get; init; }
+
+    [JsonPropertyName("endDate")]
+    public DateTime? EndDate { get; init; }
+
+    [JsonPropertyName("cursor")]
+    public string? Cursor { get; init; }
+
+    [JsonPropertyName("limit")]
+    public int? Limit { get; init; }
+
+    [JsonPropertyName("modifiedSince")]
+    public DateTime? ModifiedSince { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    public Guid? BusinessUnitId { get; init; }
+}
+
+public record MaterialsReceivedResponse
+{
+    [JsonPropertyName("results")]
+    [Required]
+    public required MaterialsReceivedDataObject[] Results { get; init; }
+
+    [JsonPropertyName("metadata")]
+    [Required]
+    public required MaterialsReceivedResponseMetadata Metadata { get; init; }
+}
+
+public record MaterialsReceivedResponseMetadata
+{
+    [JsonPropertyName("nextCursor")]
+    public string? NextCursor { get; init; }
 }

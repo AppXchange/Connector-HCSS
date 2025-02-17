@@ -1,77 +1,75 @@
 using Connector.Client;
-using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
 
 namespace Connector.HeavyJob.v1.PayItems;
 
 public class PayItemsDataReader : TypedAsyncDataReaderBase<PayItemsDataObject>
 {
     private readonly ILogger<PayItemsDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public PayItemsDataReader(
-        ILogger<PayItemsDataReader> logger)
+        ILogger<PayItemsDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<PayItemsDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<PayItemsDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        var jobId = dataObjectRunArguments?.RequestParameterOverrides?.RootElement
+            .TryGetProperty("jobId", out var jobIdElement) == true && jobIdElement.TryGetGuid(out var id) 
+            ? id 
+            : (Guid?)null;
+
+        var response = await _apiClient.GetPayItems(
+            jobId,
+            isDeleted: null,
+            limit: 1000,
+            cursor: null,
+            cancellationToken);
+
+        if (!response.IsSuccessful)
         {
-            var response = new ApiResponse<PaginatedResponse<PayItemsDataObject>>();
-            // If the PayItemsDataObject does not have the same structure as the PayItems response from the API, create a new class for it and replace PayItemsDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<PayItemsResponse>>();
+            _logger.LogError("Failed to retrieve pay items. Status code: {StatusCode}", response.StatusCode);
+            throw new Exception($"Failed to retrieve pay items. API StatusCode: {response.StatusCode}");
+        }
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<PayItemsDataObject>(
-                //    relativeUrl: "payItems",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'PayItemsDataObject'");
-                throw;
-            }
+        if (response.Data?.Results == null)
+        {
+            _logger.LogWarning("No pay items found");
+            yield break;
+        }
 
-            if (!response.IsSuccessful)
-            {
-                throw new Exception($"Failed to retrieve records for 'PayItemsDataObject'. API StatusCode: {response.StatusCode}");
-            }
+        foreach (var payItem in response.Data.Results)
+        {
+            yield return payItem;
+        }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
+        while (!string.IsNullOrEmpty(response.Data.Metadata?.NextCursor))
+        {
+            response = await _apiClient.GetPayItems(
+                jobId,
+                isDeleted: null,
+                limit: 1000,
+                cursor: response.Data.Metadata.NextCursor,
+                cancellationToken);
 
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new PayItemsDataObject object, map the properties and return a PayItemsDataObject.
-
-                // Example:
-                //var resource = new PayItemsDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
+            if (!response.IsSuccessful || response.Data?.Results == null)
                 break;
+
+            foreach (var payItem in response.Data.Results)
+            {
+                yield return payItem;
             }
         }
     }
