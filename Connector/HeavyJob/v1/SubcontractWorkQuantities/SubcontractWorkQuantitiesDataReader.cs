@@ -1,77 +1,65 @@
 using Connector.Client;
-using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
 
 namespace Connector.HeavyJob.v1.SubcontractWorkQuantities;
 
 public class SubcontractWorkQuantitiesDataReader : TypedAsyncDataReaderBase<SubcontractWorkQuantitiesDataObject>
 {
     private readonly ILogger<SubcontractWorkQuantitiesDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public SubcontractWorkQuantitiesDataReader(
-        ILogger<SubcontractWorkQuantitiesDataReader> logger)
+        ILogger<SubcontractWorkQuantitiesDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<SubcontractWorkQuantitiesDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<SubcontractWorkQuantitiesDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        var response = await _apiClient.GetSubcontractWorkQuantities(
+            limit: 1000,
+            cancellationToken: cancellationToken);
+
+        if (!response.IsSuccessful)
         {
-            var response = new ApiResponse<PaginatedResponse<SubcontractWorkQuantitiesDataObject>>();
-            // If the SubcontractWorkQuantitiesDataObject does not have the same structure as the SubcontractWorkQuantities response from the API, create a new class for it and replace SubcontractWorkQuantitiesDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<SubcontractWorkQuantitiesResponse>>();
+            _logger.LogError("Failed to retrieve subcontract work quantities. Status code: {StatusCode}", response.StatusCode);
+            throw new Exception($"Failed to retrieve subcontract work quantities. API StatusCode: {response.StatusCode}");
+        }
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<SubcontractWorkQuantitiesDataObject>(
-                //    relativeUrl: "subcontractWorkQuantities",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'SubcontractWorkQuantitiesDataObject'");
-                throw;
-            }
+        if (response.Data?.Results == null)
+        {
+            _logger.LogWarning("No subcontract work quantities found");
+            yield break;
+        }
 
-            if (!response.IsSuccessful)
-            {
-                throw new Exception($"Failed to retrieve records for 'SubcontractWorkQuantitiesDataObject'. API StatusCode: {response.StatusCode}");
-            }
+        foreach (var quantity in response.Data.Results)
+        {
+            yield return quantity;
+        }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
+        while (!string.IsNullOrEmpty(response.Data.Metadata?.NextCursor))
+        {
+            response = await _apiClient.GetSubcontractWorkQuantities(
+                limit: 1000,
+                cursor: response.Data.Metadata.NextCursor,
+                cancellationToken: cancellationToken);
 
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new SubcontractWorkQuantitiesDataObject object, map the properties and return a SubcontractWorkQuantitiesDataObject.
-
-                // Example:
-                //var resource = new SubcontractWorkQuantitiesDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
+            if (!response.IsSuccessful || response.Data?.Results == null)
                 break;
+
+            foreach (var quantity in response.Data.Results)
+            {
+                yield return quantity;
             }
         }
     }

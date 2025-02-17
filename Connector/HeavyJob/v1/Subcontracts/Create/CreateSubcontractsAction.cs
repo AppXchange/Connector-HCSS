@@ -14,11 +14,21 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateSubcontractsAction Action description goes here")]
+[Description("Creates a subcontract item for the specified business unit")]
 public class CreateSubcontractsAction : IStandardAction<CreateSubcontractsActionInput, CreateSubcontractsActionOutput>
 {
-    public CreateSubcontractsActionInput ActionInput { get; set; } = new();
-    public CreateSubcontractsActionOutput ActionOutput { get; set; } = new();
+    public CreateSubcontractsActionInput ActionInput { get; set; } = new() 
+    { 
+        BusinessUnitId = Guid.Empty,
+        Code = string.Empty
+    };
+    public CreateSubcontractsActionOutput ActionOutput { get; set; } = new() 
+    { 
+        Id = Guid.Empty,
+        BusinessUnitId = Guid.Empty,
+        Code = string.Empty,
+        IsDeleted = false
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +36,51 @@ public class CreateSubcontractsAction : IStandardAction<CreateSubcontractsAction
 
 public class CreateSubcontractsActionInput
 {
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit id")]
+    [Required]
+    public required Guid BusinessUnitId { get; init; }
 
+    [JsonPropertyName("code")]
+    [Description("The code")]
+    [Required]
+    public required string Code { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("heavyBidCode")]
+    [Description("The HeavyBid code")]
+    public string? HeavyBidCode { get; init; }
 }
 
 public class CreateSubcontractsActionOutput
 {
     [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [Description("The subcontract item id")]
+    [Required]
+    public required Guid Id { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit id")]
+    [Required]
+    public required Guid BusinessUnitId { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The code")]
+    [Required]
+    public required string Code { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("heavyBidCode")]
+    [Description("The HeavyBid code")]
+    public string? HeavyBidCode { get; init; }
+
+    [JsonPropertyName("isDeleted")]
+    [Description("Flags a deleted record")]
+    public bool IsDeleted { get; init; }
 }

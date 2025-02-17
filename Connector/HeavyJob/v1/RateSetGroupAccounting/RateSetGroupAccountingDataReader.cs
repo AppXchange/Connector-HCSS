@@ -1,77 +1,87 @@
 using Connector.Client;
-using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
 
 namespace Connector.HeavyJob.v1.RateSetGroupAccounting;
 
 public class RateSetGroupAccountingDataReader : TypedAsyncDataReaderBase<RateSetGroupAccountingDataObject>
 {
     private readonly ILogger<RateSetGroupAccountingDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public RateSetGroupAccountingDataReader(
-        ILogger<RateSetGroupAccountingDataReader> logger)
+        ILogger<RateSetGroupAccountingDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<RateSetGroupAccountingDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<RateSetGroupAccountingDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        var businessUnitId = dataObjectRunArguments?.RequestParameterOverrides?.RootElement != null 
+            && dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("businessUnitId", out var businessUnitIdElement) 
+            && businessUnitIdElement.TryGetGuid(out var buid)
+            ? buid
+            : (Guid?)null;
+
+        var rateSetGroupId = dataObjectRunArguments?.RequestParameterOverrides?.RootElement != null
+            && dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("rateSetGroupId", out var rateSetGroupIdElement)
+            && rateSetGroupIdElement.TryGetGuid(out var rsid)
+            ? rsid
+            : (Guid?)null;
+
+        if (!businessUnitId.HasValue || !rateSetGroupId.HasValue)
         {
-            var response = new ApiResponse<PaginatedResponse<RateSetGroupAccountingDataObject>>();
-            // If the RateSetGroupAccountingDataObject does not have the same structure as the RateSetGroupAccounting response from the API, create a new class for it and replace RateSetGroupAccountingDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<RateSetGroupAccountingResponse>>();
+            _logger.LogWarning("BusinessUnitId and RateSetGroupId are required parameters");
+            yield break;
+        }
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<RateSetGroupAccountingDataObject>(
-                //    relativeUrl: "rateSetGroupAccountings",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'RateSetGroupAccountingDataObject'");
-                throw;
-            }
+        var response = await _apiClient.GetRateSetGroupAccountingValues(
+            businessUnitId: businessUnitId.Value,
+            rateSetGroupId: rateSetGroupId.Value,
+            limit: 1000,
+            cancellationToken: cancellationToken);
 
-            if (!response.IsSuccessful)
-            {
-                throw new Exception($"Failed to retrieve records for 'RateSetGroupAccountingDataObject'. API StatusCode: {response.StatusCode}");
-            }
+        if (!response.IsSuccessful)
+        {
+            _logger.LogError("Failed to retrieve rate set group accounting values. Status code: {StatusCode}", response.StatusCode);
+            throw new Exception($"Failed to retrieve rate set group accounting values. API StatusCode: {response.StatusCode}");
+        }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
+        if (response.Data?.Results == null)
+        {
+            _logger.LogWarning("No rate set group accounting values found");
+            yield break;
+        }
 
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new RateSetGroupAccountingDataObject object, map the properties and return a RateSetGroupAccountingDataObject.
+        foreach (var value in response.Data.Results)
+        {
+            yield return value;
+        }
 
-                // Example:
-                //var resource = new RateSetGroupAccountingDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
+        while (!string.IsNullOrEmpty(response.Data.Metadata?.NextCursor))
+        {
+            response = await _apiClient.GetRateSetGroupAccountingValues(
+                businessUnitId: businessUnitId.Value,
+                rateSetGroupId: rateSetGroupId.Value,
+                limit: 1000,
+                cursor: response.Data.Metadata.NextCursor,
+                cancellationToken: cancellationToken);
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
+            if (!response.IsSuccessful || response.Data?.Results == null)
                 break;
+
+            foreach (var value in response.Data.Results)
+            {
+                yield return value;
             }
         }
     }

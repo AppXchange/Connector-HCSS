@@ -2,6 +2,7 @@ using Connector.Client;
 using ESR.Hosting.Action;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
@@ -16,68 +17,60 @@ namespace Connector.HeavyJob.v1.QuantityAdjustment.Create;
 public class CreateQuantityAdjustmentHandler : IActionHandler<CreateQuantityAdjustmentAction>
 {
     private readonly ILogger<CreateQuantityAdjustmentHandler> _logger;
+    private readonly ApiClient _apiClient;
 
     public CreateQuantityAdjustmentHandler(
-        ILogger<CreateQuantityAdjustmentHandler> logger)
+        ILogger<CreateQuantityAdjustmentHandler> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
     
-    public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(ActionInstance actionInstance, CancellationToken cancellationToken)
+    public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(
+        ActionInstance actionInstance, 
+        CancellationToken cancellationToken)
     {
-        var input = JsonSerializer.Deserialize<CreateQuantityAdjustmentActionInput>(actionInstance.InputJson);
+        var input = JsonSerializer.Deserialize<CreateQuantityAdjustmentActionInput>(actionInstance.InputJson)!;
+        
         try
         {
-            // Given the input for the action, make a call to your API/system
-            var response = new ApiResponse<CreateQuantityAdjustmentActionOutput>();
-            // response = await _apiClient.PostQuantityAdjustmentDataObject(input, cancellationToken)
-            // .ConfigureAwait(false);
+            var response = await _apiClient.CreateQuantityAdjustment(
+                input,
+                cancellationToken);
 
-            // The full record is needed for SyncOperations. If the endpoint used for the action returns a partial record (such as only returning the ID) then you can either:
-            // - Make a GET call using the ID that was returned
-            // - Add the ID property to your action input (Assuming this results in the proper data object shape)
-
-            // var resource = await _apiClient.GetQuantityAdjustmentDataObject(response.Data.id, cancellationToken);
-
-            // var resource = new CreateQuantityAdjustmentActionOutput
-            // {
-            //      TODO : map
-            // };
-
-            // If the response is already the output object for the action, you can use the response directly
-
-            // Build sync operations to update the local cache as well as the Xchange cache system (if the data type is cached)
-            // For more information on SyncOperations and the KeyResolver, check: https://trimble-xchange.github.io/connector-docs/guides/creating-actions/#keyresolver-and-the-sync-cache-operations
-            var operations = new List<SyncOperation>();
-            var keyResolver = new DefaultDataObjectKey();
-            var key = keyResolver.BuildKeyResolver()(response.Data);
-            operations.Add(SyncOperation.CreateSyncOperation(UpdateOperation.Upsert.ToString(), key.UrlPart, key.PropertyNames, response.Data));
-
-            var resultList = new List<CacheSyncCollection>
+            if (!response.IsSuccessful)
             {
-                new CacheSyncCollection() { DataObjectType = typeof(QuantityAdjustmentDataObject), CacheChanges = operations.ToArray() }
-            };
+                return ActionHandlerOutcome.Failed(new StandardActionFailure
+                {
+                    Code = response.StatusCode.ToString(),
+                    Errors = new[]
+                    {
+                        new Error
+                        {
+                            Source = new[] { nameof(CreateQuantityAdjustmentHandler) },
+                            Text = $"Failed to create quantity adjustment. Status code: {response.StatusCode}"
+                        }
+                    }
+                });
+            }
 
-            return ActionHandlerOutcome.Successful(response.Data, resultList);
+            // Since this is a 204 response, we'll create our own success output
+            var output = new CreateQuantityAdjustmentActionOutput { Success = true };
+            return ActionHandlerOutcome.Successful(output);
         }
-        catch (HttpRequestException exception)
+        catch (Exception ex)
         {
-            // If an error occurs, we want to create a failure result for the action that matches
-            // the failure type for the action. 
-            // Common to create extension methods to map to Standard Action Failure
-
-            var errorSource = new List<string> { "CreateQuantityAdjustmentHandler" };
-            if (string.IsNullOrEmpty(exception.Source)) errorSource.Add(exception.Source!);
-            
+            _logger.LogError(ex, "Error creating quantity adjustment");
             return ActionHandlerOutcome.Failed(new StandardActionFailure
             {
-                Code = exception.StatusCode?.ToString() ?? "500",
-                Errors = new []
+                Code = "500",
+                Errors = new[]
                 {
-                    new Xchange.Connector.SDK.Action.Error
+                    new Error
                     {
-                        Source = errorSource.ToArray(),
-                        Text = exception.Message
+                        Source = new[] { nameof(CreateQuantityAdjustmentHandler) },
+                        Text = ex.Message
                     }
                 }
             });

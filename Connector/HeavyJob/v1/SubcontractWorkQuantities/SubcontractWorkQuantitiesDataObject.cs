@@ -14,11 +14,82 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a subcontract work performed quantity in HeavyJob")]
 public class SubcontractWorkQuantitiesDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("costCodeId")]
+    [Description("The cost code guid")]
+    public Guid? CostCodeId { get; init; }
+
+    [JsonPropertyName("jobSubcontractId")]
+    [Description("The job subcontract guid")]
+    public Guid? JobSubcontractId { get; init; }
+
+    [JsonPropertyName("foremanId")]
+    [Description("The foreman guid")]
+    [Required]
+    public required Guid ForemanId { get; init; }
+
+    [JsonPropertyName("jobId")]
+    [Description("The job guid")]
+    [Required]
+    public required Guid JobId { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit guid")]
+    [Required]
+    public required Guid BusinessUnitId { get; init; }
+
+    [JsonPropertyName("date")]
+    [Description("The subcontract work date")]
+    [Required]
+    public required DateTime Date { get; init; }
+
+    [JsonPropertyName("quantity")]
+    [Description("The installed quantity")]
+    [Required]
+    public required double Quantity { get; init; }
+
+    [JsonPropertyName("unitOfMeasure")]
+    [Description("The unit of measure")]
+    public string? UnitOfMeasure { get; init; }
+
+    [JsonPropertyName("referenceNumber")]
+    [Description("The reference number")]
+    public string? ReferenceNumber { get; init; }
+
+    [JsonPropertyName("invoiceNumber")]
+    [Description("The invoice number")]
+    public string? InvoiceNumber { get; init; }
+
+    [JsonPropertyName("isInvoiced")]
+    [Description("The invoiced flag")]
+    public bool IsInvoiced { get; init; }
+
+    [JsonPropertyName("vendorContractDetailId")]
+    [Description("The vendor contract detail guid")]
+    public Guid? VendorContractDetailId { get; init; }
+
+    [JsonPropertyName("vendorContractId")]
+    [Description("The vendor contract guid")]
+    public Guid? VendorContractId { get; init; }
+
+    [JsonPropertyName("vendorId")]
+    [Description("The vendor guid")]
+    public Guid? VendorId { get; init; }
+
+    [JsonPropertyName("lastModifiedDateTime")]
+    [Description("The RFC 3339 dateTime, in UTC, when this subcontract work was last modified")]
+    [Required]
+    public required DateTime LastModifiedDateTime { get; init; }
+
+    [JsonPropertyName("lastModifiedPreciseDateTime")]
+    [Description("The RFC 3339 dateTime (including fractional seconds), in UTC, when this subcontract work was last modified")]
+    [Required]
+    public required DateTime LastModifiedPreciseDateTime { get; init; }
 }

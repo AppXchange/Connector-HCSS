@@ -819,9 +819,8 @@ https://developer.hcssapps.com/products/heavyjob/spec/tag/User/#tag/User/operati
 xchange data-object new --module-id heavyjob-1 --name User
 
 ## UserAccessGroup
-xchange data-object new --module-id heavyjob-1 --name UserAccessGroup
 https://developer.hcssapps.com/products/heavyjob/spec/tag/UserAccessGroup/#tag/UserAccessGroup/operation/UserAccessGroupController_GetAllAsync
-xchange action new --module-id heavyjob-1 --object-name UserAccessGroup --name Create
+xchange data-object new --module-id heavyjob-1 --name UserAccessGroup
 https://developer.hcssapps.com/products/heavyjob/spec/tag/UserAccessGroup/#tag/UserAccessGroup/operation/UserAccessGroupController_UpdateAsync
 xchange action new --module-id heavyjob-1 --object-name UserAccessGroup --name Update
 

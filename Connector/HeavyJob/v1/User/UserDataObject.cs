@@ -14,11 +14,51 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a user in HeavyJob")]
 public class UserDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The user id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("firstName")]
+    [Description("The first name")]
+    [Required]
+    public required string FirstName { get; init; }
+
+    [JsonPropertyName("lastName")]
+    [Description("The last name")]
+    public string? LastName { get; init; }
+
+    [JsonPropertyName("email")]
+    [Description("The email")]
+    public string? Email { get; init; }
+
+    [JsonPropertyName("employee")]
+    [Description("A POCO that represents an employee's basic information")]
+    public EmployeeCompactRead? Employee { get; init; }
+}
+
+public class EmployeeCompactRead
+{
+    [JsonPropertyName("id")]
+    [Description("The employee guid")]
+    [Required]
+    public required Guid Id { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The employee's code")]
+    [Required]
+    public required string Code { get; init; }
+
+    [JsonPropertyName("firstName")]
+    [Description("The employee's first name")]
+    [Required]
+    public required string FirstName { get; init; }
+
+    [JsonPropertyName("lastName")]
+    [Description("The employee's last name")]
+    [Required]
+    public required string LastName { get; init; }
 }

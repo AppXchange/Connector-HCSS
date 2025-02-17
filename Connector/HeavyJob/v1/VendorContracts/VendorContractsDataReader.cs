@@ -1,75 +1,77 @@
 using Connector.Client;
-using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
 
 namespace Connector.HeavyJob.v1.VendorContracts;
 
 public class VendorContractsDataReader : TypedAsyncDataReaderBase<VendorContractsDataObject>
 {
     private readonly ILogger<VendorContractsDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private string? _cursor;
 
     public VendorContractsDataReader(
-        ILogger<VendorContractsDataReader> logger)
+        ILogger<VendorContractsDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<VendorContractsDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<VendorContractsDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        var jobId = dataObjectRunArguments?.RequestParameterOverrides?.RootElement != null 
+            && dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("jobId", out var jobIdElement) 
+            && jobIdElement.TryGetGuid(out var jid)
+            ? jid
+            : (Guid?)null;
+
+        var businessUnitId = dataObjectRunArguments?.RequestParameterOverrides?.RootElement != null 
+            && dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("businessUnitId", out var businessUnitIdElement) 
+            && businessUnitIdElement.TryGetGuid(out var buid)
+            ? buid
+            : (Guid?)null;
+
+        var vendorContractId = dataObjectRunArguments?.RequestParameterOverrides?.RootElement != null 
+            && dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("vendorContractId", out var vendorContractIdElement) 
+            && vendorContractIdElement.TryGetGuid(out var vcid)
+            ? vcid
+            : (Guid?)null;
+
         while (true)
         {
-            var response = new ApiResponse<PaginatedResponse<VendorContractsDataObject>>();
-            // If the VendorContractsDataObject does not have the same structure as the VendorContracts response from the API, create a new class for it and replace VendorContractsDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<VendorContractsResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<VendorContractsDataObject>(
-                //    relativeUrl: "vendorContracts",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'VendorContractsDataObject'");
-                throw;
-            }
+            var response = await _apiClient.GetVendorContracts(
+                jobId: jobId,
+                businessUnitId: businessUnitId,
+                vendorContractId: vendorContractId,
+                cursor: _cursor,
+                cancellationToken: cancellationToken);
 
             if (!response.IsSuccessful)
             {
-                throw new Exception($"Failed to retrieve records for 'VendorContractsDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve vendor contracts. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve vendor contracts. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            if (response.Data?.Results == null || response.Data.Results.Length == 0)
             {
-                // If new class was created to match the API response, create a new VendorContractsDataObject object, map the properties and return a VendorContractsDataObject.
+                break;
+            }
 
-                // Example:
-                //var resource = new VendorContractsDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
+            foreach (var item in response.Data.Results)
+            {
                 yield return item;
             }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            _cursor = response.Data.Metadata.NextCursor;
+            if (string.IsNullOrEmpty(_cursor))
             {
                 break;
             }

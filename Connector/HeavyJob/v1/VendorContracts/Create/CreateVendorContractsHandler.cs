@@ -2,6 +2,7 @@ using Connector.Client;
 using ESR.Hosting.Action;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
@@ -16,38 +17,41 @@ namespace Connector.HeavyJob.v1.VendorContracts.Create;
 public class CreateVendorContractsHandler : IActionHandler<CreateVendorContractsAction>
 {
     private readonly ILogger<CreateVendorContractsHandler> _logger;
+    private readonly ApiClient _apiClient;
 
     public CreateVendorContractsHandler(
-        ILogger<CreateVendorContractsHandler> logger)
+        ILogger<CreateVendorContractsHandler> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
     
     public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(ActionInstance actionInstance, CancellationToken cancellationToken)
     {
-        var input = JsonSerializer.Deserialize<CreateVendorContractsActionInput>(actionInstance.InputJson);
+        var input = JsonSerializer.Deserialize<CreateVendorContractsActionInput>(actionInstance.InputJson)!;
+        
         try
         {
-            // Given the input for the action, make a call to your API/system
-            var response = new ApiResponse<CreateVendorContractsActionOutput>();
-            // response = await _apiClient.PostVendorContractsDataObject(input, cancellationToken)
-            // .ConfigureAwait(false);
+            var response = await _apiClient.CreateVendorContract(input, cancellationToken);
 
-            // The full record is needed for SyncOperations. If the endpoint used for the action returns a partial record (such as only returning the ID) then you can either:
-            // - Make a GET call using the ID that was returned
-            // - Add the ID property to your action input (Assuming this results in the proper data object shape)
+            if (!response.IsSuccessful || response.Data == null)
+            {
+                return ActionHandlerOutcome.Failed(new StandardActionFailure
+                {
+                    Code = response.StatusCode.ToString(),
+                    Errors = new[]
+                    {
+                        new Error
+                        {
+                            Source = new[] { nameof(CreateVendorContractsHandler) },
+                            Text = $"Failed to create vendor contract. Status code: {response.StatusCode}"
+                        }
+                    }
+                });
+            }
 
-            // var resource = await _apiClient.GetVendorContractsDataObject(response.Data.id, cancellationToken);
-
-            // var resource = new CreateVendorContractsActionOutput
-            // {
-            //      TODO : map
-            // };
-
-            // If the response is already the output object for the action, you can use the response directly
-
-            // Build sync operations to update the local cache as well as the Xchange cache system (if the data type is cached)
-            // For more information on SyncOperations and the KeyResolver, check: https://trimble-xchange.github.io/connector-docs/guides/creating-actions/#keyresolver-and-the-sync-cache-operations
+            // Build sync operations to update cache
             var operations = new List<SyncOperation>();
             var keyResolver = new DefaultDataObjectKey();
             var key = keyResolver.BuildKeyResolver()(response.Data);
@@ -60,24 +64,18 @@ public class CreateVendorContractsHandler : IActionHandler<CreateVendorContracts
 
             return ActionHandlerOutcome.Successful(response.Data, resultList);
         }
-        catch (HttpRequestException exception)
+        catch (Exception ex)
         {
-            // If an error occurs, we want to create a failure result for the action that matches
-            // the failure type for the action. 
-            // Common to create extension methods to map to Standard Action Failure
-
-            var errorSource = new List<string> { "CreateVendorContractsHandler" };
-            if (string.IsNullOrEmpty(exception.Source)) errorSource.Add(exception.Source!);
-            
+            _logger.LogError(ex, "Error creating vendor contract");
             return ActionHandlerOutcome.Failed(new StandardActionFailure
             {
-                Code = exception.StatusCode?.ToString() ?? "500",
-                Errors = new []
+                Code = "500",
+                Errors = new[]
                 {
-                    new Xchange.Connector.SDK.Action.Error
+                    new Error
                     {
-                        Source = errorSource.ToArray(),
-                        Text = exception.Message
+                        Source = new[] { nameof(CreateVendorContractsHandler) },
+                        Text = ex.Message
                     }
                 }
             });

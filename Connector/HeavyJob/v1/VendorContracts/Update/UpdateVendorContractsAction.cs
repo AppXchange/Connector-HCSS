@@ -14,23 +14,50 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateVendorContractsAction Action description goes here")]
+[Description("Updates a vendor contract in HeavyJob")]
 public class UpdateVendorContractsAction : IStandardAction<UpdateVendorContractsActionInput, UpdateVendorContractsActionOutput>
 {
-    public UpdateVendorContractsActionInput ActionInput { get; set; } = new();
+    public UpdateVendorContractsActionInput ActionInput { get; set; } = new()
+    {
+        Id = Guid.Empty,
+        OrderStatus = "notStarted",
+        VendorContract = string.Empty
+    };
+
     public UpdateVendorContractsActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
-
     public bool CreateRtap => true;
 }
 
 public class UpdateVendorContractsActionInput
 {
+    [JsonPropertyName("id")]
+    [Description("The vendor contract id")]
+    [Required]
+    public required Guid Id { get; init; }
 
+    [JsonPropertyName("orderStatus")]
+    [Description("The order status")]
+    public string? OrderStatus { get; init; }
+
+    [JsonPropertyName("dateIssued")]
+    [Description("The date vendor contract was issued")]
+    public DateTime? DateIssued { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The vendor contract description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("vendorContract")]
+    [Description("The vendor contract name")]
+    public string? VendorContract { get; init; }
+
+    [JsonPropertyName("vendorId")]
+    [Description("The vendor id for the vendor contract")]
+    public Guid? VendorId { get; init; }
 }
 
 public class UpdateVendorContractsActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    // No content returned for 204 response
 }

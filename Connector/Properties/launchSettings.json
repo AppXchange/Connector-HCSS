@@ -1875,6 +1875,278 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ESR__QueueName": "localrun"
       }
+    },
+    "PurchaseOrderItems Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl purchaseOrderItems --arguments businessUnitId=07c00dc0-aecf-45bd-bf9e-74628188b3c7",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "PurchaseOrders Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl purchaseOrders",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "PurchaseOrders Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl purchaseOrders --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "PurchaseOrders Update Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl purchaseOrders --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "QuantityAdjustment Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl quantityAdjustment --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "QuantityAdjustments Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl costTypeQuantities/adjustments",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "RateSetGroupAccounting Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl rateSetGroupAccountingValues",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "ReleaseOrderApprovalRule Delete Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl releaseOrders/approvalRules/approvers --actionUrl delete",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "SetupFilters Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl costCodeSetupFilters",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Subcontracts Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl costTypes/subcontract",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Subcontracts Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl costTypes/subcontract --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Subcontracts Delete Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl costTypes/subcontract --actionUrl delete",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Subcontracts Update Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl costTypes/subcontract --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "SubcontractTransactions Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl costTypes/subcontractWork",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "SubcontractWorkQuantities Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl costTypeQuantities/subcontractWorked",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "TimeCard Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl timeCards",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "TimeCard Update Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl timeCards --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "TimeCardApproval Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl timeCardApprovalInfo",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "TimeCardInfo Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl timeCardInfo",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "TimeCardsForEquipment Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl timeCardEquipment",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "User Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl users",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "UserAccessGroup Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl userAccessGroup",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "UserAccessGroup Update Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl userAccessGroup --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "VendorContractDetails Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl vendorContracts/details",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "VendorContractDetails Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl vendorContractDetails --actionUrl create",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "VendorContractDetails Update Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl vendorContractDetails --actionUrl update",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "VendorContractItems Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl vendorContractItems",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "VendorContracts Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl vendorContracts",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "VendorContracts Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl vendorContracts --actionUrl create",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "VendorContracts Update Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl vendorContracts --actionUrl update",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "Vendors Cache Writer HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType CacheWriter --dataObjectUrl vendors",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "Vendors Create Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl vendors --actionUrl create",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "Vendors Delete Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl vendors --actionUrl delete",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "Vendors Update Action Processor HeavyJob Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId heavyjob-1 --serviceType ActionProcessor --dataObjectUrl vendors --actionUrl update",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
     }
   }
 }

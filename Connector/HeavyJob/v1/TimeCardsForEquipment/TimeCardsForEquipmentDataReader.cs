@@ -1,78 +1,81 @@
 using Connector.Client;
-using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
 
 namespace Connector.HeavyJob.v1.TimeCardsForEquipment;
 
 public class TimeCardsForEquipmentDataReader : TypedAsyncDataReaderBase<TimeCardsForEquipmentDataObject>
 {
     private readonly ILogger<TimeCardsForEquipmentDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public TimeCardsForEquipmentDataReader(
-        ILogger<TimeCardsForEquipmentDataReader> logger)
+        ILogger<TimeCardsForEquipmentDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<TimeCardsForEquipmentDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<TimeCardsForEquipmentDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        var equipmentId = dataObjectRunArguments?.RequestParameterOverrides?.RootElement != null 
+            && dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("equipmentId", out var equipmentIdElement) 
+            && equipmentIdElement.TryGetGuid(out var eid)
+            ? eid
+            : (Guid?)null;
+
+        var equipmentCode = dataObjectRunArguments?.RequestParameterOverrides?.RootElement != null 
+            && dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("equipmentCode", out var equipmentCodeElement) 
+            ? equipmentCodeElement.GetString()
+            : null;
+
+        var date = dataObjectRunArguments?.RequestParameterOverrides?.RootElement != null 
+            && dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("date", out var dateElement) 
+            && dateElement.TryGetDateTime(out var d)
+            ? d
+            : (DateTime?)null;
+
+        if (!equipmentId.HasValue && string.IsNullOrEmpty(equipmentCode))
         {
-            var response = new ApiResponse<PaginatedResponse<TimeCardsForEquipmentDataObject>>();
-            // If the TimeCardsForEquipmentDataObject does not have the same structure as the TimeCardsForEquipment response from the API, create a new class for it and replace TimeCardsForEquipmentDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<TimeCardsForEquipmentResponse>>();
+            _logger.LogWarning("Either equipmentId or equipmentCode is required");
+            yield break;
+        }
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<TimeCardsForEquipmentDataObject>(
-                //    relativeUrl: "timeCardsForEquipments",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'TimeCardsForEquipmentDataObject'");
-                throw;
-            }
+        if (!date.HasValue)
+        {
+            _logger.LogWarning("Date is required");
+            yield break;
+        }
 
-            if (!response.IsSuccessful)
-            {
-                throw new Exception($"Failed to retrieve records for 'TimeCardsForEquipmentDataObject'. API StatusCode: {response.StatusCode}");
-            }
+        var response = await _apiClient.GetTimeCardsForEquipment(
+            equipmentId: equipmentId,
+            equipmentCode: equipmentCode,
+            date: date.Value,
+            cancellationToken: cancellationToken);
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
+        if (!response.IsSuccessful)
+        {
+            _logger.LogError("Failed to retrieve time cards for equipment. Status code: {StatusCode}", response.StatusCode);
+            throw new Exception($"Failed to retrieve time cards for equipment. API StatusCode: {response.StatusCode}");
+        }
 
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new TimeCardsForEquipmentDataObject object, map the properties and return a TimeCardsForEquipmentDataObject.
+        if (response.Data == null)
+        {
+            _logger.LogWarning("No time cards found for equipment");
+            yield break;
+        }
 
-                // Example:
-                //var resource = new TimeCardsForEquipmentDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
-                break;
-            }
+        foreach (var timeCard in response.Data)
+        {
+            yield return timeCard;
         }
     }
 }

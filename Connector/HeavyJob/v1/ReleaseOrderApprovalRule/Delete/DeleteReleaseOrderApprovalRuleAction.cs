@@ -14,11 +14,17 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("DeleteReleaseOrderApprovalRuleAction Action description goes here")]
+[Description("Deletes release order approval rule approvers")]
 public class DeleteReleaseOrderApprovalRuleAction : IStandardAction<DeleteReleaseOrderApprovalRuleActionInput, DeleteReleaseOrderApprovalRuleActionOutput>
 {
-    public DeleteReleaseOrderApprovalRuleActionInput ActionInput { get; set; } = new();
-    public DeleteReleaseOrderApprovalRuleActionOutput ActionOutput { get; set; } = new();
+    public DeleteReleaseOrderApprovalRuleActionInput ActionInput { get; set; } = new() 
+    { 
+        ApproverIds = Array.Empty<Guid>() 
+    };
+    public DeleteReleaseOrderApprovalRuleActionOutput ActionOutput { get; set; } = new() 
+    { 
+        Success = false 
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +32,16 @@ public class DeleteReleaseOrderApprovalRuleAction : IStandardAction<DeleteReleas
 
 public class DeleteReleaseOrderApprovalRuleActionInput
 {
-
+    [JsonPropertyName("approverIds")]
+    [Description("The approver IDs to delete")]
+    [Required]
+    public required Guid[] ApproverIds { get; init; }
 }
 
 public class DeleteReleaseOrderApprovalRuleActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("success")]
+    [Description("Whether the delete was successful")]
+    [Required]
+    public required bool Success { get; init; }
 }

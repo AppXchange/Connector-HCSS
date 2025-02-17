@@ -14,11 +14,11 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateUserAccessGroupAction Action description goes here")]
-public class UpdateUserAccessGroupAction : IStandardAction<UpdateUserAccessGroupActionInput, UpdateUserAccessGroupActionOutput>
+[Description("Updates access groups for users in HeavyJob")]
+public class UpdateUserAccessGroupAction : IStandardAction<UpdateUserAccessGroupActionInput[], UpdateUserAccessGroupActionOutput[]>
 {
-    public UpdateUserAccessGroupActionInput ActionInput { get; set; } = new();
-    public UpdateUserAccessGroupActionOutput ActionOutput { get; set; } = new();
+    public UpdateUserAccessGroupActionInput[] ActionInput { get; set; } = Array.Empty<UpdateUserAccessGroupActionInput>();
+    public UpdateUserAccessGroupActionOutput[] ActionOutput { get; set; } = Array.Empty<UpdateUserAccessGroupActionOutput>();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +26,41 @@ public class UpdateUserAccessGroupAction : IStandardAction<UpdateUserAccessGroup
 
 public class UpdateUserAccessGroupActionInput
 {
+    [JsonPropertyName("userId")]
+    [Description("The user id")]
+    [Required]
+    public required Guid UserId { get; init; }
 
+    [JsonPropertyName("accessGroupId")]
+    [Description("The access group id")]
+    [Required]
+    public required Guid AccessGroupId { get; init; }
 }
 
 public class UpdateUserAccessGroupActionOutput
 {
     [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [Description("The id")]
+    [Required]
+    public required Guid Id { get; init; }
+
+    [JsonPropertyName("userId")]
+    [Description("The userId")]
+    [Required]
+    public required Guid UserId { get; init; }
+
+    [JsonPropertyName("accessGroupId")]
+    [Description("The accessGroupId")]
+    [Required]
+    public required Guid AccessGroupId { get; init; }
+
+    [JsonPropertyName("success")]
+    [Description("The success flag")]
+    [Required]
+    public required bool Success { get; init; }
+
+    [JsonPropertyName("message")]
+    [Description("The message")]
+    [Required]
+    public required string Message { get; init; }
 }

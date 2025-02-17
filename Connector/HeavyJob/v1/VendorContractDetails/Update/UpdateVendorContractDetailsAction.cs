@@ -14,23 +14,34 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateVendorContractDetailsAction Action description goes here")]
+[Description("Updates a vendor contract detail in HeavyJob")]
 public class UpdateVendorContractDetailsAction : IStandardAction<UpdateVendorContractDetailsActionInput, UpdateVendorContractDetailsActionOutput>
 {
-    public UpdateVendorContractDetailsActionInput ActionInput { get; set; } = new();
+    public UpdateVendorContractDetailsActionInput ActionInput { get; set; } = new()
+    {
+        Id = Guid.Empty,
+        IsComplete = false
+    };
+
     public UpdateVendorContractDetailsActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
-
     public bool CreateRtap => true;
 }
 
 public class UpdateVendorContractDetailsActionInput
 {
+    [JsonPropertyName("id")]
+    [Description("The vendor contract detail id")]
+    [Required]
+    public required Guid Id { get; init; }
 
+    [JsonPropertyName("isComplete")]
+    [Description("Whether the work item is complete")]
+    [Required]
+    public required bool IsComplete { get; init; }
 }
 
 public class UpdateVendorContractDetailsActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    // No content returned for 204 response
 }

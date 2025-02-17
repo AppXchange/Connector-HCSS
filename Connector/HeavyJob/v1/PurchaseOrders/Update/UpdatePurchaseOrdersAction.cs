@@ -14,11 +14,19 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdatePurchaseOrdersAction Action description goes here")]
+[Description("Updates an existing purchase order in HeavyJob")]
 public class UpdatePurchaseOrdersAction : IStandardAction<UpdatePurchaseOrdersActionInput, UpdatePurchaseOrdersActionOutput>
 {
-    public UpdatePurchaseOrdersActionInput ActionInput { get; set; } = new();
-    public UpdatePurchaseOrdersActionOutput ActionOutput { get; set; } = new();
+    public UpdatePurchaseOrdersActionInput ActionInput { get; set; } = new() 
+    { 
+        Id = Guid.Empty,
+        PurchaseOrder = string.Empty,
+        OrderStatus = "notStarted"
+    };
+    public UpdatePurchaseOrdersActionOutput ActionOutput { get; set; } = new() 
+    { 
+        Success = false 
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +34,37 @@ public class UpdatePurchaseOrdersAction : IStandardAction<UpdatePurchaseOrdersAc
 
 public class UpdatePurchaseOrdersActionInput
 {
+    [JsonPropertyName("id")]
+    [Description("The purchase order id")]
+    [Required]
+    public required Guid Id { get; init; }
 
+    [JsonPropertyName("purchaseOrder")]
+    [Description("The purchase order name")]
+    public string? PurchaseOrder { get; init; }
+
+    [JsonPropertyName("orderStatus")]
+    [Description("The status of the purchase order")]
+    [Required]
+    public required string OrderStatus { get; init; }
+
+    [JsonPropertyName("dateIssued")] 
+    [Description("The date purchase order was issued")]
+    public DateTime? DateIssued { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The purchase order description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("vendorId")]
+    [Description("The vendor id for the purchase order")]
+    public Guid? VendorId { get; init; }
 }
 
 public class UpdatePurchaseOrdersActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("success")]
+    [Description("Whether the update was successful")]
+    [Required]
+    public required bool Success { get; init; }
 }

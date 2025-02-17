@@ -14,11 +14,18 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateSubcontractsAction Action description goes here")]
+[Description("Updates an existing subcontract item")]
 public class UpdateSubcontractsAction : IStandardAction<UpdateSubcontractsActionInput, UpdateSubcontractsActionOutput>
 {
-    public UpdateSubcontractsActionInput ActionInput { get; set; } = new();
-    public UpdateSubcontractsActionOutput ActionOutput { get; set; } = new();
+    public UpdateSubcontractsActionInput ActionInput { get; set; } = new() 
+    { 
+        Id = Guid.Empty,
+        Code = string.Empty
+    };
+    public UpdateSubcontractsActionOutput ActionOutput { get; set; } = new() 
+    { 
+        Success = false 
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
 
     public bool CreateRtap => true;
@@ -26,11 +33,29 @@ public class UpdateSubcontractsAction : IStandardAction<UpdateSubcontractsAction
 
 public class UpdateSubcontractsActionInput
 {
+    [JsonPropertyName("id")]
+    [Description("The subcontract item id")]
+    [Required]
+    public required Guid Id { get; init; }
 
+    [JsonPropertyName("code")]
+    [Description("The code")]
+    [Required]
+    public required string Code { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("heavyBidCode")]
+    [Description("The HeavyBid code")]
+    public string? HeavyBidCode { get; init; }
 }
 
 public class UpdateSubcontractsActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("success")]
+    [Description("Whether the update was successful")]
+    [Required]
+    public required bool Success { get; init; }
 }

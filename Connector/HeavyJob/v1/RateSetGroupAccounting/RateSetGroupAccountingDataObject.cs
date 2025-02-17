@@ -12,13 +12,33 @@ using Xchange.Connector.SDK.CacheWriter;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[PrimaryKey("id", nameof(Id))]
-//[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[PrimaryKey("accountingValueId", nameof(AccountingValueId))]
+[Description("Represents a rate set group accounting value in HeavyJob")]
 public class RateSetGroupAccountingDataObject
 {
-    [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [JsonPropertyName("value")]
+    [Description("The value")]
+    public string? Value { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The custom description of the accounting value")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The code")]
+    public string? Code { get; init; }
+
+    [JsonPropertyName("accountingValueId")]
+    [Description("The Id for the accounting value")]
     [Required]
-    public required Guid Id { get; init; }
+    public required Guid AccountingValueId { get; init; }
+
+    [JsonPropertyName("parentId")]
+    [Description("The Id of the parent entity")]
+    public Guid? ParentId { get; init; }
+
+    [JsonPropertyName("dataType")]
+    [Description("The data type")]
+    [Required]
+    public required string DataType { get; init; }
 }
