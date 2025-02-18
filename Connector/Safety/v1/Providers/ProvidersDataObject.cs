@@ -14,11 +14,21 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents an SMS provider in Safety")]
 public class ProvidersDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The id of the provider")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("name")]
+    [Description("The name of the provider")]
+    [Required]
+    public required string Name { get; init; }
+
+    [JsonPropertyName("domain")]
+    [Description("The domain of the provider")]
+    [Required]
+    public required string Domain { get; init; }
 }

@@ -1,78 +1,58 @@
 using Connector.Client;
-using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
 
 namespace Connector.Safety.v1.Meetings;
 
 public class MeetingsDataReader : TypedAsyncDataReaderBase<MeetingsDataObject>
 {
     private readonly ILogger<MeetingsDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private int _skip = 0;
+    private const int _take = 1000;
 
     public MeetingsDataReader(
-        ILogger<MeetingsDataReader> logger)
+        ILogger<MeetingsDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<MeetingsDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<MeetingsDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        do
         {
-            var response = new ApiResponse<PaginatedResponse<MeetingsDataObject>>();
-            // If the MeetingsDataObject does not have the same structure as the Meetings response from the API, create a new class for it and replace MeetingsDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<MeetingsResponse>>();
+            var response = await _apiClient.GetMeetings(
+                skip: _skip,
+                take: _take,
+                cancellationToken: cancellationToken);
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
+            if (!response.IsSuccessful || response.Data == null)
             {
-                //response = await _apiClient.GetRecords<MeetingsDataObject>(
-                //    relativeUrl: "meetings",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'MeetingsDataObject'");
-                throw;
+                _logger.LogError("Failed to retrieve meetings. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve meetings. API StatusCode: {response.StatusCode}");
             }
 
-            if (!response.IsSuccessful)
-            {
-                throw new Exception($"Failed to retrieve records for 'MeetingsDataObject'. API StatusCode: {response.StatusCode}");
-            }
-
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new MeetingsDataObject object, map the properties and return a MeetingsDataObject.
-
-                // Example:
-                //var resource = new MeetingsDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            if (response.Data.Meetings.Length == 0)
             {
                 break;
             }
-        }
+
+            foreach (var meeting in response.Data.Meetings)
+            {
+                yield return meeting;
+            }
+
+            _skip += _take;
+
+        } while (true);
     }
 }

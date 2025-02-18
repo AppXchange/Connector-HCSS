@@ -3,7 +3,7 @@ using Connector.Safety.v1.Alerts.Create;
 using Connector.Safety.v1.Alerts.Delete;
 using Connector.Safety.v1.Alerts.Update;
 using Connector.Safety.v1.Incident.Update;
-using Connector.Safety.v1.UserAccessGroups.Create;
+// using Connector.Safety.v1.UserAccessGroups.Create;
 using Connector.Safety.v1.UserAccessGroups.Update;
 using Json.Schema.Generation;
 using Xchange.Connector.SDK.Action;

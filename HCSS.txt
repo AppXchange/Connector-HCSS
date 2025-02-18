@@ -913,9 +913,8 @@ https://developer.hcssapps.com/products/safety/spec/tag/Providers/#tag/Providers
 xchange data-object new --module-id safety-1 --name Providers
 
 ## UserAccessGroups
-xchange data-object new --module-id safety-1 --name UserAccessGroups
 https://developer.hcssapps.com/products/safety/spec/tag/UserAccessGroups/#tag/UserAccessGroups/operation/UserAccessGroups_SearchUserAccessGroups
-xchange action new --module-id safety-1 --object-name UserAccessGroups --name Create
+xchange data-object new --module-id safety-1 --name UserAccessGroups
 https://developer.hcssapps.com/products/safety/spec/tag/UserAccessGroups/#tag/UserAccessGroups/operation/UserAccessGroups_UpdateUserAccessGroups
 xchange action new --module-id safety-1 --object-name UserAccessGroups --name Update
 

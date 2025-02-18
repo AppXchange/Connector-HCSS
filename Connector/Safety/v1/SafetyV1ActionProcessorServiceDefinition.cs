@@ -6,7 +6,7 @@ using Connector.Safety.v1.Alerts.Update;
 using Connector.Safety.v1.Incident;
 using Connector.Safety.v1.Incident.Update;
 using Connector.Safety.v1.UserAccessGroups;
-using Connector.Safety.v1.UserAccessGroups.Create;
+// using Connector.Safety.v1.UserAccessGroups.Create;
 using Connector.Safety.v1.UserAccessGroups.Update;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -38,7 +38,7 @@ public class SafetyV1ActionProcessorServiceDefinition : BaseActionHandlerService
         serviceCollection.AddScoped<CreateAlertsHandler>();
         serviceCollection.AddScoped<DeleteAlertsHandler>();
         serviceCollection.AddScoped<UpdateIncidentHandler>();
-        serviceCollection.AddScoped<CreateUserAccessGroupsHandler>();
+        // serviceCollection.AddScoped<CreateUserAccessGroupsHandler>();
         serviceCollection.AddScoped<UpdateUserAccessGroupsHandler>();
     }
 
@@ -49,7 +49,7 @@ public class SafetyV1ActionProcessorServiceDefinition : BaseActionHandlerService
         service.RegisterHandlerForDataObjectAction<CreateAlertsHandler, AlertsDataObject>(ModuleId, "alerts", "create", config.CreateAlertsConfig);
         service.RegisterHandlerForDataObjectAction<DeleteAlertsHandler, AlertsDataObject>(ModuleId, "alerts", "delete", config.DeleteAlertsConfig);
         service.RegisterHandlerForDataObjectAction<UpdateIncidentHandler, IncidentDataObject>(ModuleId, "incident", "update", config.UpdateIncidentConfig);
-        service.RegisterHandlerForDataObjectAction<CreateUserAccessGroupsHandler, UserAccessGroupsDataObject>(ModuleId, "user-access-groups", "create", config.CreateUserAccessGroupsConfig);
+        // service.RegisterHandlerForDataObjectAction<CreateUserAccessGroupsHandler, UserAccessGroupsDataObject>(ModuleId, "user-access-groups", "create", config.CreateUserAccessGroupsConfig);
         service.RegisterHandlerForDataObjectAction<UpdateUserAccessGroupsHandler, UserAccessGroupsDataObject>(ModuleId, "user-access-groups", "update", config.UpdateUserAccessGroupsConfig);
     }
 }

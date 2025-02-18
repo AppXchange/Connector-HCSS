@@ -8,6 +8,7 @@ public class ApiResponse
     public int StatusCode { get; init; }
     // Not safe to read if `Data` is not null
     public Stream? RawResult { get; init; }
+    public bool HasMorePages { get; init; }
 }
 
 public class ApiResponse<TResult> : ApiResponse

@@ -14,11 +14,40 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents an inspection type in Safety")]
 public class InspectionTypesDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The inspection type id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("name")]
+    [Description("The inspection type name")]
+    [Required]
+    public required string Name { get; init; }
+
+    [JsonPropertyName("isActive")]
+    [Description("If the inspection type is active")]
+    public bool IsActive { get; init; }
+
+    [JsonPropertyName("businessUnitID")]
+    [Description("The businessUnitId that inspection type is related to")]
+    public Guid? BusinessUnitID { get; init; }
+
+    [JsonPropertyName("isEquipmentType")]
+    [Description("If the inspection type is an equipment type")]
+    public bool IsEquipmentType { get; init; }
+
+    [JsonPropertyName("createdByID")]
+    [Description("The id of who created the inspection type")]
+    public Guid? CreatedByID { get; init; }
+
+    [JsonPropertyName("modifiedByID")] 
+    [Description("Last id to modified the inspection type")]
+    public Guid? ModifiedByID { get; init; }
+
+    [JsonPropertyName("createdDate")]
+    [Description("The date that the inspection type was created")]
+    public DateTime CreatedDate { get; init; }
 }

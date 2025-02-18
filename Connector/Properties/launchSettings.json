@@ -2147,6 +2147,142 @@
           "ASPNETCORE_ENVIRONMENT": "Development",
           "ESR__QueueName": "localrun"
       }
+    },
+    "AccessGroups Cache Writer Safety Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId safety-1 --serviceType CacheWriter --dataObjectUrl accessGroups",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "Alerts Cache Writer Safety Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId safety-1 --serviceType CacheWriter --dataObjectUrl alerts",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "Alerts Create Action Processor Safety Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId safety-1 --serviceType ActionProcessor --dataObjectUrl alerts --actionUrl create",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "Alerts Delete Action Processor Safety Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId safety-1 --serviceType ActionProcessor --dataObjectUrl alerts --actionUrl delete",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "Alerts Update Action Processor Safety Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId safety-1 --serviceType ActionProcessor --dataObjectUrl alerts --actionUrl update",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "Incident Cache Writer Safety Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId safety-1 --serviceType CacheWriter --dataObjectUrl incidents",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "Incident Update Action Processor Safety Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId safety-1 --serviceType ActionProcessor --dataObjectUrl incidents --actionUrl update",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "IncidentFormTypes Cache Writer Safety Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId safety-1 --serviceType CacheWriter --dataObjectUrl incidentFormTypes",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "Incidents Cache Writer Safety Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId safety-1 --serviceType CacheWriter --dataObjectUrl incidents",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "IncidentV2 Cache Writer Safety Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId safety-1 --serviceType CacheWriter --dataObjectUrl incidentsV2",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "InspectionTypes Cache Writer Safety Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId safety-1 --serviceType CacheWriter --dataObjectUrl inspectionTypes",
+      "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "ESR__QueueName": "localrun"
+      }
+    },
+    "Jobs Cache Writer Safety Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId safety-1 --serviceType CacheWriter --dataObjectUrl jobs",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Meetings Cache Writer Safety Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId safety-1 --serviceType CacheWriter --dataObjectUrl meetings",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Providers Cache Writer Safety Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId safety-1 --serviceType CacheWriter --dataObjectUrl providers",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "UserAccessGroups Cache Writer Safety Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId safety-1 --serviceType CacheWriter --dataObjectUrl userAccessGroups",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "UserAccessGroups Update Action Processor Safety Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId safety-1 --serviceType ActionProcessor --dataObjectUrl userAccessGroups --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Users Cache Writer Safety Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId safety-1 --serviceType CacheWriter --dataObjectUrl users",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
     }
   }
 }

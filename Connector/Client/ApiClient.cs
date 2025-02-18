@@ -265,6 +265,19 @@ using Connector.HeavyJob.v1.VendorContracts.Create;
 using Connector.HeavyJob.v1.VendorContracts.Update;
 using Connector.HeavyJob.v1.Vendors.Create;
 using Connector.HeavyJob.v1.Vendors.Delete;
+using Connector.Safety.v1.AccessGroups;
+using Connector.Safety.v1.Alerts;
+using Connector.Safety.v1.Alerts.Create;
+using Connector.Safety.v1.Alerts.Delete;
+using Connector.Safety.v1.Alerts.Update;
+using Connector.Safety.v1.Incident;
+using Connector.Safety.v1.Incident.Update;
+using Connector.Safety.v1.IncidentFormTypes;
+using Connector.Safety.v1.Incidents;
+using Connector.Safety.v1.IncidentV2;
+using Connector.Safety.v1.InspectionTypes;
+using Connector.Safety.v1.UserAccessGroups.Update;
+using Connector.Safety.v1.Users;
 
 namespace Connector.Client;
 
@@ -8049,6 +8062,628 @@ public class ApiClient
             Data = response.IsSuccessStatusCode 
                 ? await response.Content.ReadFromJsonAsync<HeavyJob.v1.Vendors.VendorsDataObject>(cancellationToken: cancellationToken)
                 : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<AccessGroupsResponse>> GetAccessGroups(
+        bool? isDeleted = null,
+        int? limit = 1000,
+        string? cursor = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (isDeleted.HasValue)
+            queryParams.Add($"isDeleted={isDeleted.Value.ToString().ToLower()}");
+        if (limit.HasValue)
+            queryParams.Add($"limit={limit}");
+        if (!string.IsNullOrEmpty(cursor))
+            queryParams.Add($"cursor={cursor}");
+
+        var url = "safety/v1/accessGroups";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<AccessGroupsResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<AccessGroupsResponse>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public record AccessGroupsResponse
+    {
+        [JsonPropertyName("results")]
+        [Required]
+        public required AccessGroupsDataObject[] Results { get; init; }
+
+        [JsonPropertyName("metadata")]
+        [Required]
+        public required AccessGroupsResponseMetadata Metadata { get; init; }
+    }
+
+    public record AccessGroupsResponseMetadata
+    {
+        [JsonPropertyName("nextCursor")]
+        public string? NextCursor { get; init; }
+    }
+
+    public async Task<ApiResponse<AlertsResponse>> GetAlerts(
+        string? businessUnitId = null,
+        int? limit = 1000,
+        string? cursor = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (!string.IsNullOrEmpty(businessUnitId))
+            queryParams.Add($"businessUnitID={businessUnitId}");
+        if (limit.HasValue)
+            queryParams.Add($"limit={limit}");
+        if (!string.IsNullOrEmpty(cursor))
+            queryParams.Add($"cursor={cursor}");
+
+        var url = "safety/v1/alerts";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<AlertsResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<AlertsResponse>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public record AlertsResponse
+    {
+        [JsonPropertyName("results")]
+        [Required]
+        public required AlertsDataObject[] Results { get; init; }
+
+        [JsonPropertyName("metadata")]
+        [Required]
+        public required AlertsResponseMetadata Metadata { get; init; }
+    }
+
+    public record AlertsResponseMetadata
+    {
+        [JsonPropertyName("nextCursor")]
+        public string? NextCursor { get; init; }
+    }
+
+    public async Task<ApiResponse<AlertsDataObject>> CreateAlert(
+        CreateAlertsActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "safety/v1/alerts";
+
+        var response = await _httpClient.PostAsJsonAsync(url, new
+        {
+            input.Email,
+            input.PhoneNumber,
+            input.FirstName,
+            input.LastName,
+            input.ProviderId,
+            input.BusinessUnitId,
+            input.CarrierAddressOverride,
+            input.NearMiss,
+            input.Incidents,
+            input.Inspections,
+            input.Observations,
+            input.Jobs
+        }, cancellationToken);
+
+        return new ApiResponse<AlertsDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<AlertsDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<object>> DeleteAlert(
+        DeleteAlertsActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"safety/v1/alerts/{input.AlertId}";
+
+        var response = await _httpClient.DeleteAsync(url, cancellationToken);
+
+        return new ApiResponse<object>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<AlertsDataObject>> UpdateAlert(
+        UpdateAlertsActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "safety/v1/alerts";
+
+        var response = await _httpClient.PutAsJsonAsync(url, new
+        {
+            input.Id,
+            input.Email,
+            input.PhoneNumber,
+            input.ProviderId,
+            input.CarrierAddressOverride,
+            input.NearMiss,
+            input.Incidents,
+            input.Inspections,
+            input.Observations,
+            input.Jobs
+        }, cancellationToken);
+
+        return new ApiResponse<AlertsDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<AlertsDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IncidentDataObject[]>> GetIncidents(
+        DateTime? modifiedAfterUtc = null,
+        DateTime? createdAfterUtc = null,
+        DateTime? incidentDateAfterUtc = null,
+        DateTime? incidentDateBeforeUtc = null,
+        int? limit = 1000,
+        int? offset = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (modifiedAfterUtc.HasValue)
+            queryParams.Add($"modifiedAfterUtc={Uri.EscapeDataString(modifiedAfterUtc.Value.ToString("O"))}");
+        if (createdAfterUtc.HasValue)
+            queryParams.Add($"createdAfterUtc={Uri.EscapeDataString(createdAfterUtc.Value.ToString("O"))}");
+        if (incidentDateAfterUtc.HasValue)
+            queryParams.Add($"incidentDateAfterUtc={Uri.EscapeDataString(incidentDateAfterUtc.Value.ToString("O"))}");
+        if (incidentDateBeforeUtc.HasValue)
+            queryParams.Add($"incidentDateBeforeUtc={Uri.EscapeDataString(incidentDateBeforeUtc.Value.ToString("O"))}");
+        if (limit.HasValue)
+            queryParams.Add($"limit={limit}");
+        if (offset.HasValue)
+            queryParams.Add($"offset={offset}");
+
+        var url = "safety/v1/incidents";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+        var hasMorePages = response.Headers.TryGetValues("Pagination-MorePagesAvailable", out var morePages) 
+            && morePages.FirstOrDefault()?.ToLower() == "yes";
+
+        return new ApiResponse<IncidentDataObject[]>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IncidentDataObject[]>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken),
+            HasMorePages = hasMorePages
+        };
+    }
+
+    public async Task<ApiResponse<IncidentDataObject>> UpdateIncident(
+        UpdateIncidentActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"safety/v1/incidents/{input.Id}";
+
+        var response = await _httpClient.PutAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<IncidentDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IncidentDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public record IncidentFormTypesResponse
+    {
+        [JsonPropertyName("results")]
+        [Required]
+        public required IncidentFormTypesDataObject[] Results { get; init; }
+
+        [JsonPropertyName("metadata")]
+        [Required]
+        public required IncidentFormTypesResponseMetadata Metadata { get; init; }
+    }
+
+    public record IncidentFormTypesResponseMetadata
+    {
+        [JsonPropertyName("nextCursor")]
+        public string? NextCursor { get; init; }
+    }
+
+    public async Task<ApiResponse<IncidentFormTypesResponse>> GetIncidentFormTypes(
+        int? limit = 1000,
+        Guid? businessUnitId = null,
+        string? cursor = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (limit.HasValue)
+            queryParams.Add($"limit={limit}");
+        if (businessUnitId.HasValue)
+            queryParams.Add($"businessUnitId={businessUnitId}");
+        if (!string.IsNullOrEmpty(cursor))
+            queryParams.Add($"cursor={cursor}");
+
+        var url = "safety/v1/incidentFormTypes";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IncidentFormTypesResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IncidentFormTypesResponse>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IncidentsDataObject[]>> GetIncidentsList(
+        DateTime? modifiedAfterUtc = null,
+        DateTime? createdAfterUtc = null,
+        DateTime? incidentDateAfterUtc = null,
+        DateTime? incidentDateBeforeUtc = null,
+        int? limit = 1000,
+        int? offset = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (modifiedAfterUtc.HasValue)
+            queryParams.Add($"modifiedAfterUtc={Uri.EscapeDataString(modifiedAfterUtc.Value.ToString("O"))}");
+        if (createdAfterUtc.HasValue)
+            queryParams.Add($"createdAfterUtc={Uri.EscapeDataString(createdAfterUtc.Value.ToString("O"))}");
+        if (incidentDateAfterUtc.HasValue)
+            queryParams.Add($"incidentDateAfterUtc={Uri.EscapeDataString(incidentDateAfterUtc.Value.ToString("O"))}");
+        if (incidentDateBeforeUtc.HasValue)
+            queryParams.Add($"incidentDateBeforeUtc={Uri.EscapeDataString(incidentDateBeforeUtc.Value.ToString("O"))}");
+        if (limit.HasValue)
+            queryParams.Add($"limit={limit}");
+        if (offset.HasValue)
+            queryParams.Add($"offset={offset}");
+
+        var url = "safety/v1/incidents";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+        var hasMorePages = response.Headers.TryGetValues("Pagination-MorePagesAvailable", out var morePages) 
+            && morePages.FirstOrDefault()?.ToLower() == "yes";
+
+        return new ApiResponse<IncidentsDataObject[]>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IncidentsDataObject[]>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken),
+            HasMorePages = hasMorePages
+        };
+    }
+
+    public async Task<ApiResponse<IncidentV2DataObject>> GetIncidentV2(
+        Guid id,
+        bool? excludeForms = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (excludeForms.HasValue)
+            queryParams.Add($"excludeForms={excludeForms.Value.ToString().ToLower()}");
+
+        var url = $"safety/v2/incidents/{id}";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IncidentV2DataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IncidentV2DataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public class InspectionTypesResponse
+    {
+        [JsonPropertyName("results")]
+        public required Safety.v1.InspectionTypes.InspectionTypesDataObject[] Results { get; init; }
+
+        [JsonPropertyName("metadata")]
+        public ResponseMetadata? Metadata { get; init; }
+    }
+
+    public class ResponseMetadata
+    {
+        [JsonPropertyName("nextCursor")]
+        public string? NextCursor { get; init; }
+    }
+
+    public async Task<ApiResponse<InspectionTypesResponse>> GetInspectionTypes(
+        int limit = 1000,
+        string? businessUnitID = null,
+        string? cursor = null,
+        bool includeInactive = false,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new Dictionary<string, string>();
+        
+        if (limit != 1000)
+        {
+            queryParams.Add("limit", limit.ToString());
+        }
+        
+        if (!string.IsNullOrEmpty(businessUnitID))
+        {
+            queryParams.Add("businessUnitID", businessUnitID);
+        }
+        
+        if (!string.IsNullOrEmpty(cursor))
+        {
+            queryParams.Add("cursor", cursor);
+        }
+        
+        if (includeInactive)
+        {
+            queryParams.Add("includeInactive", "true");
+        }
+
+        var url = "v1/inspectionTypes";
+        if (queryParams.Any())
+        {
+            url += "?" + string.Join("&", queryParams.Select(x => $"{x.Key}={Uri.EscapeDataString(x.Value)}"));
+        }
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<InspectionTypesResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode ? 
+                await response.Content.ReadFromJsonAsync<InspectionTypesResponse>(cancellationToken: cancellationToken) : 
+                null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public class JobsResponse
+    {
+        [JsonPropertyName("results")]
+        public required Safety.v1.Jobs.JobsDataObject[] Results { get; init; }
+
+        [JsonPropertyName("metadata")]
+        public ResponseMetadata? Metadata { get; init; }
+    }
+
+    public async Task<ApiResponse<JobsResponse>> GetJobs(
+        int limit = 1000,
+        string? businessUnitId = null,
+        string? cursor = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new Dictionary<string, string>();
+        
+        if (limit != 1000)
+        {
+            queryParams.Add("limit", limit.ToString());
+        }
+        
+        if (!string.IsNullOrEmpty(businessUnitId))
+        {
+            queryParams.Add("businessUnitId", businessUnitId);
+        }
+        
+        if (!string.IsNullOrEmpty(cursor))
+        {
+            queryParams.Add("cursor", cursor);
+        }
+
+        var url = "v1/jobs";
+        if (queryParams.Any())
+        {
+            url += "?" + string.Join("&", queryParams.Select(x => $"{x.Key}={Uri.EscapeDataString(x.Value)}"));
+        }
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<JobsResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode ? 
+                await response.Content.ReadFromJsonAsync<JobsResponse>(cancellationToken: cancellationToken) : 
+                null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public class MeetingsResponse
+    {
+        [JsonPropertyName("meetings")]
+        public required Safety.v1.Meetings.MeetingsDataObject[] Meetings { get; init; }
+    }
+
+    public async Task<ApiResponse<MeetingsResponse>> GetMeetings(
+        Guid? jobId = null,
+        Guid? recorderId = null,
+        Guid? businessUnitId = null,
+        Guid? employeeId = null,
+        DateTime? startDate = null,
+        DateTime? endDate = null,
+        int? skip = null,
+        int? take = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new Dictionary<string, string>();
+        
+        if (jobId.HasValue)
+            queryParams.Add("jobId", jobId.Value.ToString());
+        
+        if (recorderId.HasValue)
+            queryParams.Add("recorderId", recorderId.Value.ToString());
+        
+        if (businessUnitId.HasValue)
+            queryParams.Add("businessUnitId", businessUnitId.Value.ToString());
+        
+        if (employeeId.HasValue)
+            queryParams.Add("employeeId", employeeId.Value.ToString());
+        
+        if (startDate.HasValue)
+            queryParams.Add("startDate", startDate.Value.ToString("O"));
+        
+        if (endDate.HasValue)
+            queryParams.Add("endDate", endDate.Value.ToString("O"));
+        
+        if (skip.HasValue)
+            queryParams.Add("skip", skip.Value.ToString());
+        
+        if (take.HasValue)
+            queryParams.Add("take", take.Value.ToString());
+
+        var url = "v1/meetings";
+        if (queryParams.Any())
+        {
+            url += "?" + string.Join("&", queryParams.Select(x => $"{x.Key}={Uri.EscapeDataString(x.Value)}"));
+        }
+
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<MeetingsResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode ? 
+                await response.Content.ReadFromJsonAsync<MeetingsResponse>(cancellationToken: cancellationToken) : 
+                null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<Safety.v1.Providers.ProvidersDataObject[]>> GetProviders(
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.GetAsync("v1/providers", cancellationToken);
+
+        return new ApiResponse<Safety.v1.Providers.ProvidersDataObject[]>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode ? 
+                await response.Content.ReadFromJsonAsync<Safety.v1.Providers.ProvidersDataObject[]>(cancellationToken: cancellationToken) : 
+                null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public class UserAccessGroupsResponse
+    {
+        [JsonPropertyName("results")]
+        public required Safety.v1.UserAccessGroups.UserAccessGroupsDataObject[] Results { get; init; }
+
+        [JsonPropertyName("metadata")]
+        public ResponseMetadata? Metadata { get; init; }
+    }
+
+    public async Task<ApiResponse<UserAccessGroupsResponse>> SearchUserAccessGroups(
+        Guid[]? userIds = null,
+        int limit = 1000,
+        string? cursor = null,
+        CancellationToken cancellationToken = default)
+    {
+        var request = new
+        {
+            userIds = userIds,
+            limit = limit,
+            cursor = cursor
+        };
+
+        var response = await _httpClient.PostAsJsonAsync("v1/userAccessGroups/search", request, cancellationToken);
+
+        return new ApiResponse<UserAccessGroupsResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode ? 
+                await response.Content.ReadFromJsonAsync<UserAccessGroupsResponse>(cancellationToken: cancellationToken) : 
+                null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<UpdateUserAccessGroupsActionOutput[]>> UpdateUserAccessGroups(
+        UpdateUserAccessGroupsActionInput[] input,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.PatchAsJsonAsync("v1/userAccessGroups", input, cancellationToken);
+
+        return new ApiResponse<UpdateUserAccessGroupsActionOutput[]>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode ? 
+                await response.Content.ReadFromJsonAsync<UpdateUserAccessGroupsActionOutput[]>(cancellationToken: cancellationToken) : 
+                null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<UsersDataObject>> GetSafetyUser(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.GetAsync($"v1/users/{id}", cancellationToken);
+
+        return new ApiResponse<UsersDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode ? 
+                await response.Content.ReadFromJsonAsync<UsersDataObject>(cancellationToken: cancellationToken) : 
+                null,
             RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
         };
     }

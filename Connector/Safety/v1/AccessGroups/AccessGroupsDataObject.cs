@@ -14,11 +14,29 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents an access group in Safety")]
 public class AccessGroupsDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The role id")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("name")]
+    [Description("The role name")]
+    [Required]
+    public required string Name { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The role description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("lastChangedById")]
+    [Description("The guid of the user who last modified the role")]
+    [Required]
+    public required Guid LastChangedById { get; init; }
+
+    [JsonPropertyName("isDeleted")]
+    [Description("Is the role deleted")]
+    public bool IsDeleted { get; init; }
 }

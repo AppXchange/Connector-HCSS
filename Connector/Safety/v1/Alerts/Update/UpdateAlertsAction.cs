@@ -14,23 +14,173 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateAlertsAction Action description goes here")]
+[Description("Updates an alert in Safety")]
 public class UpdateAlertsAction : IStandardAction<UpdateAlertsActionInput, UpdateAlertsActionOutput>
 {
-    public UpdateAlertsActionInput ActionInput { get; set; } = new();
-    public UpdateAlertsActionOutput ActionOutput { get; set; } = new();
-    public StandardActionFailure ActionFailure { get; set; } = new();
+    public UpdateAlertsActionInput ActionInput { get; set; } = new()
+    {
+        Id = Guid.Empty,
+        NearMiss = new() { ReceiveAlert = false },
+        Incidents = new() 
+        { 
+            ReceiveAlert = false,
+            ManagerCreated = false,
+            ManagerUpdated = false,
+            FieldCreated = false,
+            FieldUpdated = false,
+            SendAllFormTypes = false,
+            FormTypes = Array.Empty<string>()
+        },
+        Inspections = new()
+        {
+            ReceiveAlert = false,
+            AllInspections = false,
+            InspectionsType = Array.Empty<string>()
+        },
+        Observations = new()
+        {
+            ReceiveAlert = false,
+            ObservationAlertFlag = 0,
+            SeverityThreshold = 0
+        },
+        Jobs = new()
+        {
+            IsAllJobs = false,
+            Jobs = Array.Empty<string>()
+        }
+    };
 
+    public UpdateAlertsActionOutput ActionOutput { get; set; } = new()
+    {
+        Id = Guid.Empty,
+        NearMiss = new() { ReceiveAlert = false },
+        Incidents = new() 
+        { 
+            ReceiveAlert = false,
+            ManagerCreated = false,
+            ManagerUpdated = false,
+            FieldCreated = false,
+            FieldUpdated = false,
+            SendAllFormTypes = false,
+            FormTypes = Array.Empty<string>()
+        },
+        Inspections = new()
+        {
+            ReceiveAlert = false,
+            AllInspections = false,
+            InspectionsType = Array.Empty<string>()
+        },
+        Observations = new()
+        {
+            ReceiveAlert = false,
+            ObservationAlertFlag = 0,
+            SeverityThreshold = 0
+        },
+        Jobs = new()
+        {
+            IsAllJobs = false,
+            Jobs = Array.Empty<string>()
+        }
+    };
+
+    public StandardActionFailure ActionFailure { get; set; } = new();
     public bool CreateRtap => true;
 }
 
 public class UpdateAlertsActionInput
 {
+    [JsonPropertyName("id")]
+    [Description("The alert id")]
+    [Required]
+    public required Guid Id { get; init; }
 
+    [JsonPropertyName("email")]
+    [Description("The Email to send the alert to")]
+    public string? Email { get; init; }
+
+    [JsonPropertyName("phoneNumber")]
+    [Description("The phone number to send the alert to")]
+    public string? PhoneNumber { get; init; }
+
+    [JsonPropertyName("providerId")]
+    [Description("The id of provider who will send the message")]
+    public Guid? ProviderId { get; init; }
+
+    [JsonPropertyName("carrierAddressOverride")]
+    [Description("Carrier address override if needed (SMS)")]
+    public string? CarrierAddressOverride { get; init; }
+
+    [JsonPropertyName("nearMiss")]
+    [Description("Near miss settings alert property")]
+    [Required]
+    public required NearMissSettings NearMiss { get; init; }
+
+    [JsonPropertyName("incidents")]
+    [Description("Incident settings alert property")]
+    [Required]
+    public required IncidentSettings Incidents { get; init; }
+
+    [JsonPropertyName("inspections")]
+    [Description("Inspection settings alert property")]
+    [Required]
+    public required InspectionSettings Inspections { get; init; }
+
+    [JsonPropertyName("observations")]
+    [Description("Observation settings alert property")]
+    [Required]
+    public required ObservationSettings Observations { get; init; }
+
+    [JsonPropertyName("jobs")]
+    [Description("Jobs settings alert property")]
+    [Required]
+    public required JobsSettings Jobs { get; init; }
 }
 
 public class UpdateAlertsActionOutput
 {
     [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [Description("The alert id")]
+    [Required]
+    public required Guid Id { get; init; }
+
+    [JsonPropertyName("email")]
+    [Description("The Email to send the alert to")]
+    public string? Email { get; init; }
+
+    [JsonPropertyName("phoneNumber")]
+    [Description("The phone number to send the alert to")]
+    public string? PhoneNumber { get; init; }
+
+    [JsonPropertyName("providerId")]
+    [Description("The id of provider who will send the message")]
+    public Guid? ProviderId { get; init; }
+
+    [JsonPropertyName("carrierAddressOverride")]
+    [Description("Carrier address override if needed (SMS)")]
+    public string? CarrierAddressOverride { get; init; }
+
+    [JsonPropertyName("nearMiss")]
+    [Description("Near miss settings alert property")]
+    [Required]
+    public required NearMissSettings NearMiss { get; init; }
+
+    [JsonPropertyName("incidents")]
+    [Description("Incident settings alert property")]
+    [Required]
+    public required IncidentSettings Incidents { get; init; }
+
+    [JsonPropertyName("inspections")]
+    [Description("Inspection settings alert property")]
+    [Required]
+    public required InspectionSettings Inspections { get; init; }
+
+    [JsonPropertyName("observations")]
+    [Description("Observation settings alert property")]
+    [Required]
+    public required ObservationSettings Observations { get; init; }
+
+    [JsonPropertyName("jobs")]
+    [Description("Jobs settings alert property")]
+    [Required]
+    public required JobsSettings Jobs { get; init; }
 }

@@ -1,78 +1,52 @@
 using Connector.Client;
-using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
 
 namespace Connector.Safety.v1.InspectionTypes;
 
 public class InspectionTypesDataReader : TypedAsyncDataReaderBase<InspectionTypesDataObject>
 {
     private readonly ILogger<InspectionTypesDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private string? _nextCursor;
 
     public InspectionTypesDataReader(
-        ILogger<InspectionTypesDataReader> logger)
+        ILogger<InspectionTypesDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<InspectionTypesDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<InspectionTypesDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        do
         {
-            var response = new ApiResponse<PaginatedResponse<InspectionTypesDataObject>>();
-            // If the InspectionTypesDataObject does not have the same structure as the InspectionTypes response from the API, create a new class for it and replace InspectionTypesDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<InspectionTypesResponse>>();
+            var response = await _apiClient.GetInspectionTypes(
+                limit: 1000,
+                cursor: _nextCursor,
+                cancellationToken: cancellationToken);
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
+            if (!response.IsSuccessful || response.Data == null)
             {
-                //response = await _apiClient.GetRecords<InspectionTypesDataObject>(
-                //    relativeUrl: "inspectionTypes",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'InspectionTypesDataObject'");
-                throw;
+                _logger.LogError("Failed to retrieve inspection types. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve inspection types. API StatusCode: {response.StatusCode}");
             }
 
-            if (!response.IsSuccessful)
+            foreach (var inspectionType in response.Data.Results)
             {
-                throw new Exception($"Failed to retrieve records for 'InspectionTypesDataObject'. API StatusCode: {response.StatusCode}");
+                yield return inspectionType;
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
+            _nextCursor = response.Data.Metadata?.NextCursor;
 
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new InspectionTypesDataObject object, map the properties and return a InspectionTypesDataObject.
-
-                // Example:
-                //var resource = new InspectionTypesDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
-                break;
-            }
-        }
+        } while (!string.IsNullOrEmpty(_nextCursor));
     }
 }

@@ -1,75 +1,62 @@
 using Connector.Client;
-using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
 
 namespace Connector.Safety.v1.AccessGroups;
 
 public class AccessGroupsDataReader : TypedAsyncDataReaderBase<AccessGroupsDataObject>
 {
     private readonly ILogger<AccessGroupsDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
+    private string? _cursor;
 
     public AccessGroupsDataReader(
-        ILogger<AccessGroupsDataReader> logger)
+        ILogger<AccessGroupsDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<AccessGroupsDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<AccessGroupsDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        var isDeleted = dataObjectRunArguments?.RequestParameterOverrides?.RootElement != null 
+            && dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("isDeleted", out var isDeletedElement) 
+            ? isDeletedElement.GetBoolean()
+            : (bool?)null;
+
         while (true)
         {
-            var response = new ApiResponse<PaginatedResponse<AccessGroupsDataObject>>();
-            // If the AccessGroupsDataObject does not have the same structure as the AccessGroups response from the API, create a new class for it and replace AccessGroupsDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<AccessGroupsResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<AccessGroupsDataObject>(
-                //    relativeUrl: "accessGroups",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'AccessGroupsDataObject'");
-                throw;
-            }
+            var response = await _apiClient.GetAccessGroups(
+                isDeleted: isDeleted,
+                cursor: _cursor,
+                cancellationToken: cancellationToken);
 
             if (!response.IsSuccessful)
             {
-                throw new Exception($"Failed to retrieve records for 'AccessGroupsDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve access groups. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve access groups. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            if (response.Data?.Results == null || response.Data.Results.Length == 0)
             {
-                // If new class was created to match the API response, create a new AccessGroupsDataObject object, map the properties and return a AccessGroupsDataObject.
-
-                // Example:
-                //var resource = new AccessGroupsDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
+                break;
             }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
+            foreach (var group in response.Data.Results)
+            {
+                yield return group;
+            }
+
+            _cursor = response.Data.Metadata.NextCursor;
+            if (string.IsNullOrEmpty(_cursor))
             {
                 break;
             }
