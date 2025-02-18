@@ -9730,4 +9730,53 @@ public class ApiClient
             RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
         };
     }
+
+    public async Task<ApiResponse<EquipmentResponse>> GetEquipment(
+        int? limit = null,
+        string? cursor = null,
+        bool? isRegistered = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (limit.HasValue)
+            queryParams.Add($"limit={limit.Value}");
+        if (!string.IsNullOrEmpty(cursor))
+            queryParams.Add($"cursor={Uri.EscapeDataString(cursor)}");
+        if (isRegistered.HasValue)
+            queryParams.Add($"isRegistered={isRegistered.Value}");
+
+        var url = "telematics/api/v1/equipment";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<EquipmentResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<EquipmentResponse>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public class EquipmentResponse
+    {
+        [JsonPropertyName("results")]
+        [Required]
+        public required Telematics.v1.Equipment.EquipmentDataObject[] Results { get; init; }
+
+        [JsonPropertyName("metadata")]
+        [Required]
+        public required EquipmentMetadata Metadata { get; init; }
+    }
+
+    public class EquipmentMetadata
+    {
+        [JsonPropertyName("nextCursor")]
+        public string? NextCursor { get; init; }
+    }
 }

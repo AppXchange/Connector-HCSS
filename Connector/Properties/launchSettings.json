@@ -2651,6 +2651,14 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ESR__QueueName": "localrun"
       }
+    },
+    "Equipment Cache Writer Telematics Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId telematics-1 --serviceType CacheWriter --dataObjectUrl equipment --arguments limit=1000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
     }
   }
 }
