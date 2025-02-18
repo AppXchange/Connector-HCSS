@@ -14,23 +14,34 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("DeletePreConSubscriptionAction Action description goes here")]
+[Description("Deletes an existing webhook subscription for HeavyBid Pre-Construction events")]
 public class DeletePreConSubscriptionAction : IStandardAction<DeletePreConSubscriptionActionInput, DeletePreConSubscriptionActionOutput>
 {
-    public DeletePreConSubscriptionActionInput ActionInput { get; set; } = new();
+    public DeletePreConSubscriptionActionInput ActionInput { get; set; } = new()
+    {
+        Url = string.Empty,
+        BusinessUnitId = Guid.Empty
+    };
+    
     public DeletePreConSubscriptionActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
-
     public bool CreateRtap => true;
 }
 
 public class DeletePreConSubscriptionActionInput
 {
+    [JsonPropertyName("url")]
+    [Description("The callback URL of the webhook subscription to delete")]
+    [Required]
+    public required string Url { get; init; }
 
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit ID the subscription belongs to")]
+    [Required]
+    public required Guid BusinessUnitId { get; init; }
 }
 
 public class DeletePreConSubscriptionActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    // Empty response per API spec - 200 status code with no content
 }

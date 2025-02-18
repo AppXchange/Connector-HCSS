@@ -14,11 +14,50 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a HeavyBid Pre-Construction webhook subscription")]
 public class PreConWebhooksDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("Unique identifier for the webhook subscription")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("companyId")]
+    [Description("The company ID associated with the subscription")]
+    [Required]
+    public required Guid CompanyId { get; init; }
+
+    [JsonPropertyName("businessUnitId")]
+    [Description("The business unit ID associated with the subscription")]
+    [Required]
+    public required Guid BusinessUnitId { get; init; }
+
+    [JsonPropertyName("eventType")]
+    [Description("The type of event being subscribed to")]
+    [Required]
+    public required string EventType { get; init; }
+
+    [JsonPropertyName("callbackUrl")]
+    [Description("The URL where webhook notifications will be sent")]
+    public string? CallbackUrl { get; init; }
+
+    [JsonPropertyName("dateCreated")]
+    [Description("When the subscription was created")]
+    [Required]
+    public required DateTime DateCreated { get; init; }
+
+    [JsonPropertyName("clientId")]
+    [Description("The client ID associated with the subscription")]
+    [Required]
+    public required string ClientId { get; init; }
+
+    [JsonPropertyName("status")]
+    [Description("Current status of the subscription")]
+    [Required]
+    public required string Status { get; init; }
+
+    [JsonPropertyName("secretKey")]
+    [Description("Secret key used to validate webhook payloads")]
+    [Required]
+    public required string SecretKey { get; init; }
 }

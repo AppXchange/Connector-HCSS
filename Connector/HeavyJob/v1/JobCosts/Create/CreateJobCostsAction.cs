@@ -1,4 +1,4 @@
-namespace Connector.Webhooks.v1.SetupsSubscription.Delete;
+namespace Connector.HeavyJob.v1.JobCosts.Create;
 
 using Json.Schema.Generation;
 using System;
@@ -14,28 +14,23 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("Deletes an existing webhook subscription for Setups events")]
-public class DeleteSetupsSubscriptionAction : IStandardAction<DeleteSetupsSubscriptionActionInput, DeleteSetupsSubscriptionActionOutput>
+[Description("CreateJobCostsAction Action description goes here")]
+public class CreateJobCostsAction : IStandardAction<CreateJobCostsActionInput, CreateJobCostsActionOutput>
 {
-    public DeleteSetupsSubscriptionActionInput ActionInput { get; set; } = new()
-    {
-        Url = string.Empty
-    };
-    
-    public DeleteSetupsSubscriptionActionOutput ActionOutput { get; set; } = new();
+    public CreateJobCostsActionInput ActionInput { get; set; } = new();
+    public CreateJobCostsActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
+
     public bool CreateRtap => true;
 }
 
-public class DeleteSetupsSubscriptionActionInput
+public class CreateJobCostsActionInput
 {
-    [JsonPropertyName("url")]
-    [Description("The callback URL of the webhook subscription to delete")]
-    [Required]
-    public required string Url { get; init; }
+
 }
 
-public class DeleteSetupsSubscriptionActionOutput
+public class CreateJobCostsActionOutput
 {
-    // Empty response per API spec - 200 status code with no content
+    [JsonPropertyName("id")]
+    public Guid Id { get; set; }
 }

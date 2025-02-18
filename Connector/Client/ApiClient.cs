@@ -321,6 +321,18 @@ using Connector.Users.v1.SubscriptionGroups;
 using Connector.Users.v1.User.Create;
 using Connector.Users.v1.User.Update;
 using Connector.Users.v1.Username;
+using Connector.Webhooks.v1.HeavyJobSubscription;
+using Connector.Webhooks.v1.HeavyJobSubscription.Create;
+using Connector.Webhooks.v1.HeavyJobSubscription.Update;
+using Connector.Webhooks.v1.HeavyJobWebhooks;
+using Connector.Webhooks.v1.PreConSubscription;
+using Connector.Webhooks.v1.PreConSubscription.Create;
+using Connector.Webhooks.v1.PreConSubscription.Update;
+using Connector.Webhooks.v1.PreConWebhooks;
+using Connector.Webhooks.v1.SetupsSubscription;
+using Connector.Webhooks.v1.SetupsSubscription.Create;
+using Connector.Webhooks.v1.SetupsSubscription.Update;
+using Connector.Webhooks.v1.SetupsWebhooks;
 
 namespace Connector.Client;
 
@@ -10001,5 +10013,275 @@ public class ApiClient
 
         [JsonPropertyName("results")]
         public UsersDataObject[]? Results { get; init; }
+    }
+
+    public async Task<ApiResponse<IEnumerable<HeavyJobSubscriptionDataObject>>> GetHeavyJobSubscriptions(
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.GetAsync("heavyjob/api/v1/heavyjob", cancellationToken);
+
+        return new ApiResponse<IEnumerable<HeavyJobSubscriptionDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<HeavyJobSubscriptionDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<CreateHeavyJobSubscriptionActionOutput>> CreateHeavyJobSubscription(
+        CreateHeavyJobSubscriptionActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.PostAsJsonAsync("heavyjob/api/v1/heavyjob", input, cancellationToken);
+
+        return new ApiResponse<CreateHeavyJobSubscriptionActionOutput>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<CreateHeavyJobSubscriptionActionOutput>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+
+    public async Task<ApiResponse<object>> DeleteHeavyJobSubscription(
+        string url,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.DeleteAsync(
+            $"webhooks/api/v1/heavyjob?url={Uri.EscapeDataString(url)}", 
+            cancellationToken);
+
+        return new ApiResponse<object>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+
+    public async Task<ApiResponse<UpdateHeavyJobSubscriptionActionOutput>> UpdateHeavyJobSubscription(
+        UpdateHeavyJobSubscriptionActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.PutAsJsonAsync("webhooks/api/v1/heavyjob", input, cancellationToken);
+
+        return new ApiResponse<UpdateHeavyJobSubscriptionActionOutput>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<UpdateHeavyJobSubscriptionActionOutput>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+
+    public async Task<ApiResponse<IEnumerable<HeavyJobWebhooksDataObject>>> GetHeavyJobWebhooks(
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.GetAsync("webhooks/api/v1/heavyjob", cancellationToken);
+
+        return new ApiResponse<IEnumerable<HeavyJobWebhooksDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<HeavyJobWebhooksDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+
+    public async Task<ApiResponse<IEnumerable<PreConSubscriptionDataObject>>> GetPreConSubscriptions(
+        Guid businessUnitId,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.GetAsync($"webhooks/api/v1/precon/{businessUnitId}", cancellationToken);
+
+        return new ApiResponse<IEnumerable<PreConSubscriptionDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<PreConSubscriptionDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<CreatePreConSubscriptionActionOutput>> CreatePreConSubscription(
+        CreatePreConSubscriptionActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.PostAsJsonAsync(
+            $"webhooks/api/v1/precon/{input.BusinessUnitId}", 
+            input, 
+            cancellationToken);
+
+        return new ApiResponse<CreatePreConSubscriptionActionOutput>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<CreatePreConSubscriptionActionOutput>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    // Add to existing ApiClient class:
+
+    public async Task<ApiResponse<object>> DeletePreConSubscription(
+        Guid businessUnitId,
+        string url,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.DeleteAsync(
+            $"webhooks/api/v1/precon/{businessUnitId}?url={Uri.EscapeDataString(url)}", 
+            cancellationToken);
+
+        return new ApiResponse<object>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+
+    public async Task<ApiResponse<UpdatePreConSubscriptionActionOutput>> UpdatePreConSubscription(
+        UpdatePreConSubscriptionActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.PutAsJsonAsync(
+            $"webhooks/api/v1/precon/{input.BusinessUnitId}", 
+            input, 
+            cancellationToken);
+
+        return new ApiResponse<UpdatePreConSubscriptionActionOutput>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<UpdatePreConSubscriptionActionOutput>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+
+    public async Task<ApiResponse<IEnumerable<PreConWebhooksDataObject>>> GetPreConWebhooks(
+        Guid businessUnitId,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.GetAsync($"webhooks/api/v1/precon/{businessUnitId}", cancellationToken);
+
+        return new ApiResponse<IEnumerable<PreConWebhooksDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<PreConWebhooksDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+
+    public async Task<ApiResponse<IEnumerable<SetupsSubscriptionDataObject>>> GetSetupsSubscriptions(
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.GetAsync("webhooks/api/v1/setups", cancellationToken);
+
+        return new ApiResponse<IEnumerable<SetupsSubscriptionDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<SetupsSubscriptionDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<CreateSetupsSubscriptionActionOutput>> CreateSetupsSubscription(
+        CreateSetupsSubscriptionActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.PostAsJsonAsync("webhooks/api/v1/setups", input, cancellationToken);
+
+        return new ApiResponse<CreateSetupsSubscriptionActionOutput>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<CreateSetupsSubscriptionActionOutput>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    // Add to existing ApiClient class:
+
+    public async Task<ApiResponse<object>> DeleteSetupsSubscription(
+        string url,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.DeleteAsync(
+            $"webhooks/api/v1/setups?url={Uri.EscapeDataString(url)}", 
+            cancellationToken);
+
+        return new ApiResponse<object>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    // Add to existing ApiClient class:
+
+    public async Task<ApiResponse<UpdateSetupsSubscriptionActionOutput>> UpdateSetupsSubscription(
+        UpdateSetupsSubscriptionActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.PutAsJsonAsync("webhooks/api/v1/setups", input, cancellationToken);
+
+        return new ApiResponse<UpdateSetupsSubscriptionActionOutput>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<UpdateSetupsSubscriptionActionOutput>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    // Add to existing ApiClient class:
+
+    public async Task<ApiResponse<IEnumerable<SetupsWebhooksDataObject>>> GetSetupsWebhooks(
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.GetAsync("webhooks/api/v1/setups", cancellationToken);
+
+        return new ApiResponse<IEnumerable<SetupsWebhooksDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<SetupsWebhooksDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
     }
 }

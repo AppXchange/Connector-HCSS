@@ -14,65 +14,37 @@ namespace Connector.Webhooks.v1.HeavyJobWebhooks;
 public class HeavyJobWebhooksDataReader : TypedAsyncDataReaderBase<HeavyJobWebhooksDataObject>
 {
     private readonly ILogger<HeavyJobWebhooksDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public HeavyJobWebhooksDataReader(
-        ILogger<HeavyJobWebhooksDataReader> logger)
+        ILogger<HeavyJobWebhooksDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<HeavyJobWebhooksDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<HeavyJobWebhooksDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        var response = await _apiClient.GetHeavyJobWebhooks(cancellationToken);
+
+        if (!response.IsSuccessful)
         {
-            var response = new ApiResponse<PaginatedResponse<HeavyJobWebhooksDataObject>>();
-            // If the HeavyJobWebhooksDataObject does not have the same structure as the HeavyJobWebhooks response from the API, create a new class for it and replace HeavyJobWebhooksDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<HeavyJobWebhooksResponse>>();
+            _logger.LogError("Failed to retrieve webhook subscriptions. Status code: {StatusCode}", response.StatusCode);
+            throw new Exception($"Failed to retrieve webhook subscriptions. API StatusCode: {response.StatusCode}");
+        }
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<HeavyJobWebhooksDataObject>(
-                //    relativeUrl: "heavyJobWebhooks",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'HeavyJobWebhooksDataObject'");
-                throw;
-            }
+        if (response.Data == null)
+        {
+            _logger.LogWarning("No webhook subscriptions found");
+            yield break;
+        }
 
-            if (!response.IsSuccessful)
-            {
-                throw new Exception($"Failed to retrieve records for 'HeavyJobWebhooksDataObject'. API StatusCode: {response.StatusCode}");
-            }
-
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new HeavyJobWebhooksDataObject object, map the properties and return a HeavyJobWebhooksDataObject.
-
-                // Example:
-                //var resource = new HeavyJobWebhooksDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
-                break;
-            }
+        foreach (var webhook in response.Data)
+        {
+            yield return webhook;
         }
     }
 }
