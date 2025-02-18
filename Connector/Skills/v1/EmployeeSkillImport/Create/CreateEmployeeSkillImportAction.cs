@@ -14,10 +14,13 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateEmployeeSkillImportAction Action description goes here")]
+[Description("Imports a list of employee skills in HCSS")]
 public class CreateEmployeeSkillImportAction : IStandardAction<CreateEmployeeSkillImportActionInput, CreateEmployeeSkillImportActionOutput>
 {
-    public CreateEmployeeSkillImportActionInput ActionInput { get; set; } = new();
+    public CreateEmployeeSkillImportActionInput ActionInput { get; set; } = new()
+    {
+        Skills = Array.Empty<EmployeeSkillImportDataObject>()
+    };
     public CreateEmployeeSkillImportActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +29,17 @@ public class CreateEmployeeSkillImportAction : IStandardAction<CreateEmployeeSki
 
 public class CreateEmployeeSkillImportActionInput
 {
+    [JsonPropertyName("usePayrollCode")]
+    [Description("Whether to use payroll code instead of employee code")]
+    public bool UsePayrollCode { get; init; }
 
+    [JsonPropertyName("skills")]
+    [Description("The list of employee skills to import")]
+    [Required]
+    public required EmployeeSkillImportDataObject[] Skills { get; init; }
 }
 
 public class CreateEmployeeSkillImportActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    // Empty response per API spec
 }

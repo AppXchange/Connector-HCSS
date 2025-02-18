@@ -14,23 +14,44 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateSkillsimportAction Action description goes here")]
+[Description("Imports a list of skills in HCSS")]
 public class CreateSkillsimportAction : IStandardAction<CreateSkillsimportActionInput, CreateSkillsimportActionOutput>
 {
-    public CreateSkillsimportActionInput ActionInput { get; set; } = new();
+    public CreateSkillsimportActionInput ActionInput { get; set; } = new()
+    {
+        Skills = Array.Empty<SkillsimportDataObject>()
+    };
     public CreateSkillsimportActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
-
     public bool CreateRtap => true;
 }
 
 public class CreateSkillsimportActionInput
 {
-
+    [JsonPropertyName("skills")]
+    [Description("The list of skills to import")]
+    [Required]
+    public required SkillsimportDataObject[] Skills { get; init; }
 }
 
 public class CreateSkillsimportActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [JsonPropertyName("results")]
+    [Description("The import results")]
+    public ImportResult[]? Results { get; init; }
+}
+
+public class ImportResult
+{
+    [JsonPropertyName("error")]
+    public bool Error { get; init; }
+
+    [JsonPropertyName("errorMessage")]
+    public string? ErrorMessage { get; init; }
+
+    [JsonPropertyName("code")]
+    public string? Code { get; init; }
+
+    [JsonPropertyName("skillInserted")]
+    public bool SkillInserted { get; init; }
 }

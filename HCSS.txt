@@ -1067,10 +1067,10 @@ https://developer.hcssapps.com/products/skills/spec/tag/Skills/#tag/Skills/opera
 xchange action new --module-id skills-1 --object-name skill --name Update
 https://developer.hcssapps.com/products/skills/spec/tag/Skills/#tag/Skills/operation/Skills_Delete
 xchange action new --module-id skills-1 --object-name skill --name Delete
+https://developer.hcssapps.com/products/skills/spec/tag/Skills/#tag/Skills/operation/Skills_Post
+xchange action new --module-id skills-1 --object-name skill --name Create
 https://developer.hcssapps.com/products/skills/spec/tag/Skills/#tag/Skills/operation/Skills_GetList
 xchange data-object new --module-id skills-1 --name skills
-https://developer.hcssapps.com/products/skills/spec/tag/Skills/#tag/Skills/operation/Skills_Post
-xchange action new --module-id skills-1 --object-name skills --name Create
 xchange data-object new --module-id skills-1 --name skillsimport
 https://developer.hcssapps.com/products/skills/spec/tag/Skills/#tag/Skills/operation/Skills_Import
 xchange action new --module-id skills-1 --object-name skillsimport --name Create

@@ -11,15 +11,15 @@ using Xchange.Connector.SDK.Action;
 using Xchange.Connector.SDK.CacheWriter;
 using Xchange.Connector.SDK.Client.AppNetwork;
 
-namespace Connector.Skills.v1.Skill.Delete;
+namespace Connector.Skills.v1.Skill.Create;
 
-public class DeleteSkillHandler : IActionHandler<DeleteSkillAction>
+public class CreateSkillHandler : IActionHandler<CreateSkillAction>
 {
-    private readonly ILogger<DeleteSkillHandler> _logger;
+    private readonly ILogger<CreateSkillHandler> _logger;
     private readonly ApiClient _apiClient;
 
-    public DeleteSkillHandler(
-        ILogger<DeleteSkillHandler> logger,
+    public CreateSkillHandler(
+        ILogger<CreateSkillHandler> logger,
         ApiClient apiClient)
     {
         _logger = logger;
@@ -28,11 +28,11 @@ public class DeleteSkillHandler : IActionHandler<DeleteSkillAction>
     
     public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(ActionInstance actionInstance, CancellationToken cancellationToken)
     {
-        var input = JsonSerializer.Deserialize<DeleteSkillActionInput>(actionInstance.InputJson)!;
+        var input = JsonSerializer.Deserialize<CreateSkillActionInput>(actionInstance.InputJson)!;
         
         try
         {
-            var response = await _apiClient.DeleteSkill(input.CourseCodeOrName, cancellationToken);
+            var response = await _apiClient.CreateSkill(input, cancellationToken);
 
             if (!response.IsSuccessful)
             {
@@ -43,18 +43,18 @@ public class DeleteSkillHandler : IActionHandler<DeleteSkillAction>
                     {
                         new Error
                         {
-                            Source = new[] { nameof(DeleteSkillHandler) },
-                            Text = $"Failed to delete skill. Status code: {response.StatusCode}"
+                            Source = new[] { nameof(CreateSkillHandler) },
+                            Text = $"Failed to create skill. Status code: {response.StatusCode}"
                         }
                     }
                 });
             }
 
-            return ActionHandlerOutcome.Successful(new DeleteSkillActionOutput());
+            return ActionHandlerOutcome.Successful(new CreateSkillActionOutput());
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error deleting skill");
+            _logger.LogError(ex, "Error creating skill");
             return ActionHandlerOutcome.Failed(new StandardActionFailure
             {
                 Code = "500",
@@ -62,7 +62,7 @@ public class DeleteSkillHandler : IActionHandler<DeleteSkillAction>
                 {
                     new Error
                     {
-                        Source = new[] { nameof(DeleteSkillHandler) },
+                        Source = new[] { nameof(CreateSkillHandler) },
                         Text = ex.Message
                     }
                 }

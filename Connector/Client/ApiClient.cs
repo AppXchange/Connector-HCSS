@@ -305,6 +305,17 @@ using Connector.Setups.v1.RateSetGroup.Update;
 using Connector.Setups.v1.RateSetPayClass;
 using Connector.Setups.v1.RateSetPayClass.Create;
 using Connector.Setups.v1.RateSetPayClass.Update;
+using Connector.Skills.v1.EmployeeSkillImport;
+using Connector.Skills.v1.EmployeeSkills;
+using Connector.Skills.v1.EmployeeSkills.Create;
+using Connector.Skills.v1.EmployeeSkillsByEmployee;
+using Connector.Skills.v1.EmployeeSkillsBySkill;
+using Connector.Skills.v1.Skill;
+using Connector.Skills.v1.Skill.Create;
+using Connector.Skills.v1.Skill.Update;
+using Connector.Skills.v1.Skills;
+using Connector.Skills.v1.Skillsimport.Create;
+using Connector.Skills.v1.Skillsimport;
 
 namespace Connector.Client;
 
@@ -9435,6 +9446,286 @@ public class ApiClient
             StatusCode = (int)response.StatusCode,
             Data = response.IsSuccessStatusCode 
                 ? await response.Content.ReadFromJsonAsync<RateSetPayClassDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<object>> ImportEmployeeSkills(
+        EmployeeSkillImportDataObject[] skills,
+        bool usePayrollCode = false,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"skills/api/v1/employeeSkills/import?usePayrollCode={usePayrollCode}";
+        
+        var response = await _httpClient.PostAsJsonAsync(url, skills, cancellationToken);
+
+        return new ApiResponse<object>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<object>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<EmployeeSkillsDataObject>>> GetEmployeeSkills(
+        DateTime? dateAfterUtc = null,
+        int? limit = null,
+        int? offset = null,
+        bool includeDismissed = false,
+        bool usePayrollCode = false,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (dateAfterUtc.HasValue)
+            queryParams.Add($"dateAfterUtc={Uri.EscapeDataString(dateAfterUtc.Value.ToString("O"))}");
+        if (limit.HasValue)
+            queryParams.Add($"limit={limit.Value}");
+        if (offset.HasValue)
+            queryParams.Add($"offset={offset.Value}");
+        
+        queryParams.Add($"includeDismissed={includeDismissed}");
+        queryParams.Add($"usePayrollCode={usePayrollCode}");
+
+        var url = "skills/api/v1/employeeSkills";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<EmployeeSkillsDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<EmployeeSkillsDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    // Add this method to the ApiClient class
+    public async Task<ApiResponse<string>> CreateEmployeeSkill(
+        CreateEmployeeSkillsActionInput input,
+        bool usePayrollCode = false,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"skills/api/v1/employeeSkills?usePayrollCode={usePayrollCode}";
+        
+        var response = await _httpClient.PostAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<string>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<string>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<EmployeeSkillsByEmployeeDataObject>>> GetEmployeeSkillsByEmployee(
+        string employeeCode,
+        DateTime? dateAfterUtc = null,
+        int? limit = null,
+        int? offset = null,
+        bool usePayrollCode = false,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (dateAfterUtc.HasValue)
+            queryParams.Add($"dateAfterUtc={Uri.EscapeDataString(dateAfterUtc.Value.ToString("O"))}");
+        if (limit.HasValue)
+            queryParams.Add($"limit={limit.Value}");
+        if (offset.HasValue)
+            queryParams.Add($"offset={offset.Value}");
+        
+        queryParams.Add($"usePayrollCode={usePayrollCode}");
+
+        var url = $"skills/api/v1/employeeSkills/employee/{Uri.EscapeDataString(employeeCode)}";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<EmployeeSkillsByEmployeeDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<EmployeeSkillsByEmployeeDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<EmployeeSkillsBySkillDataObject>>> GetEmployeeSkillsBySkill(
+        string courseCodeOrName,
+        DateTime? dateAfterUtc = null,
+        int? limit = null,
+        int? offset = null,
+        bool usePayrollCode = false,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (dateAfterUtc.HasValue)
+            queryParams.Add($"dateAfterUtc={Uri.EscapeDataString(dateAfterUtc.Value.ToString("O"))}");
+        if (limit.HasValue)
+            queryParams.Add($"limit={limit.Value}");
+        if (offset.HasValue)
+            queryParams.Add($"offset={offset.Value}");
+        
+        queryParams.Add($"usePayrollCode={usePayrollCode}");
+
+        var url = $"skills/api/v1/employeeSkills/skill/{Uri.EscapeDataString(courseCodeOrName)}";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<EmployeeSkillsBySkillDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<EmployeeSkillsBySkillDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<SkillDataObject>> GetSkill(
+        string courseCodeOrName,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"skills/api/v1/skills/{Uri.EscapeDataString(courseCodeOrName)}";
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<SkillDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<SkillDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<object>> CreateSkill(
+        CreateSkillActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "skills/api/v1/skills";
+        
+        var response = await _httpClient.PostAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<object>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<object>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<object>> DeleteSkill(
+        string courseCodeOrName,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"skills/api/v1/skills/{Uri.EscapeDataString(courseCodeOrName)}";
+        
+        var response = await _httpClient.DeleteAsync(url, cancellationToken);
+
+        return new ApiResponse<object>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<object>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    // Add this method to the ApiClient class
+    public async Task<ApiResponse<object>> UpdateSkill(
+        string courseCodeOrName,
+        UpdateSkillActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"skills/api/v1/skills/{Uri.EscapeDataString(courseCodeOrName)}";
+        
+        var response = await _httpClient.PutAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<object>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<object>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<SkillsDataObject>>> GetSkills(
+        DateTime? dateAfterUtc = null,
+        int? limit = null,
+        int? offset = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>();
+        
+        if (dateAfterUtc.HasValue)
+            queryParams.Add($"dateAfterUtc={Uri.EscapeDataString(dateAfterUtc.Value.ToString("O"))}");
+        if (limit.HasValue)
+            queryParams.Add($"limit={limit.Value}");
+        if (offset.HasValue)
+            queryParams.Add($"offset={offset.Value}");
+
+        var url = "skills/api/v1/skills";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<SkillsDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<SkillsDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    // Add this method to the ApiClient class
+    public async Task<ApiResponse<ImportResult[]>> ImportSkills(
+        SkillsimportDataObject[] skills,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "skills/api/v1/skills/import";
+        
+        var response = await _httpClient.PostAsJsonAsync(url, skills, cancellationToken);
+
+        return new ApiResponse<ImportResult[]>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<ImportResult[]>(cancellationToken: cancellationToken)
                 : null,
             RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
         };

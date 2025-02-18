@@ -14,11 +14,73 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents an employee skill import in HCSS")]
 public class EmployeeSkillImportDataObject
 {
+    [JsonPropertyName("employeeCode")]
+    [Description("A unique string identifier for this employee")]
+    [Required]
+    public required string EmployeeCode { get; init; }
+
+    [JsonPropertyName("employeePayrollCode")]
+    [Description("The payroll code for the employee from HeavyJob")]
+    public string? EmployeePayrollCode { get; init; }
+
+    [JsonPropertyName("skillName")]
+    [Description("The display name for the skill")]
+    public string? SkillName { get; init; }
+
+    [JsonPropertyName("courseCode")]
+    [Description("A unique string identifier for this skill's course code")]
+    public string? CourseCode { get; init; }
+
+    [JsonPropertyName("certificationDate")]
+    [Description("A datetime of when the employee was certified in this skill")]
+    public DateTime? CertificationDate { get; init; }
+
+    [JsonPropertyName("expirationDate")]
+    [Description("A datetime of when this skill expires for this employee")]
+    public DateTime? ExpirationDate { get; init; }
+
+    [JsonPropertyName("trainingTime")]
+    [Description("TrainingTime is the amount of minutes it took the employee to complete the skill")]
+    public int? TrainingTime { get; init; }
+
+    [JsonPropertyName("note")]
+    [Description("Note or description for this employee's skill")]
+    public string? Note { get; init; }
+
+    [JsonPropertyName("isDismissed")]
+    [Description("If the employee skill has been archived/dismissed")]
+    public bool IsDismissed { get; init; }
+
+    [JsonPropertyName("lastModified")]
+    [Description("When the employee skill was last modified")]
+    public DateTime? LastModified { get; init; }
+
+    [JsonPropertyName("createdDate")]
+    [Description("When the employee skill was created")]
+    public DateTime? CreatedDate { get; init; }
+
+    [JsonPropertyName("attachments")]
+    [Description("Attachments to the employees skill")]
+    public SkillAttachment[]? Attachments { get; init; }
+
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The Id of the skill import")]
     [Required]
     public required Guid Id { get; init; }
+}
+
+public class SkillAttachment
+{
+    [JsonPropertyName("attachmentUrl")]
+    [Description("Url of the attachment")]
+    [Required]
+    public required string AttachmentUrl { get; init; }
+
+    [JsonPropertyName("name")]
+    [Description("Display name of the attachment")]
+    [Required]
+    public required string Name { get; init; }
 }

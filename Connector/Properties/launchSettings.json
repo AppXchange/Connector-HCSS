@@ -2563,6 +2563,94 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ESR__QueueName": "localrun"
       }
+    },
+    "EmployeeSkillImport Create Action Processor Skills Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId skills-1 --serviceType ActionProcessor --dataObjectUrl employeeSkillImport --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "EmployeeSkills Cache Writer Skills Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId skills-1 --serviceType CacheWriter --dataObjectUrl employeeSkills --arguments dateAfterUtc=2024-01-01T00:00:00Z,limit=1000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "EmployeeSkills Create Action Processor Skills Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId skills-1 --serviceType ActionProcessor --dataObjectUrl employeeSkills --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "EmployeeSkillsByEmployee Cache Writer Skills Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId skills-1 --serviceType CacheWriter --dataObjectUrl employeeSkillsByEmployee --arguments employeeCode=EMP123,dateAfterUtc=2024-01-01T00:00:00Z,limit=1000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "EmployeeSkillsBySkill Cache Writer Skills Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId skills-1 --serviceType CacheWriter --dataObjectUrl employeeSkillsBySkill --arguments courseCodeOrName=SKILL123,dateAfterUtc=2024-01-01T00:00:00Z,limit=1000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Skill Cache Writer Skills Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId skills-1 --serviceType CacheWriter --dataObjectUrl skill --arguments courseCodeOrName=SKILL123",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Skill Create Action Processor Skills Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId skills-1 --serviceType ActionProcessor --dataObjectUrl skill --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Skill Delete Action Processor Skills Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId skills-1 --serviceType ActionProcessor --dataObjectUrl skill --actionUrl delete",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Skill Update Action Processor Skills Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId skills-1 --serviceType ActionProcessor --dataObjectUrl skill --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Skills Cache Writer Skills Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId skills-1 --serviceType CacheWriter --dataObjectUrl skills --arguments dateAfterUtc=2024-01-01T00:00:00Z,limit=1000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Skillsimport Create Action Processor Skills Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId skills-1 --serviceType ActionProcessor --dataObjectUrl skillsimport --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
     }
   }
 }

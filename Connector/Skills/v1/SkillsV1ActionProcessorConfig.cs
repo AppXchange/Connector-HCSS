@@ -1,9 +1,9 @@
 namespace Connector.Skills.v1;
 using Connector.Skills.v1.EmployeeSkillImport.Create;
 using Connector.Skills.v1.EmployeeSkills.Create;
+using Connector.Skills.v1.Skill.Create;
 using Connector.Skills.v1.Skill.Delete;
 using Connector.Skills.v1.Skill.Update;
-using Connector.Skills.v1.Skills.Create;
 using Connector.Skills.v1.Skillsimport.Create;
 using Json.Schema.Generation;
 using Xchange.Connector.SDK.Action;
@@ -25,4 +25,5 @@ public class SkillsV1ActionProcessorConfig
     public DefaultActionHandlerConfig DeleteSkillConfig { get; set; } = new();
     public DefaultActionHandlerConfig CreateSkillsConfig { get; set; } = new();
     public DefaultActionHandlerConfig CreateSkillsimportConfig { get; set; } = new();
+    public DefaultActionHandlerConfig CreateSkillConfig { get; set; } = new();
 }

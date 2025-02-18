@@ -2,8 +2,8 @@ using Connector.Client;
 using ESR.Hosting.Action;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,68 +16,54 @@ namespace Connector.Skills.v1.Skill.Update;
 public class UpdateSkillHandler : IActionHandler<UpdateSkillAction>
 {
     private readonly ILogger<UpdateSkillHandler> _logger;
+    private readonly ApiClient _apiClient;
 
     public UpdateSkillHandler(
-        ILogger<UpdateSkillHandler> logger)
+        ILogger<UpdateSkillHandler> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
     
     public async Task<ActionHandlerOutcome> HandleQueuedActionAsync(ActionInstance actionInstance, CancellationToken cancellationToken)
     {
-        var input = JsonSerializer.Deserialize<UpdateSkillActionInput>(actionInstance.InputJson);
+        var input = JsonSerializer.Deserialize<UpdateSkillActionInput>(actionInstance.InputJson)!;
+        
         try
         {
-            // Given the input for the action, make a call to your API/system
-            var response = new ApiResponse<UpdateSkillActionOutput>();
-            // response = await _apiClient.PostSkillDataObject(input, cancellationToken)
-            // .ConfigureAwait(false);
+            var response = await _apiClient.UpdateSkill(input.CourseCodeOrName, input, cancellationToken);
 
-            // The full record is needed for SyncOperations. If the endpoint used for the action returns a partial record (such as only returning the ID) then you can either:
-            // - Make a GET call using the ID that was returned
-            // - Add the ID property to your action input (Assuming this results in the proper data object shape)
-
-            // var resource = await _apiClient.GetSkillDataObject(response.Data.id, cancellationToken);
-
-            // var resource = new UpdateSkillActionOutput
-            // {
-            //      TODO : map
-            // };
-
-            // If the response is already the output object for the action, you can use the response directly
-
-            // Build sync operations to update the local cache as well as the Xchange cache system (if the data type is cached)
-            // For more information on SyncOperations and the KeyResolver, check: https://trimble-xchange.github.io/connector-docs/guides/creating-actions/#keyresolver-and-the-sync-cache-operations
-            var operations = new List<SyncOperation>();
-            var keyResolver = new DefaultDataObjectKey();
-            var key = keyResolver.BuildKeyResolver()(response.Data);
-            operations.Add(SyncOperation.CreateSyncOperation(UpdateOperation.Upsert.ToString(), key.UrlPart, key.PropertyNames, response.Data));
-
-            var resultList = new List<CacheSyncCollection>
+            if (!response.IsSuccessful)
             {
-                new CacheSyncCollection() { DataObjectType = typeof(SkillDataObject), CacheChanges = operations.ToArray() }
-            };
+                return ActionHandlerOutcome.Failed(new StandardActionFailure
+                {
+                    Code = response.StatusCode.ToString(),
+                    Errors = new[]
+                    {
+                        new Error
+                        {
+                            Source = new[] { nameof(UpdateSkillHandler) },
+                            Text = $"Failed to update skill. Status code: {response.StatusCode}"
+                        }
+                    }
+                });
+            }
 
-            return ActionHandlerOutcome.Successful(response.Data, resultList);
+            return ActionHandlerOutcome.Successful(new UpdateSkillActionOutput());
         }
-        catch (HttpRequestException exception)
+        catch (Exception ex)
         {
-            // If an error occurs, we want to create a failure result for the action that matches
-            // the failure type for the action. 
-            // Common to create extension methods to map to Standard Action Failure
-
-            var errorSource = new List<string> { "UpdateSkillHandler" };
-            if (string.IsNullOrEmpty(exception.Source)) errorSource.Add(exception.Source!);
-            
+            _logger.LogError(ex, "Error updating skill");
             return ActionHandlerOutcome.Failed(new StandardActionFailure
             {
-                Code = exception.StatusCode?.ToString() ?? "500",
-                Errors = new []
+                Code = "500",
+                Errors = new[]
                 {
-                    new Xchange.Connector.SDK.Action.Error
+                    new Error
                     {
-                        Source = errorSource.ToArray(),
-                        Text = exception.Message
+                        Source = new[] { nameof(UpdateSkillHandler) },
+                        Text = ex.Message
                     }
                 }
             });

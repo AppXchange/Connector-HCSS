@@ -1,21 +1,34 @@
-namespace Connector.Skills.v1.Skill;
+namespace Connector.Skills.v1.Skill.Create;
 
 using Json.Schema.Generation;
 using System;
 using System.Text.Json.Serialization;
-using Xchange.Connector.SDK.CacheWriter;
+using Xchange.Connector.SDK.Action;
 
 /// <summary>
-/// Data object that will represent an object in the Xchange system. This will be converted to a JsonSchema, 
+/// Action object that will represent an action in the Xchange system. This will contain an input object type,
+/// an output object type, and a Action failure type (this will default to <see cref="StandardActionFailure"/>
+/// but that can be overridden with your own preferred type). These objects will be converted to a JsonSchema, 
 /// so add attributes to the properties to provide any descriptions, titles, ranges, max, min, etc... 
 /// These types will be used for validation at runtime to make sure the objects being passed through the system 
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[PrimaryKey("id", nameof(Id))]
-//[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Represents a skill in HCSS")]
-public class SkillDataObject
+[Description("Creates a new skill in HCSS")]
+public class CreateSkillAction : IStandardAction<CreateSkillActionInput, CreateSkillActionOutput>
+{
+    public CreateSkillActionInput ActionInput { get; set; } = new()
+    {
+        Description = string.Empty,
+        SkillType = string.Empty,
+        HasExpiration = false
+    };
+    public CreateSkillActionOutput ActionOutput { get; set; } = new();
+    public StandardActionFailure ActionFailure { get; set; } = new();
+    public bool CreateRtap => true;
+}
+
+public class CreateSkillActionInput
 {
     [JsonPropertyName("name")]
     [Description("Display name of the skill")]
@@ -75,27 +88,9 @@ public class SkillDataObject
     [JsonPropertyName("attachments")]
     [Description("Attachments to the skill")]
     public SkillAttachment[]? Attachments { get; init; }
-
-    [JsonPropertyName("id")]
-    [Description("The Id of the skill")]
-    [Required]
-    public required Guid Id { get; init; }
 }
 
-public class SkillAttachment
+public class CreateSkillActionOutput
 {
-    [JsonPropertyName("attachmentUrl")]
-    [Description("Url of the attachment")]
-    [Required]
-    public required string AttachmentUrl { get; init; }
-
-    [JsonPropertyName("name")]
-    [Description("Display name of the attachment")]
-    [Required]
-    public required string Name { get; init; }
-
-    [JsonPropertyName("mimeType")]
-    [Description("MimeType examples: application/pdf image/png image/jpeg")]
-    [Required]
-    public required string MimeType { get; init; }
+    // Empty response per API spec
 }

@@ -4,10 +4,10 @@ using Connector.Skills.v1.EmployeeSkillImport.Create;
 using Connector.Skills.v1.EmployeeSkills;
 using Connector.Skills.v1.EmployeeSkills.Create;
 using Connector.Skills.v1.Skill;
+using Connector.Skills.v1.Skill.Create;
 using Connector.Skills.v1.Skill.Delete;
 using Connector.Skills.v1.Skill.Update;
 using Connector.Skills.v1.Skills;
-using Connector.Skills.v1.Skills.Create;
 using Connector.Skills.v1.Skillsimport;
 using Connector.Skills.v1.Skillsimport.Create;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,8 +40,8 @@ public class SkillsV1ActionProcessorServiceDefinition : BaseActionHandlerService
         serviceCollection.AddScoped<CreateEmployeeSkillImportHandler>();
         serviceCollection.AddScoped<UpdateSkillHandler>();
         serviceCollection.AddScoped<DeleteSkillHandler>();
-        serviceCollection.AddScoped<CreateSkillsHandler>();
         serviceCollection.AddScoped<CreateSkillsimportHandler>();
+        serviceCollection.AddScoped<CreateSkillHandler>();
     }
 
     public override void ConfigureService(IActionHandlerService service, SkillsV1ActionProcessorConfig config)
@@ -51,7 +51,7 @@ public class SkillsV1ActionProcessorServiceDefinition : BaseActionHandlerService
         service.RegisterHandlerForDataObjectAction<CreateEmployeeSkillImportHandler, EmployeeSkillImportDataObject>(ModuleId, "employee-skill-import", "create", config.CreateEmployeeSkillImportConfig);
         service.RegisterHandlerForDataObjectAction<UpdateSkillHandler, SkillDataObject>(ModuleId, "skill", "update", config.UpdateSkillConfig);
         service.RegisterHandlerForDataObjectAction<DeleteSkillHandler, SkillDataObject>(ModuleId, "skill", "delete", config.DeleteSkillConfig);
-        service.RegisterHandlerForDataObjectAction<CreateSkillsHandler, SkillsDataObject>(ModuleId, "skills", "create", config.CreateSkillsConfig);
         service.RegisterHandlerForDataObjectAction<CreateSkillsimportHandler, SkillsimportDataObject>(ModuleId, "skillsimport", "create", config.CreateSkillsimportConfig);
+        service.RegisterHandlerForDataObjectAction<CreateSkillHandler, SkillDataObject>(ModuleId, "skill", "create", config.CreateSkillConfig);
     }
 }

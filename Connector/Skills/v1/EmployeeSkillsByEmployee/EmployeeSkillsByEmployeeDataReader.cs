@@ -3,76 +3,84 @@ using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
+using System.Text.Json;
 
 namespace Connector.Skills.v1.EmployeeSkillsByEmployee;
 
 public class EmployeeSkillsByEmployeeDataReader : TypedAsyncDataReaderBase<EmployeeSkillsByEmployeeDataObject>
 {
     private readonly ILogger<EmployeeSkillsByEmployeeDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public EmployeeSkillsByEmployeeDataReader(
-        ILogger<EmployeeSkillsByEmployeeDataReader> logger)
+        ILogger<EmployeeSkillsByEmployeeDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<EmployeeSkillsByEmployeeDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<EmployeeSkillsByEmployeeDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
-        {
-            var response = new ApiResponse<PaginatedResponse<EmployeeSkillsByEmployeeDataObject>>();
-            // If the EmployeeSkillsByEmployeeDataObject does not have the same structure as the EmployeeSkillsByEmployee response from the API, create a new class for it and replace EmployeeSkillsByEmployeeDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<EmployeeSkillsByEmployeeResponse>>();
+        var employeeCode = dataObjectRunArguments?.RequestParameterOverrides?.RootElement != null 
+            && dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("employeeCode", out var employeeElement)
+            ? employeeElement.GetString()
+            : null;
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<EmployeeSkillsByEmployeeDataObject>(
-                //    relativeUrl: "employeeSkillsByEmployees",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'EmployeeSkillsByEmployeeDataObject'");
-                throw;
-            }
+        var dateAfterUtc = dataObjectRunArguments?.RequestParameterOverrides?.RootElement != null 
+            && dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("dateAfterUtc", out var dateElement)
+            ? (DateTime?)dateElement.GetDateTime()
+            : null;
+
+        var limit = dataObjectRunArguments?.RequestParameterOverrides?.RootElement != null 
+            && dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("limit", out var limitElement)
+            ? limitElement.GetInt32()
+            : 1000;
+
+        var offset = 0;
+        bool hasMorePages;
+
+        if (string.IsNullOrEmpty(employeeCode))
+        {
+            _logger.LogError("EmployeeCode is required but was not provided");
+            throw new ArgumentException("EmployeeCode is required");
+        }
+
+        do
+        {
+            var response = await _apiClient.GetEmployeeSkillsByEmployee(
+                employeeCode,
+                dateAfterUtc,
+                limit,
+                offset,
+                usePayrollCode: false,
+                cancellationToken);
 
             if (!response.IsSuccessful)
             {
-                throw new Exception($"Failed to retrieve records for 'EmployeeSkillsByEmployeeDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve employee skills. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve employee skills. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            if (response.Data == null)
             {
-                // If new class was created to match the API response, create a new EmployeeSkillsByEmployeeDataObject object, map the properties and return a EmployeeSkillsByEmployeeDataObject.
+                _logger.LogWarning("No employee skills found");
+                yield break;
+            }
 
-                // Example:
-                //var resource = new EmployeeSkillsByEmployeeDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
+            foreach (var item in response.Data)
+            {
                 yield return item;
             }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
-                break;
-            }
-        }
+            hasMorePages = response.IsSuccessful && response.StatusCode == 200;
+            offset += limit;
+
+        } while (hasMorePages);
     }
 }
