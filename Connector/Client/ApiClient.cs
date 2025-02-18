@@ -316,6 +316,11 @@ using Connector.Skills.v1.Skill.Update;
 using Connector.Skills.v1.Skills;
 using Connector.Skills.v1.Skillsimport.Create;
 using Connector.Skills.v1.Skillsimport;
+using Connector.Users.v1.Roles;
+using Connector.Users.v1.SubscriptionGroups;
+using Connector.Users.v1.User.Create;
+using Connector.Users.v1.User.Update;
+using Connector.Users.v1.Username;
 
 namespace Connector.Client;
 
@@ -9778,5 +9783,223 @@ public class ApiClient
     {
         [JsonPropertyName("nextCursor")]
         public string? NextCursor { get; init; }
+    }
+
+    public async Task<ApiResponse<IEnumerable<Users.v1.BusinessUnits.BusinessUnitsDataObject>>> GetUsersBusinessUnits(
+        CancellationToken cancellationToken = default)
+    {
+        var url = "users/api/v1/BusinessUnits";
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<Users.v1.BusinessUnits.BusinessUnitsDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<Users.v1.BusinessUnits.BusinessUnitsDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<Users.v1.Jobs.JobsDataObject>>> GetUsersJobs(
+        Guid businessUnitId,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"users/api/v1/Jobs/GetJobsByBusinessUnit?businessUnitId={businessUnitId}";
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<Users.v1.Jobs.JobsDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<Users.v1.Jobs.JobsDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<RolesDataObject>>> GetUsersRoles(
+        CancellationToken cancellationToken = default)
+    {
+        var url = "users/api/v1/Roles";
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<RolesDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<RolesDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<SubscriptionGroupsDataObject>>> GetUsersSubscriptionGroups(
+        CancellationToken cancellationToken = default)
+    {
+        var url = "users/api/v1/SubscriptionGroups";
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<SubscriptionGroupsDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<SubscriptionGroupsDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<Users.v1.User.UserDataObject>> GetUsersUser(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"users/api/v1/Users/{id}";
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<Users.v1.User.UserDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<Users.v1.User.UserDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<Guid>> CreateUsersUser(
+        CreateUserActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "users/api/v1/Users";
+        
+        var response = await _httpClient.PostAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<Guid>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? (await response.Content.ReadFromJsonAsync<UserDataObject>(cancellationToken: cancellationToken))?.Id ?? Guid.Empty
+                : Guid.Empty,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse> DeleteUsersUser(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"users/api/v1/Users/{id}";
+        
+        var response = await _httpClient.DeleteAsync(url, cancellationToken);
+
+        return new ApiResponse
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse> UpdateUsersUser(
+        Guid id,
+        UpdateUserActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"users/api/v1/Users/{id}";
+        
+        var request = new HttpRequestMessage(HttpMethod.Patch, url)
+        {
+            Content = JsonContent.Create(input)
+        };
+
+        var response = await _httpClient.SendAsync(request, cancellationToken);
+
+        return new ApiResponse
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<UsernameDataObject>> GetUsersUsername(
+        string userName,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"users/api/v1/Users/userName/{Uri.EscapeDataString(userName)}";
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<UsernameDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<UsernameDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<UsersResponse>> GetUsers(
+        int page = 0,
+        int pageSize = 50,
+        Guid? businessUnitId = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParams = new List<string>
+        {
+            $"page={page}",
+            $"pageSize={pageSize}"
+        };
+        
+        if (businessUnitId.HasValue)
+            queryParams.Add($"businessUnitId={businessUnitId}");
+
+        var url = "users/api/v1/Users";
+        if (queryParams.Any())
+            url += "?" + string.Join("&", queryParams);
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<UsersResponse>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<UsersResponse>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public class UsersResponse
+    {
+        [JsonPropertyName("currentPage")]
+        public int CurrentPage { get; init; }
+
+        [JsonPropertyName("totalPages")]
+        public int TotalPages { get; init; }
+
+        [JsonPropertyName("pageSize")]
+        public int PageSize { get; init; }
+
+        [JsonPropertyName("totalCount")]
+        public int TotalCount { get; init; }
+
+        [JsonPropertyName("results")]
+        public UsersDataObject[]? Results { get; init; }
     }
 }

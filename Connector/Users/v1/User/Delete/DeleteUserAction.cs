@@ -14,23 +14,27 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("DeleteUserAction Action description goes here")]
+[Description("Deletes a user in HCSS")]
 public class DeleteUserAction : IStandardAction<DeleteUserActionInput, DeleteUserActionOutput>
 {
-    public DeleteUserActionInput ActionInput { get; set; } = new();
+    public DeleteUserActionInput ActionInput { get; set; } = new()
+    {
+        Id = Guid.Empty
+    };
     public DeleteUserActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
-
     public bool CreateRtap => true;
 }
 
 public class DeleteUserActionInput
 {
-
+    [JsonPropertyName("id")]
+    [Description("The ID of the user to delete")]
+    [Required]
+    public required Guid Id { get; init; }
 }
 
 public class DeleteUserActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    // Empty response per API spec - 204 status code
 }

@@ -2659,6 +2659,86 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ESR__QueueName": "localrun"
       }
+    },
+    "BusinessUnits Cache Writer Users Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId users-1 --serviceType CacheWriter --dataObjectUrl businessUnits",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Jobs Cache Writer Users Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId users-1 --serviceType CacheWriter --dataObjectUrl jobs --arguments businessUnitId=497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Roles Cache Writer Users Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId users-1 --serviceType CacheWriter --dataObjectUrl roles",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "SubscriptionGroups Cache Writer Users Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId users-1 --serviceType CacheWriter --dataObjectUrl subscriptionGroups",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "User Cache Writer Users Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId users-1 --serviceType CacheWriter --dataObjectUrl user --arguments id=497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "User Create Action Processor Users Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId users-1 --serviceType ActionProcessor --dataObjectUrl user --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "User Delete Action Processor Users Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId users-1 --serviceType ActionProcessor --dataObjectUrl user --actionUrl delete",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "User Update Action Processor Users Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId users-1 --serviceType ActionProcessor --dataObjectUrl user --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Username Cache Writer Users Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId users-1 --serviceType CacheWriter --dataObjectUrl username --arguments userName=john.doe@company.com",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Users Cache Writer Users Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId users-1 --serviceType CacheWriter --dataObjectUrl users --arguments businessUnitId=497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
     }
   }
 }

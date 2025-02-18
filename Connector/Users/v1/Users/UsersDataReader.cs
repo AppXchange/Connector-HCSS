@@ -3,76 +3,67 @@ using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
+using System.Text.Json;
 
 namespace Connector.Users.v1.Users;
 
 public class UsersDataReader : TypedAsyncDataReaderBase<UsersDataObject>
 {
     private readonly ILogger<UsersDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public UsersDataReader(
-        ILogger<UsersDataReader> logger)
+        ILogger<UsersDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<UsersDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<UsersDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
-        {
-            var response = new ApiResponse<PaginatedResponse<UsersDataObject>>();
-            // If the UsersDataObject does not have the same structure as the Users response from the API, create a new class for it and replace UsersDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<UsersResponse>>();
+        var businessUnitId = dataObjectRunArguments?.RequestParameterOverrides?.RootElement != null 
+            && dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("businessUnitId", out var businessUnitElement)
+            ? businessUnitElement.GetString()
+            : null;
 
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<UsersDataObject>(
-                //    relativeUrl: "users",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'UsersDataObject'");
-                throw;
-            }
+        var page = 0;
+        var pageSize = 50;
+        bool hasMorePages;
+
+        do
+        {
+            var response = await _apiClient.GetUsers(
+                page,
+                pageSize,
+                businessUnitId != null ? Guid.Parse(businessUnitId) : null,
+                cancellationToken);
 
             if (!response.IsSuccessful)
             {
-                throw new Exception($"Failed to retrieve records for 'UsersDataObject'. API StatusCode: {response.StatusCode}");
+                _logger.LogError("Failed to retrieve users. Status code: {StatusCode}", response.StatusCode);
+                throw new Exception($"Failed to retrieve users. API StatusCode: {response.StatusCode}");
             }
 
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
+            if (response.Data?.Results == null)
             {
-                // If new class was created to match the API response, create a new UsersDataObject object, map the properties and return a UsersDataObject.
+                _logger.LogWarning("No users found");
+                yield break;
+            }
 
-                // Example:
-                //var resource = new UsersDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
+            foreach (var item in response.Data.Results)
+            {
                 yield return item;
             }
 
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
-                break;
-            }
-        }
+            page++;
+            hasMorePages = page < response.Data.TotalPages;
+
+        } while (hasMorePages);
     }
 }

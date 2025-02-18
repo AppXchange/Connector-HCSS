@@ -3,76 +3,55 @@ using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
+using System.Text.Json;
 
 namespace Connector.Users.v1.Username;
 
 public class UsernameDataReader : TypedAsyncDataReaderBase<UsernameDataObject>
 {
     private readonly ILogger<UsernameDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public UsernameDataReader(
-        ILogger<UsernameDataReader> logger)
+        ILogger<UsernameDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<UsernameDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<UsernameDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        var userName = dataObjectRunArguments?.RequestParameterOverrides?.RootElement != null 
+            && dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("userName", out var userNameElement)
+            ? userNameElement.GetString()
+            : null;
+
+        if (string.IsNullOrEmpty(userName))
         {
-            var response = new ApiResponse<PaginatedResponse<UsernameDataObject>>();
-            // If the UsernameDataObject does not have the same structure as the Username response from the API, create a new class for it and replace UsernameDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<UsernameResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<UsernameDataObject>(
-                //    relativeUrl: "usernames",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'UsernameDataObject'");
-                throw;
-            }
-
-            if (!response.IsSuccessful)
-            {
-                throw new Exception($"Failed to retrieve records for 'UsernameDataObject'. API StatusCode: {response.StatusCode}");
-            }
-
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new UsernameDataObject object, map the properties and return a UsernameDataObject.
-
-                // Example:
-                //var resource = new UsernameDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
-                break;
-            }
+            _logger.LogError("Username is required but was not provided");
+            throw new ArgumentException("Username is required");
         }
+
+        var response = await _apiClient.GetUsersUsername(userName, cancellationToken);
+
+        if (!response.IsSuccessful)
+        {
+            _logger.LogError("Failed to retrieve user. Status code: {StatusCode}", response.StatusCode);
+            throw new Exception($"Failed to retrieve user. API StatusCode: {response.StatusCode}");
+        }
+
+        if (response.Data == null)
+        {
+            _logger.LogWarning("No user found");
+            yield break;
+        }
+
+        yield return response.Data;
     }
 }
