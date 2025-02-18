@@ -14,11 +14,56 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents an equipment rate set in HCSS")]
 public class RateSetEquipmentDataObject
 {
-    [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [JsonPropertyName("businessUnitCode")]
+    [Description("Gets the business unit code")]
     [Required]
-    public required Guid Id { get; init; }
+    public required string BusinessUnitCode { get; init; }
+
+    [JsonPropertyName("equipmentRates")]
+    [Description("The underlying EquipmentRates")]
+    public EquipmentRate[]? EquipmentRates { get; init; }
+
+    [JsonPropertyName("effectiveDate")]
+    [Description("The DateTime from which these equipment rates become effective")]
+    public DateTime? EffectiveDate { get; init; }
+
+    [JsonPropertyName("rateSetGroupCode")]
+    [Description("Gets the rate set group code, used to identify this particular rate set")]
+    [Required]
+    public required string RateSetGroupCode { get; init; }
+
+    [JsonPropertyName("rateSetGroupDescription")]
+    [Description("Gets the rate set group description")]
+    public string? RateSetGroupDescription { get; init; }
+
+    [JsonPropertyName("id")]
+    [Description("The Id of the rate set")]
+    public Guid? Id { get; init; }
+}
+
+public class EquipmentRate
+{
+    [JsonPropertyName("equipmentCode")]
+    [Description("The equipment code for which the rates below should apply")]
+    [Required]
+    public required string EquipmentCode { get; init; }
+
+    [JsonPropertyName("totalRate")]
+    [Description("The total rate, usually specified in dollars per hour. This field is ignored if the OperatingRate or the OwnershipRate are set")]
+    public double? TotalRate { get; init; }
+
+    [JsonPropertyName("operatingRate")]
+    [Description("The operating rate, usually specified in dollars per hour. (e.g., the cost of the equipment while it is operating)")]
+    public double? OperatingRate { get; init; }
+
+    [JsonPropertyName("ownershipRate")]
+    [Description("The ownership rate, usually specified in dollars per hour. (e.g., the cost of the equipment rental, amortized over time. The ownership rate is applied even if the equipment is idle")]
+    public double? OwnershipRate { get; init; }
+
+    [JsonPropertyName("id")]
+    [Description("The Id of the rate")]
+    public Guid? Id { get; init; }
 }

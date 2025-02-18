@@ -14,23 +14,45 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateRateSetGroupAction Action description goes here")]
+[Description("Creates a new rate set group in HCSS")]
 public class CreateRateSetGroupAction : IStandardAction<CreateRateSetGroupActionInput, CreateRateSetGroupActionOutput>
 {
-    public CreateRateSetGroupActionInput ActionInput { get; set; } = new();
+    public CreateRateSetGroupActionInput ActionInput { get; set; } = new()
+    {
+        BusinessUnitCode = string.Empty,
+        Code = string.Empty,
+        Type = string.Empty
+    };
     public CreateRateSetGroupActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
-
     public bool CreateRtap => true;
 }
 
 public class CreateRateSetGroupActionInput
 {
+    [JsonPropertyName("code")]
+    [Description("The code of the rate set group")]
+    [Required]
+    public required string Code { get; init; }
 
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("type")]
+    [Description("The rate set group type")]
+    [Required]
+    public required string Type { get; init; }
+
+    [JsonPropertyName("businessUnitCode")]
+    [Description("The business unit code")]
+    [Required]
+    public required string BusinessUnitCode { get; init; }
 }
 
 public class CreateRateSetGroupActionOutput
 {
     [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [Description("The Id of the created rate set group")]
+    public Guid Id { get; init; }
 }

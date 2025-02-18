@@ -278,6 +278,33 @@ using Connector.Safety.v1.IncidentV2;
 using Connector.Safety.v1.InspectionTypes;
 using Connector.Safety.v1.UserAccessGroups.Update;
 using Connector.Safety.v1.Users;
+using Connector.Setups.v1.AccountingTemplate;
+using Connector.Setups.v1.BulkCostCode;
+using Connector.Setups.v1.BusinessUnit.Create;
+using Connector.Setups.v1.BusinessUnitDefault;
+using Connector.Setups.v1.CostCode;
+using Connector.Setups.v1.CostCode.Create;
+using Connector.Setups.v1.CostCode.Update;
+using Connector.Setups.v1.Job;
+using Connector.Setups.v1.Job.Create;
+using Connector.Setups.v1.Job.Update;
+using Connector.Setups.v1.PayClass.Create;
+using Connector.Setups.v1.PayClass.Update;
+using Connector.Setups.v1.RateSet;
+using Connector.Setups.v1.RateSet.Create;
+using Connector.Setups.v1.RateSet.Update;
+using Connector.Setups.v1.RateSetCostAdjustment;
+using Connector.Setups.v1.RateSetCostAdjustment.Create;
+using Connector.Setups.v1.RateSetCostAdjustment.Update;
+using Connector.Setups.v1.RateSetEquipment;
+using Connector.Setups.v1.RateSetEquipment.Create;
+using Connector.Setups.v1.RateSetEquipment.Update;
+using Connector.Setups.v1.RateSetGroup;
+using Connector.Setups.v1.RateSetGroup.Create;
+using Connector.Setups.v1.RateSetGroup.Update;
+using Connector.Setups.v1.RateSetPayClass;
+using Connector.Setups.v1.RateSetPayClass.Create;
+using Connector.Setups.v1.RateSetPayClass.Update;
 
 namespace Connector.Client;
 
@@ -6768,7 +6795,7 @@ public class ApiClient
 
     public async Task<ApiResponse> UpdatePayClass(
         Guid id,
-        UpdatePayClassActionInput input,
+        HeavyJob.v1.PayClass.Update.UpdatePayClassActionInput input,
         CancellationToken cancellationToken = default)
     {
         var url = $"heavyjob/api/v1/payClasses/{id}";
@@ -8684,6 +8711,731 @@ public class ApiClient
             Data = response.IsSuccessStatusCode ? 
                 await response.Content.ReadFromJsonAsync<UsersDataObject>(cancellationToken: cancellationToken) : 
                 null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<AccountingTemplateDataObject>>> GetAccountingTemplates(
+        string businessUnitCode,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/AccountingTemplate?businessUnitCode={Uri.EscapeDataString(businessUnitCode)}";
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<AccountingTemplateDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<AccountingTemplateDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<object>> CreateBulkCostCodes(
+        BulkCostCodeDataObject[] costCodes,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "setups/api/v1/CostCode/bulk";
+        
+        var response = await _httpClient.PostAsJsonAsync(url, costCodes, cancellationToken);
+
+        return new ApiResponse<object>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<Connector.Setups.v1.BusinessUnit.BusinessUnitDataObject>>> GetSetupsBusinessUnits(
+        CancellationToken cancellationToken = default)
+    {
+        var url = "setups/api/v1/BusinessUnit";
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<Connector.Setups.v1.BusinessUnit.BusinessUnitDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<Connector.Setups.v1.BusinessUnit.BusinessUnitDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<Connector.Setups.v1.BusinessUnit.BusinessUnitDataObject>> CreateSetupsBusinessUnit(
+        CreateBusinessUnitActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "setups/api/v1/BusinessUnit";
+        
+        var response = await _httpClient.PostAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<Connector.Setups.v1.BusinessUnit.BusinessUnitDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<Connector.Setups.v1.BusinessUnit.BusinessUnitDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<BusinessUnitDefaultDataObject>> GetSetupsDefaultBusinessUnit(
+        CancellationToken cancellationToken = default)
+    {
+        var url = "setups/api/v1/BusinessUnit/default";
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<BusinessUnitDefaultDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<BusinessUnitDefaultDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<CostCodeDataObject>>> GetSetupsCostCodes(
+        string businessUnitCode,
+        string jobCode,
+        string? accountingTemplateName = null,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/CostCode?businessUnitCode={Uri.EscapeDataString(businessUnitCode)}&jobCode={Uri.EscapeDataString(jobCode)}";
+        if (!string.IsNullOrEmpty(accountingTemplateName))
+        {
+            url += $"&accountingTemplateName={Uri.EscapeDataString(accountingTemplateName)}";
+        }
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<CostCodeDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<CostCodeDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<CostCodeDataObject>> CreateSetupsCostCode(
+        CreateCostCodeActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "setups/api/v1/CostCode";
+        
+        var response = await _httpClient.PostAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<CostCodeDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<CostCodeDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<CostCodeDataObject>> UpdateSetupsCostCode(
+        Guid id,
+        UpdateCostCodeActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/CostCode/{id}";
+        
+        var response = await _httpClient.PutAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<CostCodeDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<CostCodeDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<object>> UpdateSetupsBulkCostCodes(
+        CostCodeDataObject[] costCodes,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "setups/api/v1/CostCode";
+        
+        var response = await _httpClient.PatchAsJsonAsync(url, costCodes, cancellationToken);
+
+        return new ApiResponse<object>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<Connector.Setups.v1.Employee.EmployeeDataObject>>> GetSetupsEmployees(
+        string businessUnitCode,
+        string? accountingTemplateName = null,
+        bool includeDeleted = false,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/Employee?businessUnitCode={Uri.EscapeDataString(businessUnitCode)}";
+        if (!string.IsNullOrEmpty(accountingTemplateName))
+        {
+            url += $"&accountingTemplateName={Uri.EscapeDataString(accountingTemplateName)}";
+        }
+        url += $"&includeDeleted={includeDeleted}";
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<Connector.Setups.v1.Employee.EmployeeDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<Connector.Setups.v1.Employee.EmployeeDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<Connector.Setups.v1.Employee.EmployeeDataObject>> CreateSetupsEmployee(
+        Connector.Setups.v1.Employee.Create.CreateEmployeeActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "setups/api/v1/Employee";
+        
+        var response = await _httpClient.PostAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<Connector.Setups.v1.Employee.EmployeeDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<Connector.Setups.v1.Employee.EmployeeDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<EmployeeDataObject>> UpdateSetupsEmployee(
+        Guid id,
+        Connector.Setups.v1.Employee.Update.UpdateEmployeeActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/Employee/{id}";
+        
+        var response = await _httpClient.PutAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<EmployeeDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<EmployeeDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<Connector.Setups.v1.Equipment.EquipmentDataObject>>> GetSetupsEquipment(
+        string businessUnitCode,
+        string? accountingTemplateName = null,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/Equipment?businessUnitCode={Uri.EscapeDataString(businessUnitCode)}";
+        if (!string.IsNullOrEmpty(accountingTemplateName))
+        {
+            url += $"&accountingTemplateName={Uri.EscapeDataString(accountingTemplateName)}";
+        }
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<Connector.Setups.v1.Equipment.EquipmentDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<Connector.Setups.v1.Equipment.EquipmentDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    // Add this method to the existing ApiClient class
+    public async Task<ApiResponse<EquipmentDataObject>> CreateSetupsEquipment(
+        Setups.v1.Equipment.Create.CreateEquipmentActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "setups/api/v1/Equipment";
+        
+        var response = await _httpClient.PostAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<EquipmentDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<EquipmentDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<EquipmentDataObject>> UpdateSetupsEquipment(
+        Guid id,
+        Setups.v1.Equipment.Update.UpdateEquipmentActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/Equipment/{id}";
+        
+        var response = await _httpClient.PutAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<EquipmentDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<EquipmentDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<JobDataObject>>> GetSetupsJobs(
+        string businessUnitCode,
+        string? accountingTemplateName = null,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/Job?businessUnitCode={Uri.EscapeDataString(businessUnitCode)}";
+        if (!string.IsNullOrEmpty(accountingTemplateName))
+        {
+            url += $"&accountingTemplateName={Uri.EscapeDataString(accountingTemplateName)}";
+        }
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<JobDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<JobDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<JobDataObject>> CreateSetupsJob(
+        CreateJobActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "setups/api/v1/Job";
+        
+        var response = await _httpClient.PostAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<JobDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<JobDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<JobDataObject>> UpdateSetupsJob(
+        Guid id,
+        UpdateJobActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/Job/{id}";
+        
+        var response = await _httpClient.PutAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<JobDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<JobDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<Connector.Setups.v1.PayClass.PayClassDataObject>>> GetSetupsPayClasses(
+        string businessUnitCode,
+        string? accountingTemplateName = null,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/PayClass?businessUnitCode={Uri.EscapeDataString(businessUnitCode)}";
+        if (!string.IsNullOrEmpty(accountingTemplateName))
+        {
+            url += $"&accountingTemplateName={Uri.EscapeDataString(accountingTemplateName)}";
+        }
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<Connector.Setups.v1.PayClass.PayClassDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<Connector.Setups.v1.PayClass.PayClassDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<PayClassDataObject>> CreateSetupsPayClass(
+        CreatePayClassActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "setups/api/v1/PayClass";
+        
+        var response = await _httpClient.PostAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<PayClassDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<PayClassDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<PayClassDataObject>> UpdateSetupsPayClass(
+        Guid id,
+        Setups.v1.PayClass.Update.UpdatePayClassActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/PayClass/{id}";
+        
+        var response = await _httpClient.PutAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<PayClassDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<PayClassDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<RateSetDataObject>> GetEmployeeRateSet(
+        string businessUnitCode,
+        string employeeRateSetGroupCode,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/RateSet/Employee?businessUnitCode={Uri.EscapeDataString(businessUnitCode)}&employeeRateSetGroupCode={Uri.EscapeDataString(employeeRateSetGroupCode)}";
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<RateSetDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<RateSetDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<RateSetDataObject>> CreateEmployeeRateSet(
+        CreateRateSetActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "setups/api/v1/RateSet/Employee";
+        
+        var response = await _httpClient.PostAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<RateSetDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<RateSetDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<RateSetDataObject>> UpdateEmployeeRateSet(
+        Guid id,
+        UpdateRateSetActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/RateSet/Employee/{id}";
+        
+        var response = await _httpClient.PutAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<RateSetDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<RateSetDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<RateSetCostAdjustmentDataObject>> GetCostAdjustmentRateSet(
+        string businessUnitCode,
+        string costAdjustmentRateSetGroupCode,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/RateSet/CostAdjustment?businessUnitCode={Uri.EscapeDataString(businessUnitCode)}&costAdjustmentRateSetGroupCode={Uri.EscapeDataString(costAdjustmentRateSetGroupCode)}";
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<RateSetCostAdjustmentDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<RateSetCostAdjustmentDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<RateSetCostAdjustmentDataObject>> CreateCostAdjustmentRateSet(
+        CreateRateSetCostAdjustmentActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "setups/api/v1/RateSet/CostAdjustment";
+        
+        var response = await _httpClient.PostAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<RateSetCostAdjustmentDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<RateSetCostAdjustmentDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<RateSetCostAdjustmentDataObject>> UpdateCostAdjustmentRateSet(
+        Guid id,
+        UpdateRateSetCostAdjustmentActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/RateSet/CostAdjustment/{id}";
+        
+        var response = await _httpClient.PutAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<RateSetCostAdjustmentDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<RateSetCostAdjustmentDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<RateSetEquipmentDataObject>> GetEquipmentRateSet(
+        string businessUnitCode,
+        string equipmentRateSetGroupCode,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/RateSet/Equipment?businessUnitCode={Uri.EscapeDataString(businessUnitCode)}&equipmentRateSetGroupCode={Uri.EscapeDataString(equipmentRateSetGroupCode)}";
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<RateSetEquipmentDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<RateSetEquipmentDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<RateSetEquipmentDataObject>> CreateEquipmentRateSet(
+        CreateRateSetEquipmentActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "setups/api/v1/RateSet/Equipment";
+        
+        var response = await _httpClient.PostAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<RateSetEquipmentDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<RateSetEquipmentDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<RateSetEquipmentDataObject>> UpdateEquipmentRateSet(
+        Guid id,
+        UpdateRateSetEquipmentActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/RateSet/Equipment/{id}";
+        
+        var response = await _httpClient.PutAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<RateSetEquipmentDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<RateSetEquipmentDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<RateSetGroupDataObject>>> GetRateSetGroups(
+        string businessUnitCode,
+        string? type = null,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/RateSetGroup?businessUnitCode={Uri.EscapeDataString(businessUnitCode)}";
+        if (!string.IsNullOrEmpty(type))
+        {
+            url += $"&type={Uri.EscapeDataString(type)}";
+        }
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<IEnumerable<RateSetGroupDataObject>>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<RateSetGroupDataObject>>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<Guid>> CreateRateSetGroup(
+        CreateRateSetGroupActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "setups/api/v1/RateSetGroup";
+        
+        var response = await _httpClient.PostAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<Guid>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<Guid>(cancellationToken: cancellationToken)
+                : Guid.Empty,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<RateSetGroupDataObject>> UpdateRateSetGroup(
+        Guid id,
+        UpdateRateSetGroupActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/RateSetGroup/{id}";
+        
+        var response = await _httpClient.PutAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<RateSetGroupDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<RateSetGroupDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<RateSetPayClassDataObject>> GetPayClassRateSet(
+        string businessUnitCode,
+        string payClassRateSetGroupCode,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/RateSet/PayClass?businessUnitCode={Uri.EscapeDataString(businessUnitCode)}&payClassRateSetGroupCode={Uri.EscapeDataString(payClassRateSetGroupCode)}";
+        
+        var response = await _httpClient.GetAsync(url, cancellationToken);
+
+        return new ApiResponse<RateSetPayClassDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<RateSetPayClassDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    // Add this method to the ApiClient class
+    public async Task<ApiResponse<RateSetPayClassDataObject>> CreatePayClassRateSet(
+        CreateRateSetPayClassActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = "setups/api/v1/RateSet/PayClass";
+        
+        var response = await _httpClient.PostAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<RateSetPayClassDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<RateSetPayClassDataObject>(cancellationToken: cancellationToken)
+                : null,
+            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
+        };
+    }
+
+    public async Task<ApiResponse<RateSetPayClassDataObject>> UpdatePayClassRateSet(
+        Guid id,
+        UpdateRateSetPayClassActionInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var url = $"setups/api/v1/RateSet/PayClass/{id}";
+        
+        var response = await _httpClient.PutAsJsonAsync(url, input, cancellationToken);
+
+        return new ApiResponse<RateSetPayClassDataObject>
+        {
+            IsSuccessful = response.IsSuccessStatusCode,
+            StatusCode = (int)response.StatusCode,
+            Data = response.IsSuccessStatusCode 
+                ? await response.Content.ReadFromJsonAsync<RateSetPayClassDataObject>(cancellationToken: cancellationToken)
+                : null,
             RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
         };
     }

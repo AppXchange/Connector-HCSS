@@ -3,76 +3,66 @@ using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
+using System.Text.Json;
 
 namespace Connector.Setups.v1.RateSetCostAdjustment;
 
 public class RateSetCostAdjustmentDataReader : TypedAsyncDataReaderBase<RateSetCostAdjustmentDataObject>
 {
     private readonly ILogger<RateSetCostAdjustmentDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public RateSetCostAdjustmentDataReader(
-        ILogger<RateSetCostAdjustmentDataReader> logger)
+        ILogger<RateSetCostAdjustmentDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<RateSetCostAdjustmentDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<RateSetCostAdjustmentDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        var businessUnitCode = dataObjectRunArguments?.RequestParameterOverrides?.RootElement != null 
+            && dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("businessUnitCode", out var businessUnitElement)
+            ? businessUnitElement.GetString()
+            : null;
+
+        var costAdjustmentRateSetGroupCode = dataObjectRunArguments?.RequestParameterOverrides?.RootElement != null 
+            && dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("costAdjustmentRateSetGroupCode", out var groupCodeElement)
+            ? groupCodeElement.GetString()
+            : null;
+
+        if (string.IsNullOrEmpty(businessUnitCode))
         {
-            var response = new ApiResponse<PaginatedResponse<RateSetCostAdjustmentDataObject>>();
-            // If the RateSetCostAdjustmentDataObject does not have the same structure as the RateSetCostAdjustment response from the API, create a new class for it and replace RateSetCostAdjustmentDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<RateSetCostAdjustmentResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<RateSetCostAdjustmentDataObject>(
-                //    relativeUrl: "rateSetCostAdjustments",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'RateSetCostAdjustmentDataObject'");
-                throw;
-            }
-
-            if (!response.IsSuccessful)
-            {
-                throw new Exception($"Failed to retrieve records for 'RateSetCostAdjustmentDataObject'. API StatusCode: {response.StatusCode}");
-            }
-
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new RateSetCostAdjustmentDataObject object, map the properties and return a RateSetCostAdjustmentDataObject.
-
-                // Example:
-                //var resource = new RateSetCostAdjustmentDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
-                break;
-            }
+            _logger.LogError("BusinessUnitCode is required but was not provided");
+            throw new ArgumentException("BusinessUnitCode is required");
         }
+
+        if (string.IsNullOrEmpty(costAdjustmentRateSetGroupCode))
+        {
+            _logger.LogError("CostAdjustmentRateSetGroupCode is required but was not provided");
+            throw new ArgumentException("CostAdjustmentRateSetGroupCode is required");
+        }
+
+        var response = await _apiClient.GetCostAdjustmentRateSet(businessUnitCode, costAdjustmentRateSetGroupCode, cancellationToken);
+
+        if (!response.IsSuccessful)
+        {
+            _logger.LogError("Failed to retrieve cost adjustment rate set. Status code: {StatusCode}", response.StatusCode);
+            throw new Exception($"Failed to retrieve cost adjustment rate set. API StatusCode: {response.StatusCode}");
+        }
+
+        if (response.Data == null)
+        {
+            _logger.LogWarning("No cost adjustment rate set found");
+            yield break;
+        }
+
+        yield return response.Data;
     }
 }

@@ -14,11 +14,20 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents an accounting template in HCSS")]
 public class AccountingTemplateDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The Id of the accounting template")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("name")]
+    [Description("The name of the accounting template")]
+    [Required] 
+    public required string Name { get; init; }
+
+    [JsonPropertyName("isPrimary")]
+    [Description("Whether the template is the primary template")]
+    public bool IsPrimary { get; init; }
 }

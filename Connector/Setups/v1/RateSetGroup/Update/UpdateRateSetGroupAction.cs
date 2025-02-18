@@ -14,23 +14,50 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateRateSetGroupAction Action description goes here")]
+[Description("Updates an existing rate set group in HCSS")]
 public class UpdateRateSetGroupAction : IStandardAction<UpdateRateSetGroupActionInput, UpdateRateSetGroupActionOutput>
 {
-    public UpdateRateSetGroupActionInput ActionInput { get; set; } = new();
-    public UpdateRateSetGroupActionOutput ActionOutput { get; set; } = new();
+    public UpdateRateSetGroupActionInput ActionInput { get; set; } = new()
+    {
+        Id = Guid.Empty,
+        BusinessUnitCode = string.Empty,
+        Code = string.Empty,
+        Type = string.Empty
+    };
+    public UpdateRateSetGroupActionOutput ActionOutput { get; set; } = new() { Id = Guid.Empty };
     public StandardActionFailure ActionFailure { get; set; } = new();
-
     public bool CreateRtap => true;
 }
 
 public class UpdateRateSetGroupActionInput
 {
+    [JsonPropertyName("id")]
+    [Description("The rate set group id")]
+    [Required]
+    public required Guid Id { get; init; }
 
+    [JsonPropertyName("code")]
+    [Description("The code of the rate set group")]
+    [Required]
+    public required string Code { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("type")]
+    [Description("The rate set group type")]
+    [Required]
+    public required string Type { get; init; }
+
+    [JsonPropertyName("businessUnitCode")]
+    [Description("The business unit code")]
+    [Required]
+    public required string BusinessUnitCode { get; init; }
 }
 
 public class UpdateRateSetGroupActionOutput
 {
     [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 }

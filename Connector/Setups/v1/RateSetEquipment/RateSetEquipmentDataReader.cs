@@ -3,76 +3,66 @@ using System;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
-using System.Net.Http;
+using System.Text.Json;
 
 namespace Connector.Setups.v1.RateSetEquipment;
 
 public class RateSetEquipmentDataReader : TypedAsyncDataReaderBase<RateSetEquipmentDataObject>
 {
     private readonly ILogger<RateSetEquipmentDataReader> _logger;
-    private int _currentPage = 0;
+    private readonly ApiClient _apiClient;
 
     public RateSetEquipmentDataReader(
-        ILogger<RateSetEquipmentDataReader> logger)
+        ILogger<RateSetEquipmentDataReader> logger,
+        ApiClient apiClient)
     {
         _logger = logger;
+        _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<RateSetEquipmentDataObject> GetTypedDataAsync(DataObjectCacheWriteArguments ? dataObjectRunArguments, [EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<RateSetEquipmentDataObject> GetTypedDataAsync(
+        DataObjectCacheWriteArguments? dataObjectRunArguments,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        while (true)
+        var businessUnitCode = dataObjectRunArguments?.RequestParameterOverrides?.RootElement != null 
+            && dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("businessUnitCode", out var businessUnitElement)
+            ? businessUnitElement.GetString()
+            : null;
+
+        var equipmentRateSetGroupCode = dataObjectRunArguments?.RequestParameterOverrides?.RootElement != null 
+            && dataObjectRunArguments.RequestParameterOverrides.RootElement.TryGetProperty("equipmentRateSetGroupCode", out var groupCodeElement)
+            ? groupCodeElement.GetString()
+            : null;
+
+        if (string.IsNullOrEmpty(businessUnitCode))
         {
-            var response = new ApiResponse<PaginatedResponse<RateSetEquipmentDataObject>>();
-            // If the RateSetEquipmentDataObject does not have the same structure as the RateSetEquipment response from the API, create a new class for it and replace RateSetEquipmentDataObject with it.
-            // Example:
-            // var response = new ApiResponse<IEnumerable<RateSetEquipmentResponse>>();
-
-            // Make a call to your API/system to retrieve the objects/type for the connector's configuration.
-            try
-            {
-                //response = await _apiClient.GetRecords<RateSetEquipmentDataObject>(
-                //    relativeUrl: "rateSetEquipments",
-                //    page: _currentPage,
-                //    cancellationToken: cancellationToken)
-                //    .ConfigureAwait(false);
-            }
-            catch (HttpRequestException exception)
-            {
-                _logger.LogError(exception, "Exception while making a read request to data object 'RateSetEquipmentDataObject'");
-                throw;
-            }
-
-            if (!response.IsSuccessful)
-            {
-                throw new Exception($"Failed to retrieve records for 'RateSetEquipmentDataObject'. API StatusCode: {response.StatusCode}");
-            }
-
-            if (response.Data == null || !response.Data.Items.Any()) break;
-
-            // Return the data objects to Cache.
-            foreach (var item in response.Data.Items)
-            {
-                // If new class was created to match the API response, create a new RateSetEquipmentDataObject object, map the properties and return a RateSetEquipmentDataObject.
-
-                // Example:
-                //var resource = new RateSetEquipmentDataObject
-                //{
-                //// TODO: Map properties.      
-                //};
-                //yield return resource;
-                yield return item;
-            }
-
-            // Handle pagination per API client design
-            _currentPage++;
-            if (_currentPage >= response.Data.TotalPages)
-            {
-                break;
-            }
+            _logger.LogError("BusinessUnitCode is required but was not provided");
+            throw new ArgumentException("BusinessUnitCode is required");
         }
+
+        if (string.IsNullOrEmpty(equipmentRateSetGroupCode))
+        {
+            _logger.LogError("EquipmentRateSetGroupCode is required but was not provided");
+            throw new ArgumentException("EquipmentRateSetGroupCode is required");
+        }
+
+        var response = await _apiClient.GetEquipmentRateSet(businessUnitCode, equipmentRateSetGroupCode, cancellationToken);
+
+        if (!response.IsSuccessful)
+        {
+            _logger.LogError("Failed to retrieve equipment rate set. Status code: {StatusCode}", response.StatusCode);
+            throw new Exception($"Failed to retrieve equipment rate set. API StatusCode: {response.StatusCode}");
+        }
+
+        if (response.Data == null)
+        {
+            _logger.LogWarning("No equipment rate set found");
+            yield break;
+        }
+
+        yield return response.Data;
     }
 }

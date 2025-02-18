@@ -14,23 +14,44 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateEmployeeAction Action description goes here")]
+[Description("Updates an existing employee in HCSS")]
 public class UpdateEmployeeAction : IStandardAction<UpdateEmployeeActionInput, UpdateEmployeeActionOutput>
 {
-    public UpdateEmployeeActionInput ActionInput { get; set; } = new();
-    public UpdateEmployeeActionOutput ActionOutput { get; set; } = new();
+    public UpdateEmployeeActionInput ActionInput { get; set; } = new() 
+    { 
+        Id = Guid.Empty,
+        Code = string.Empty,
+        BusinessUnitCode = string.Empty
+    };
+    public UpdateEmployeeActionOutput ActionOutput { get; set; } = new()
+    {
+        Code = string.Empty,
+        BusinessUnitCode = string.Empty
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
-
     public bool CreateRtap => true;
 }
 
 public class UpdateEmployeeActionInput
 {
+    [JsonPropertyName("id")]
+    [Description("The employee guid")]
+    [Required]
+    public required Guid Id { get; init; }
 
+    [JsonPropertyName("code")]
+    [Description("Gets the employee code")]
+    [Required]
+    public required string Code { get; init; }
+
+    [JsonPropertyName("businessUnitCode")]
+    [Description("Gets the business unit")]
+    [Required]
+    public required string BusinessUnitCode { get; init; }
+
+    // ... rest of the properties from EmployeeDataObject
 }
 
-public class UpdateEmployeeActionOutput
+public class UpdateEmployeeActionOutput : EmployeeDataObject
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
 }

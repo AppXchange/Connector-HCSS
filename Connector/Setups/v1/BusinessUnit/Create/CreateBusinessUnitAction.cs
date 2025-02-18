@@ -14,23 +14,47 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateBusinessUnitAction Action description goes here")]
+[Description("Creates a new business unit in HCSS")]
 public class CreateBusinessUnitAction : IStandardAction<CreateBusinessUnitActionInput, CreateBusinessUnitActionOutput>
 {
-    public CreateBusinessUnitActionInput ActionInput { get; set; } = new();
-    public CreateBusinessUnitActionOutput ActionOutput { get; set; } = new();
+    public CreateBusinessUnitActionInput ActionInput { get; set; } = new() 
+    { 
+        Code = string.Empty 
+    };
+    public CreateBusinessUnitActionOutput ActionOutput { get; set; } = new()
+    {
+        Id = Guid.Empty,
+        Code = string.Empty
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
-
     public bool CreateRtap => true;
 }
 
 public class CreateBusinessUnitActionInput
 {
+    [JsonPropertyName("code")]
+    [Description("A code, in all caps, that represents this business unit")]
+    [Required]
+    public required string Code { get; init; }
 
+    [JsonPropertyName("description")]
+    [Description("An optional description for this business unit")]
+    public string? Description { get; init; }
 }
 
 public class CreateBusinessUnitActionOutput
 {
     [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    [Description("The business unit id")]
+    [Required]
+    public required Guid Id { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("A code, in all caps, that represents this business unit")]
+    [Required]
+    public required string Code { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("An optional description for this business unit")]
+    public string? Description { get; init; }
 }

@@ -1003,18 +1003,21 @@ https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/pat
 xchange action new --module-id setups-1 --object-name RateSet --name Create
 https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1Employee~1{id}/put
 xchange action new --module-id setups-1 --object-name RateSet --name Update
+
 https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1PayClass/get
 xchange data-object new --module-id setups-1 --name RateSetPayClass
 https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1PayClass/post
 xchange action new --module-id setups-1 --object-name RateSetPayClass --name Create
 https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1PayClass~1{id}/put
 xchange action new --module-id setups-1 --object-name RateSetPayClass --name Update
+
 https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1Equipment/get
 xchange data-object new --module-id setups-1 --name RateSetEquipment
 https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1Equipment/post
 xchange action new --module-id setups-1 --object-name RateSetEquipment --name Create
 https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1Equipment~1{id}/put
 xchange action new --module-id setups-1 --object-name RateSetEquipment --name Update
+
 https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1CostAdjustment/get
 xchange data-object new --module-id setups-1 --name RateSetCostAdjustment
 https://developer.hcssapps.com/products/setups/spec/tag/RateSet/#tag/RateSet/paths/~1api~1v1~1RateSet~1CostAdjustment/post

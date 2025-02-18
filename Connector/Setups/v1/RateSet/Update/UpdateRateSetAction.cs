@@ -14,23 +14,54 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("UpdateRateSetAction Action description goes here")]
+[Description("Updates an existing employee rate set in HCSS")]
 public class UpdateRateSetAction : IStandardAction<UpdateRateSetActionInput, UpdateRateSetActionOutput>
 {
-    public UpdateRateSetActionInput ActionInput { get; set; } = new();
-    public UpdateRateSetActionOutput ActionOutput { get; set; } = new();
+    public UpdateRateSetActionInput ActionInput { get; set; } = new()
+    {
+        Id = Guid.Empty,
+        BusinessUnitCode = string.Empty,
+        RateSetGroupCode = string.Empty
+    };
+    public UpdateRateSetActionOutput ActionOutput { get; set; } = new()
+    {
+        BusinessUnitCode = string.Empty,
+        RateSetGroupCode = string.Empty
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
-
     public bool CreateRtap => true;
 }
 
 public class UpdateRateSetActionInput
 {
+    [JsonPropertyName("id")]
+    [Description("The employee rate set guid")]
+    [Required]
+    public required Guid Id { get; init; }
 
+    [JsonPropertyName("businessUnitCode")]
+    [Description("Gets the business unit code")]
+    [Required]
+    public required string BusinessUnitCode { get; init; }
+
+    [JsonPropertyName("employeeRates")]
+    [Description("Gets the employee rates")]
+    public EmployeeRate[]? EmployeeRates { get; init; }
+
+    [JsonPropertyName("effectiveDate")]
+    [Description("Gets the effective date")]
+    public DateTime? EffectiveDate { get; init; }
+
+    [JsonPropertyName("rateSetGroupCode")]
+    [Description("Gets the rate set group code, used to uniquely identify this rate set")]
+    [Required]
+    public required string RateSetGroupCode { get; init; }
+
+    [JsonPropertyName("rateSetGroupDescription")]
+    [Description("Gets the rate set group description")]
+    public string? RateSetGroupDescription { get; init; }
 }
 
-public class UpdateRateSetActionOutput
+public class UpdateRateSetActionOutput : RateSetDataObject
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
 }

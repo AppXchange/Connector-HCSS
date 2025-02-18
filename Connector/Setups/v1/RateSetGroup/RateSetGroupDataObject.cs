@@ -14,11 +14,30 @@ using Xchange.Connector.SDK.CacheWriter;
 /// </summary>
 [PrimaryKey("id", nameof(Id))]
 //[AlternateKey("alt-key-id", nameof(CompanyId), nameof(EquipmentNumber))]
-[Description("Example description of the object.")]
+[Description("Represents a rate set group in HCSS")]
 public class RateSetGroupDataObject
 {
     [JsonPropertyName("id")]
-    [Description("Example primary key of the object")]
+    [Description("The Id of the rate set")]
     [Required]
     public required Guid Id { get; init; }
+
+    [JsonPropertyName("code")]
+    [Description("The code of the rate set")]
+    [Required]
+    public required string Code { get; init; }
+
+    [JsonPropertyName("description")]
+    [Description("The description")]
+    public string? Description { get; init; }
+
+    [JsonPropertyName("effectiveDate")]
+    [Description("The effective date of the rate set group")]
+    [Required]
+    public required DateTime EffectiveDate { get; init; }
+
+    [JsonPropertyName("type")]
+    [Description("The rate set group type")]
+    [Required]
+    public required string Type { get; init; }
 }

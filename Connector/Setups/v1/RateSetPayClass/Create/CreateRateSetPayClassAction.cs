@@ -14,23 +14,53 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateRateSetPayClassAction Action description goes here")]
+[Description("Creates a new pay class rate set in HCSS")]
 public class CreateRateSetPayClassAction : IStandardAction<CreateRateSetPayClassActionInput, CreateRateSetPayClassActionOutput>
 {
-    public CreateRateSetPayClassActionInput ActionInput { get; set; } = new();
-    public CreateRateSetPayClassActionOutput ActionOutput { get; set; } = new();
+    public CreateRateSetPayClassActionInput ActionInput { get; set; } = new()
+    {
+        BusinessUnitCode = string.Empty,
+        RateSetGroupCode = string.Empty
+    };
+    public CreateRateSetPayClassActionOutput ActionOutput { get; set; } = new()
+    {
+        Id = Guid.Empty,
+        BusinessUnitCode = string.Empty,
+        RateSetGroupCode = string.Empty
+    };
     public StandardActionFailure ActionFailure { get; set; } = new();
-
     public bool CreateRtap => true;
 }
 
 public class CreateRateSetPayClassActionInput
 {
+    [JsonPropertyName("businessUnitCode")]
+    [Description("Gets the business unit code")]
+    [Required]
+    public required string BusinessUnitCode { get; init; }
 
+    [JsonPropertyName("payClassRates")]
+    [Description("Gets the pay class rates")]
+    public PayClassRate[]? PayClassRates { get; init; }
+
+    [JsonPropertyName("effectiveDate")]
+    [Description("Gets the effective date")]
+    public DateTime? EffectiveDate { get; init; }
+
+    [JsonPropertyName("rateSetGroupCode")]
+    [Description("Gets the rate set group code, used to uniquely identify this rate set")]
+    [Required]
+    public required string RateSetGroupCode { get; init; }
+
+    [JsonPropertyName("rateSetGroupDescription")]
+    [Description("Gets the rate set group description")]
+    public string? RateSetGroupDescription { get; init; }
+
+    [JsonPropertyName("id")]
+    [Description("The Id of the rate set")]
+    public Guid? Id { get; init; }
 }
 
-public class CreateRateSetPayClassActionOutput
+public class CreateRateSetPayClassActionOutput : RateSetPayClassDataObject
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
 }

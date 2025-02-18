@@ -14,10 +14,13 @@ using Xchange.Connector.SDK.Action;
 /// are properly formed. The schema also helps provide integrators more information for what the values 
 /// are intended to be.
 /// </summary>
-[Description("CreateBulkCostCodeAction Action description goes here")]
+[Description("Creates multiple cost codes in HCSS")]
 public class CreateBulkCostCodeAction : IStandardAction<CreateBulkCostCodeActionInput, CreateBulkCostCodeActionOutput>
 {
-    public CreateBulkCostCodeActionInput ActionInput { get; set; } = new();
+    public CreateBulkCostCodeActionInput ActionInput { get; set; } = new() 
+    { 
+        CostCodes = Array.Empty<BulkCostCodeDataObject>() 
+    };
     public CreateBulkCostCodeActionOutput ActionOutput { get; set; } = new();
     public StandardActionFailure ActionFailure { get; set; } = new();
 
@@ -26,11 +29,15 @@ public class CreateBulkCostCodeAction : IStandardAction<CreateBulkCostCodeAction
 
 public class CreateBulkCostCodeActionInput
 {
-
+    [JsonPropertyName("costCodes")]
+    [Description("The list of cost codes to create (up to 100 items)")]
+    [Required]
+    [MaxItems(100)]
+    [MinItems(1)]
+    public required BulkCostCodeDataObject[] CostCodes { get; init; }
 }
 
 public class CreateBulkCostCodeActionOutput
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    // No content returned for 204 response
 }

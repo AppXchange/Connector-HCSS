@@ -2283,6 +2283,286 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ESR__QueueName": "localrun"
       }
+    },
+    "AccountingTemplate Cache Writer Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType CacheWriter --dataObjectUrl accountingTemplate --arguments businessUnitCode=MANAGER",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "BulkCostCode Create Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl bulkCostCode --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "BusinessUnit Cache Writer Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType CacheWriter --dataObjectUrl businessUnit",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "BusinessUnit Create Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl businessUnit --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "BusinessUnitDefault Cache Writer Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType CacheWriter --dataObjectUrl businessUnitDefault",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCode Cache Writer Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType CacheWriter --dataObjectUrl costCode --arguments businessUnitCode=MANAGER,jobCode=JOB123",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCode Create Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl costCode --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "CostCode Update Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl costCode --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Employee Cache Writer Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType CacheWriter --dataObjectUrl employee --arguments businessUnitCode=MANAGER",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Employee Create Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl employee --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Employee Update Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl employee --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Equipment Cache Writer Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType CacheWriter --dataObjectUrl equipment --arguments businessUnitCode=MANAGER",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Equipment Create Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl equipment --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Equipment Update Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl equipment --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Job Cache Writer Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType CacheWriter --dataObjectUrl job --arguments businessUnitCode=MANAGER",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Job Create Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl job --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "Job Update Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl job --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "PayClass Cache Writer Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType CacheWriter --dataObjectUrl payClass --arguments businessUnitCode=MANAGER",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "PayClass Create Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl payClass --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "PayClass Update Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl payClass --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "RateSet Cache Writer Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType CacheWriter --dataObjectUrl rateSet --arguments businessUnitCode=MANAGER,employeeRateSetGroupCode=RSGROUP1",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "RateSet Create Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl rateSet --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "RateSet Update Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl rateSet --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "RateSetCostAdjustment Cache Writer Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType CacheWriter --dataObjectUrl rateSetCostAdjustment --arguments businessUnitCode=MANAGER,costAdjustmentRateSetGroupCode=RSGROUP1",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "RateSetCostAdjustment Create Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl rateSetCostAdjustment --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "RateSetCostAdjustment Update Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl rateSetCostAdjustment --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "RateSetEquipment Cache Writer Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType CacheWriter --dataObjectUrl rateSetEquipment --arguments businessUnitCode=MANAGER,equipmentRateSetGroupCode=RSGROUP1",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "RateSetEquipment Create Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl rateSetEquipment --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "RateSetEquipment Update Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl rateSetEquipment --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "RateSetGroup Cache Writer Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType CacheWriter --dataObjectUrl rateSetGroup --arguments businessUnitCode=MANAGER,type=labor",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "RateSetGroup Create Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl rateSetGroup --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "RateSetGroup Update Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl rateSetGroup --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "RateSetPayClass Cache Writer Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType CacheWriter --dataObjectUrl rateSetPayClass --arguments businessUnitCode=MANAGER,payClassRateSetGroupCode=RSGROUP1",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "RateSetPayClass Create Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl rateSetPayClass --actionUrl create",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
+    },
+    "RateSetPayClass Update Action Processor Setups Local Development": {
+      "commandName": "Project",
+      "commandLineArgs": "--isLocal true --moduleId setups-1 --serviceType ActionProcessor --dataObjectUrl rateSetPayClass --actionUrl update",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ESR__QueueName": "localrun"
+      }
     }
   }
 }
