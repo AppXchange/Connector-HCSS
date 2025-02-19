@@ -30,7 +30,9 @@ public class JobsDataReader : TypedAsyncDataReaderBase<JobsDataObject>
         ApiResponse<IEnumerable<JobsDataObject>> response;
         try
         {
-            response = await _apiClient.GetJobs(cancellationToken: cancellationToken);
+            response = await _apiClient.GetJobs(
+                businessUnitId: null, 
+                cancellationToken: cancellationToken);
 
             if (!response.IsSuccessful)
             {

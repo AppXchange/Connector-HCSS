@@ -33,7 +33,15 @@ public class EquipmentDataReader : TypedAsyncDataReaderBase<EquipmentDataObject>
         ApiResponse<Equipment360PaginatedResponse<AllEquipmentDataObject>> response;
         try
         {
-            response = await _apiClient.GetEquipment(cancellationToken: cancellationToken);
+            response = await _apiClient.GetEquipment(
+                businessUnitId: null,
+                equipmentCode: null,
+                accountingCode: null,
+                status: null,
+                count: null,
+                cursor: null,
+                includeDeleted: null,
+                cancellationToken: cancellationToken);
 
             if (!response.IsSuccessful)
             {

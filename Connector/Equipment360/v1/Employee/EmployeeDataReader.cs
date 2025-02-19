@@ -8,10 +8,11 @@ using System.Threading;
 using Xchange.Connector.SDK.CacheWriter;
 using System.Net.Http;
 using System.Linq;
+using Connector.Equipment360.v1.Employees;
 
 namespace Connector.Equipment360.v1.Employee;
 
-public class EmployeeDataReader : TypedAsyncDataReaderBase<EmployeeDataObject>
+public class EmployeeDataReader : TypedAsyncDataReaderBase<EmployeesDataObject>
 {
     private readonly ILogger<EmployeeDataReader> _logger;
     private readonly ApiClient _apiClient;
@@ -24,11 +25,11 @@ public class EmployeeDataReader : TypedAsyncDataReaderBase<EmployeeDataObject>
         _apiClient = apiClient;
     }
 
-    public override async IAsyncEnumerable<EmployeeDataObject> GetTypedDataAsync(
+    public override async IAsyncEnumerable<EmployeesDataObject> GetTypedDataAsync(
         DataObjectCacheWriteArguments? dataObjectRunArguments,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        ApiResponse<IEnumerable<EmployeeDataObject>> response;
+        ApiResponse<IEnumerable<EmployeesDataObject>> response;
         try
         {
             response = await _apiClient.GetEmployees(cancellationToken: cancellationToken);

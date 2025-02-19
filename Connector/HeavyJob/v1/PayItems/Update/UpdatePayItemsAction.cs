@@ -17,7 +17,9 @@ using Xchange.Connector.SDK.Action;
 [Description("Bulk upsert pay items by code and job id")]
 public class UpdatePayItemsAction : IStandardAction<UpdatePayItemsActionInput, UpdatePayItemsActionOutput>
 {
-    public UpdatePayItemsActionInput ActionInput { get; set; } = new();
+    public UpdatePayItemsActionInput ActionInput { get; set; } = new() { 
+        PayItems = Array.Empty<PayItemUpdate>()
+    };
     public UpdatePayItemsActionOutput ActionOutput { get; set; } = new() {
         Success = false
     };

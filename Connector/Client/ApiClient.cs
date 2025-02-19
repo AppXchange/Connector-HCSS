@@ -5444,19 +5444,18 @@ public class ApiClient
         };
     }
 
-    public async Task<ApiResponse<IEnumerable<HeavyJob.v1.EquipmentType.EquipmentTypeDataObject>>> GetEquipmentTypes(
+
+    public async Task<ApiResponse<IEnumerable<Connector.HeavyJob.v1.EquipmentType.EquipmentTypeDataObject>>> GetHeavyJobEquipmentTypes(
         CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.GetAsync(
-            "heavyjob/api/v1/equipmentTypes",
-            cancellationToken);
+        var response = await _httpClient.GetAsync("heavyjob/api/v1/equipmentType", cancellationToken);
 
-        return new ApiResponse<IEnumerable<HeavyJob.v1.EquipmentType.EquipmentTypeDataObject>>
+        return new ApiResponse<IEnumerable<Connector.HeavyJob.v1.EquipmentType.EquipmentTypeDataObject>>
         {
             IsSuccessful = response.IsSuccessStatusCode,
             StatusCode = (int)response.StatusCode,
             Data = response.IsSuccessStatusCode 
-                ? await response.Content.ReadFromJsonAsync<IEnumerable<HeavyJob.v1.EquipmentType.EquipmentTypeDataObject>>(cancellationToken: cancellationToken)
+                ? await response.Content.ReadFromJsonAsync<IEnumerable<Connector.HeavyJob.v1.EquipmentType.EquipmentTypeDataObject>>(cancellationToken: cancellationToken) 
                 : null,
             RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
         };
@@ -9002,7 +9001,6 @@ public class ApiClient
         };
     }
 
-    // Add this method to the existing ApiClient class
     public async Task<ApiResponse<EquipmentDataObject>> CreateSetupsEquipment(
         Setups.v1.Equipment.Create.CreateEquipmentActionInput input,
         CancellationToken cancellationToken = default)
@@ -9428,7 +9426,6 @@ public class ApiClient
         };
     }
 
-    // Add this method to the ApiClient class
     public async Task<ApiResponse<RateSetPayClassDataObject>> CreatePayClassRateSet(
         CreateRateSetPayClassActionInput input,
         CancellationToken cancellationToken = default)
@@ -9525,7 +9522,6 @@ public class ApiClient
         };
     }
 
-    // Add this method to the ApiClient class
     public async Task<ApiResponse<string>> CreateEmployeeSkill(
         CreateEmployeeSkillsActionInput input,
         bool usePayrollCode = false,
@@ -9675,7 +9671,6 @@ public class ApiClient
         };
     }
 
-    // Add this method to the ApiClient class
     public async Task<ApiResponse<object>> UpdateSkill(
         string courseCodeOrName,
         UpdateSkillActionInput input,
@@ -9728,7 +9723,6 @@ public class ApiClient
         };
     }
 
-    // Add this method to the ApiClient class
     public async Task<ApiResponse<ImportResult[]>> ImportSkills(
         SkillsimportDataObject[] skills,
         CancellationToken cancellationToken = default)
@@ -9965,36 +9959,19 @@ public class ApiClient
         };
     }
 
-    public async Task<ApiResponse<UsersResponse>> GetUsers(
+    public async Task<ApiResponse<PaginatedResponse<JsonElement>>> GetUsers(
         int page = 0,
         int pageSize = 50,
         Guid? businessUnitId = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParams = new List<string>
-        {
-            $"page={page}",
-            $"pageSize={pageSize}"
-        };
-        
+        var url = $"users/api/v1/Users?page={page}&pageSize={pageSize}";
         if (businessUnitId.HasValue)
-            queryParams.Add($"businessUnitId={businessUnitId}");
+            url += $"&businessUnitId={businessUnitId}";
 
-        var url = "users/api/v1/Users";
-        if (queryParams.Any())
-            url += "?" + string.Join("&", queryParams);
-        
         var response = await _httpClient.GetAsync(url, cancellationToken);
 
-        return new ApiResponse<UsersResponse>
-        {
-            IsSuccessful = response.IsSuccessStatusCode,
-            StatusCode = (int)response.StatusCode,
-            Data = response.IsSuccessStatusCode 
-                ? await response.Content.ReadFromJsonAsync<UsersResponse>(cancellationToken: cancellationToken)
-                : null,
-            RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
-        };
+        return await CreateApiResponseAsync<PaginatedResponse<JsonElement>>(response);
     }
 
     public class UsersResponse
@@ -10138,8 +10115,6 @@ public class ApiClient
         };
     }
 
-    // Add to existing ApiClient class:
-
     public async Task<ApiResponse<object>> DeletePreConSubscription(
         Guid businessUnitId,
         string url,
@@ -10230,8 +10205,6 @@ public class ApiClient
         };
     }
 
-    // Add to existing ApiClient class:
-
     public async Task<ApiResponse<object>> DeleteSetupsSubscription(
         string url,
         CancellationToken cancellationToken = default)
@@ -10247,8 +10220,6 @@ public class ApiClient
             RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
         };
     }
-
-    // Add to existing ApiClient class:
 
     public async Task<ApiResponse<UpdateSetupsSubscriptionActionOutput>> UpdateSetupsSubscription(
         UpdateSetupsSubscriptionActionInput input,
@@ -10266,8 +10237,6 @@ public class ApiClient
             RawResult = await response.Content.ReadAsStreamAsync(cancellationToken)
         };
     }
-
-    // Add to existing ApiClient class:
 
     public async Task<ApiResponse<IEnumerable<SetupsWebhooksDataObject>>> GetSetupsWebhooks(
         CancellationToken cancellationToken = default)

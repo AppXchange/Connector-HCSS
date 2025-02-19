@@ -46,7 +46,14 @@ public class BusinessUnitPreferenceDataReader : TypedAsyncDataReaderBase<Busines
             yield break;
         }
 
-        response.Data.BusinessUnitId = _connectionConfig.BusinessUnitId;
-        yield return response.Data;
+        yield return new BusinessUnitPreferenceDataObject
+        {
+            BusinessUnitId = _connectionConfig.BusinessUnitId,
+            DefaultLaborRateSetId = response.Data.DefaultLaborRateSetId,
+            DefaultPayClassId = response.Data.DefaultPayClassId,
+            DefaultEquipmentRateSetId = response.Data.DefaultEquipmentRateSetId,
+            StartOfPayWeek = response.Data.StartOfPayWeek,
+            TruckingCostTypeId = response.Data.TruckingCostTypeId
+        };
     }
 }

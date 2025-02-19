@@ -27,21 +27,12 @@ public class EquipmentTypeDataReader : TypedAsyncDataReaderBase<EquipmentTypeDat
         DataObjectCacheWriteArguments? dataObjectRunArguments,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        ApiResponse<IEnumerable<EquipmentTypeDataObject>> response;
-        try
-        {
-            response = await _apiClient.GetEquipmentTypes(cancellationToken);
+        var response = await _apiClient.GetEquipment360Types(cancellationToken);
 
-            if (!response.IsSuccessful)
-            {
-                _logger.LogError("Failed to retrieve equipment types. Status code: {StatusCode}", response.StatusCode);
-                throw new Exception($"Failed to retrieve equipment types. API StatusCode: {response.StatusCode}");
-            }
-        }
-        catch (HttpRequestException exception)
+        if (!response.IsSuccessful)
         {
-            _logger.LogError(exception, "Exception while retrieving equipment types");
-            throw;
+            _logger.LogError("Failed to retrieve equipment types. Status code: {StatusCode}", response.StatusCode);
+            throw new Exception($"Failed to retrieve equipment types. API StatusCode: {response.StatusCode}");
         }
 
         if (response.Data == null)

@@ -27,7 +27,7 @@ public class EquipmentTypeDataReader : TypedAsyncDataReaderBase<EquipmentTypeDat
         DataObjectCacheWriteArguments? dataObjectRunArguments,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var response = await _apiClient.GetEquipmentTypes(cancellationToken);
+        var response = await _apiClient.GetHeavyJobEquipmentTypes(cancellationToken);
 
         if (!response.IsSuccessful)
         {
